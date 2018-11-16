@@ -19,7 +19,7 @@ public class Dash extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Engine engine = Engine.getInstance();
 		try {
-			List<CategoryBean> result = engine.getCategories();
+			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 public class CategoryDAO {
 
@@ -17,18 +19,19 @@ public class CategoryDAO {
 	public static final String SINGLE_CATEGORY_QUERY = "SELECT * FROM CATEGORY WHERE ID = ?";
 
 	private Connection con;
-	// This helps prevent SQL injection attacks on the ORDER BY statement.
+	private Encoder picEncoder;
 
 	public CategoryDAO() {
 
 		try {
 			Class.forName(DERBY_DRIVER).newInstance();
-			System.out.println("hey");
 			con = DriverManager.getConnection(DB_URL);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
+
+		picEncoder = Base64.getEncoder();
 	}
 
 	public List<CategoryBean> getAllCategories() throws Exception {
@@ -54,6 +57,7 @@ public class CategoryDAO {
 		preS.setInt(1, catId);
 
 		ResultSet r = preS.executeQuery();
+		r.next();
 
 		CategoryBean category = setCategoryBean(r);
 		return category;
@@ -76,10 +80,17 @@ public class CategoryDAO {
 		category.setDescription(r.getString("DESCRIPTION"));
 		category.setName(r.getString("NAME"));
 		category.setId(r.getInt("ID"));
-		category.setPicture(r.getBlob("PICTURE"));
+		category.setPicture(getCategoryPicture(r.getBytes("PICTURE")));
 
 		return category;
+	}
 
+	private String getCategoryPicture(byte[] picture) {
+		byte[] encoded = picEncoder.encode(picture);
+
+		String encodedString = new String(encoded);
+
+		return encodedString;
 	}
 
 }

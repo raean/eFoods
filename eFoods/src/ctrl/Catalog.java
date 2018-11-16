@@ -27,7 +27,7 @@ public class Catalog extends HttpServlet {
 		
 		// Getting categories to populate the users page with category options:
 		try {
-			List<CategoryBean> result = engine.getCategories();
+			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
 		} catch (Exception e) {
 			e.printStackTrace();

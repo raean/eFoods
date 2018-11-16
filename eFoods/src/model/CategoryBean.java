@@ -4,11 +4,11 @@ import java.sql.Blob;
 
 public class CategoryBean {
 
-	public String description;
-	public String name;
-	public Blob picture;
+	private String description;
+	private String name;
+	private String picture;
 
-	public int id; // SQL Key
+	private int id; // SQL Key
 
 	public CategoryBean() {
 	}
@@ -42,11 +42,11 @@ public class CategoryBean {
 		this.id = id;
 	}
 
-	public Blob getPicture() {
+	public String getPicture() {
 		return picture;
 	}
 
-	public void setPicture(Blob picture) {
+	public void setPicture(String picture) {
 		this.picture = picture;
 	}
 }
