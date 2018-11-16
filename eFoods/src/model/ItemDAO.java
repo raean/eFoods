@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.sun.javafx.collections.MappingChange.Map;
-
 public class ItemDAO {
 
 	public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
