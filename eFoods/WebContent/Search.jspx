@@ -16,7 +16,7 @@
 </head>
 <body>
 	<div class="navigation">
-		<a href="Browse.do" name="browse"> Browse </a> <a href="Auth.do"
+		<a href="Dash.do" name="browse"> Home </a> <a href="Auth.do"
 			name="authentication"> Sign in! </a> <a href="Cart.do"> Cart </a>
 		<div class="searchDiv">
 			<form name="searchForm" action="Search.do" method="POST">
@@ -27,16 +27,16 @@
 		</div>
 	</div>
 	<br />
-	<div class="searchResults">
-		<div id="searchOptions">
+	<div class="mainSearchResults">
+		<div class="searchOptions">
 			<form name="searchOptionsForm" action="Search.do" method="POST">
 				<select id="sortBy" name="sortBy">
-					<option selected="any" value="NONE">Select One:</option>
-					<option value="PRICE ASC">Price: Low to High</option>
-					<option value="PRICE DESC">Price: High to Low</option>
-					<option value="NAME ASC">Ascending Name</option>
-					<option value="NAME DESC">Descending Name</option>
-				</select> 
+							<option selected="any" value="NONE">Select One:</option>
+							<option value="ascName">A to Z</option>
+							<option value="descName">Z to A</option>
+							<option value="ascPrice">Price: Low to High</option>
+							<option value="descPrice">Price: High to Low</option>
+						</select>
 				<br/>
 					Minimum cost: <input type="text" name="minInput" value="${minInputValue}" />
 					Maximum cost: <input type="text" name="maxInput" value="${maxInputValue}" />
@@ -44,7 +44,7 @@
 				<input type="submit" name="advancedSearchButton" value="Advanced Search"/>
 			</form>
  		</div>
-		<div id="searchResults">
+		<div class="searchResults">
 		<form>
 			<c:if test="${!empty result}">
 				<table cellpadding="4" border="1">

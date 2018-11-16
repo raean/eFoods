@@ -11,7 +11,7 @@
 
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-		<title> Foods R  Us </title>
+		<title> Catalog - Foods R  Us </title>
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/> -->
 		<link href="css/style.css" rel="stylesheet" type="text/css"></link>
 		</head>
@@ -31,14 +31,40 @@
 				<div name="catalogDiv">
 					<h2>Select a Catalog</h2>
 						<c:forEach items="${catalogList}" var="catalogItem">
-						<form name="catalogForm" action="Catalog.do" method="POST">
-							<input type="submit" value="${catalogItem.getName()}" name="catalogName"/>
+							<form name="catalogForm" action="Catalog.do" method="POST">
+								<input type="submit" value="${catalogItem.getName()}" name="catalogName"/>
 								<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
 							</form>
 						</c:forEach>
 				</div>
+				<div name="sortByDiv">
+					<form name="catalogOrder" action="Catalog.do" method="POST">
+						<select id="sortBy" name="sortBy">
+							<option selected="any" value="NONE">Select One:</option>
+							<option value="NAME ASC">A to Z</option>
+							<option value="NAME DESC">Z to A</option>
+							<option value="PRICE ASC">Price: Low to High</option>
+							<option value="PRICE DESC"> Price: High to Low</option>
+						</select>
+						<input type="submit" name="sortByButton" value="Sort"/> 
+						<input type="hidden" value="${catalogId}" name="catalogId"/>
+					</form>
+				</div>
+				<div name="showingCategoryDiv">
+					<h4> Showing: ${selectedCatalogName} </h4>
+				</div>
 				<div name="catalogResultDiv">
-				
+					<table border="1pt">
+						<tr><td>Name</td><td>Price</td><td>Quantity</td><td>Item ID</td></tr>
+						<c:forEach items="${itemList}" var="item">
+								<tr>
+									<td>${item.getName()}</td>
+									<td>${item.getPrice()}</td>
+									<td>${item.getQuantity()}</td>
+									<td>${item.getNumber()}</td>
+								</tr>
+						</c:forEach>
+					</table>
 				</div>
 		</div>
 		
