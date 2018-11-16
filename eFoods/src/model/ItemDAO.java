@@ -10,14 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.sun.javafx.collections.MappingChange.Map;
-
 public class ItemDAO {
 
 	public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
 	public static final String DB_URL = "jdbc:derby://localhost:64413/EECS;user=student;password=secret";
 
-	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE NAME LIKE ?";
+	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
 	public static final String[] COLUMNS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
