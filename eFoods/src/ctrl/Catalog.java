@@ -1,6 +1,7 @@
 package ctrl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.CategoryBean;
 import model.Engine;
+import model.ItemBean;
 
 /**
  * Servlet implementation class Catalog
@@ -20,12 +22,11 @@ public class Catalog extends HttpServlet {
 	private static final long serialVersionUID = 1L;
   
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		// Regular instantiation:
 		request.getSession(true);
 		Engine engine = Engine.getInstance();
 		
-		// Getting categories to populate the users page with category options:
+		// We get the categories that exist to populate the user page with options.
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
@@ -33,13 +34,57 @@ public class Catalog extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		// If a category is clicked, return only items of that category:
+		// We check if the user is coming for a catalog option selection. Populate the items only of that selected category.
 		if (request.getParameter("catalogId") != null) {
-			
-		} else { // Otherwise, return all items.
-			
+			String catId = request.getParameter("catalogId");
+			request.setAttribute("catalogId", catId);
+			try {
+				request.setAttribute("selectedCatalogName", engine.getCategory(catId).getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			List<ItemBean> itemList;
+			try {
+				itemList = engine.getCategoryItems(catId);
+				request.setAttribute("itemList", itemList);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			request.setAttribute("selectedCatalogName", "All items");
+			try {
+				List<ItemBean> itemList = engine.getAllItems();
+				request.setAttribute("itemList", itemList);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
+		// If the sorted button is clicked, then get the previously selected catalog ID and return the sorted category.
+		if (request.getParameter("sortByButton") != null) {
+			if (!request.getParameter("catalogId").equals("")) { // If a catalog was selected, sort the catalog items specifically.
+				String catId = request.getParameter("catalogId");
+				System.out.println(catId + ",  Here it be!");
+				request.setAttribute("catalogId", catId);
+				try {
+					request.setAttribute("selectedCatalogName", engine.getCategory(catId).getName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else { // If no catalog is selected, sort all the items.
+				request.setAttribute("selectedCatalogName", "All items");
+				try {
+					List<ItemBean> itemList = engine.getAllItems();
+					request.setAttribute("itemList", itemList);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+				
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
 	}
 
