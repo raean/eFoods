@@ -31,7 +31,9 @@ public class Auth extends HttpServlet {
 
 			response.sendRedirect("Account.jspx");
 
+
 		}
+	//	this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 
 	}
 
