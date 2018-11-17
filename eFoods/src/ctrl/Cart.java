@@ -13,14 +13,16 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/Cart.do")
 public class Cart extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		if (request.getParameter("cartButton") != null) {
+			// waiting for adam to make a add to cart method that returns a set of item beans
+		}
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

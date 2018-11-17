@@ -18,6 +18,7 @@
 		<body>
 		<div class="navigation">
 			<a href="Dash.do" name="home"> Home </a>
+			<a href="Catalog.do" name="browse"> Browse </a>
 			<a href="Auth.do" name="authentication">Sign In</a>
 			<a href="Cart.do"> Cart </a>
 			<div class="searchDiv">

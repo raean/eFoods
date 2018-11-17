@@ -29,8 +29,9 @@ public class Auth extends HttpServlet {
 			session.setAttribute("accountCode", request.getParameter("user"));
 			session.setAttribute("accountName", request.getParameter("name"));
 
-			this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
+			this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 		}
+	//	this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 
 	}
 
