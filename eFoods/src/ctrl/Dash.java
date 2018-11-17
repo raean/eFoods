@@ -28,9 +28,10 @@ public class Dash extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(session.getAttribute("accountName"));
 		
-		if (session.getAttribute("name") != null) {
-			request.setAttribute("username", session.getAttribute("name"));
+		if (session.getAttribute("accountName") != null) {
+			request.setAttribute("username", session.getAttribute("accountName").toString().split(" ")[0]);
 		} 
 		
 		request.getSession(true);
