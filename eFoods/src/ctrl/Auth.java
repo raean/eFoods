@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class Auth
@@ -22,7 +23,12 @@ public class Auth extends HttpServlet {
 				&& request.getParameter("hash") == null) {
 			response.sendRedirect(REDIRECT);
 		} else {
-			request.getSession().setAttribute("authenticated", true);
+			HttpSession session = request.getSession();
+
+			session.setAttribute("authenticated", true);
+			session.setAttribute("accountCode", request.getParameter("user"));
+			session.setAttribute("accountName", request.getParameter("name"));
+
 			this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
 		}
 
