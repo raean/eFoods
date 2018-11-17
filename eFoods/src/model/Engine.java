@@ -133,11 +133,26 @@ public class Engine {
 		if (cart.containsKey(item)) {
 			ItemBean cartItem = cart.get(item);
 			int quantity = cartItem.getQuantity();
+
 			cartItem.setQuantity(++quantity);
+			cart.put(item, cartItem);
 		} else {
 			item.setQuantity(1);
 			cart.put(item, item);
 		}
 
+	}
+
+	public void removeItemFromCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
+		if (cart.containsKey(item)) {
+			ItemBean cartItem = cart.get(item);
+			int quantity = cartItem.getQuantity();
+			if (quantity > 1) {
+				cartItem.setQuantity(--quantity);
+				cart.put(item, cartItem);
+			} else {
+				cart.remove(item);
+			}
+		}
 	}
 }
