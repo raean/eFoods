@@ -107,6 +107,20 @@ public class Engine {
 		return categoryItems;
 	}
 
+	public List<ItemBean> getCategoryItems(String catId, String sortBy) throws Exception {
+		CategoryBean category = getCategory(catId);
+		List<ItemBean> items = itemDao.getAllItems(sortBy);
+		List<ItemBean> categoryItems = new ArrayList<>();
+
+		for (ItemBean item : items) {
+			if (category.getId() == item.getCatId()) {
+				categoryItems.add(item);
+			}
+		}
+
+		return categoryItems;
+	}
+
 	/**
 	 * Searches for items that match an input, and then returns the list.
 	 * 
@@ -149,31 +163,38 @@ public class Engine {
 	}
 
 	/**
-	 * This method adds an item to the shopping cart within the session.
-	 * If the item exists, it appends the original amount with the new quantity.
-	 * If the item doesn't exist, it creates the item with the new quantity.
-	 * @param cart is the cart within the session.
-	 * @param item is the item to add or append.
-	 * @param quantity is the amount of the item to be added or appended by.
+	 * This method adds an item to the shopping cart within the session. If the item
+	 * exists, it appends the original amount with the new quantity. If the item
+	 * doesn't exist, it creates the item with the new quantity.
+	 * 
+	 * @param cart
+	 *            is the cart within the session.
+	 * @param item
+	 *            is the item to add or append.
+	 * @param quantity
+	 *            is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
 	 */
 	public Map<ItemBean, Integer> addItemToCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
 
 		if (cart.containsKey(item)) {
-			cart.put(item, cart.get(item)+quantity);
-			
+			cart.put(item, cart.get(item) + quantity);
+
 		} else {
 			cart.put(item, quantity);
 		}
 		return cart;
 
-	}	
-	
+	}
+
 	/**
-	 * This method removes all of an item from the cart within the session. 
-	 * If it does not exist, it throws an exception stating so.
-	 * @param cart is the cart within the session.
-	 * @param item is the item to be removed.
+	 * This method removes all of an item from the cart within the session. If it
+	 * does not exist, it throws an exception stating so.
+	 * 
+	 * @param cart
+	 *            is the cart within the session.
+	 * @param item
+	 *            is the item to be removed.
 	 * @return the Map of the cart after alterations (removal).
 	 */
 	public Map<ItemBean, Integer> ItemFromCart(Map<ItemBean, Integer> cart, ItemBean item) {
@@ -184,13 +205,14 @@ public class Engine {
 		}
 		return cart;
 	}
-	
-//	public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
-//		if (cart.containsKey(item)) {
-//			cart.put(item, cart.get(item)-quantity);
-//			if (cart.get(key)) 
-//		} else {
-//			throw new IllegalArgumentException("That item is not in the cart!");
-//		}
-//	}
+
+	// public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int
+	// quantity) {
+	// if (cart.containsKey(item)) {
+	// cart.put(item, cart.get(item)-quantity);
+	// if (cart.get(key))
+	// } else {
+	// throw new IllegalArgumentException("That item is not in the cart!");
+	// }
+	// }
 }
