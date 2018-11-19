@@ -22,6 +22,7 @@ public class ItemDAO {
 	public static final String SET_SCHEMA = "set schema roumani";
 
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
+	public static final String ITEM_NUM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= MIN PRICE AND PRICE <= MAX PRICE";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
@@ -130,7 +131,7 @@ public class ItemDAO {
 		s.executeUpdate("set schema roumani");
 
 		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		preS = con.prepareStatement(ITEM_NUM_QUERY);
 		preS.setString(1, itemId);
 
 		ResultSet r = preS.executeQuery();
