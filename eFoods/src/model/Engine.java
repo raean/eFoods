@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -126,10 +128,35 @@ public class Engine {
 		return result;
 	}
 
-	// public byte[] getCategoryPicture(String catId) throws Exception {
-	// byte[] imageBytes = catDao.getPicture(catId);
-	//
-	// return imageBytes;
-	// }
+	public List<ItemBean> doAdvanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost) {
+		return null;
+	}
 
+	public void addItemToCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
+
+		if (cart.containsKey(item)) {
+			ItemBean cartItem = cart.get(item);
+			int quantity = cartItem.getQuantity();
+
+			cartItem.setQuantity(++quantity);
+			cart.put(item, cartItem);
+		} else {
+			item.setQuantity(1);
+			cart.put(item, item);
+		}
+
+	}
+
+	public void removeItemFromCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
+		if (cart.containsKey(item)) {
+			ItemBean cartItem = cart.get(item);
+			int quantity = cartItem.getQuantity();
+			if (quantity > 1) {
+				cartItem.setQuantity(--quantity);
+				cart.put(item, cartItem);
+			} else {
+				cart.remove(item);
+			}
+		}
+	}
 }

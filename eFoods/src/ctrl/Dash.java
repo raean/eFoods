@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.CategoryBean;
 import model.Engine;
@@ -17,13 +18,22 @@ public class Dash extends HttpServlet {
 	private static final long serialVersionUID = 1L;
    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Engine engine = Engine.getInstance();
+		HttpSession session = request.getSession();
+		
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(session.getAttribute("accountName"));
+		
+		if (session.getAttribute("accountName") != null) {
+			request.setAttribute("username", session.getAttribute("accountName").toString().split(" ")[0]);
+		} 
+		
 		request.getSession(true);
 		this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 	}
