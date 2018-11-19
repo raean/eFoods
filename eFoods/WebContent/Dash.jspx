@@ -82,7 +82,14 @@
 					<div name="lastOrderDiv" style="width:300px; float:right;">
 						<h2>Your Last Order</h2>
 						<form>
-							<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
+							<c:if test="${empty username}">
+								<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
+							</c:if>
+							<c:if test="${!empty username}">
+								<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
+								<p> You have no orders yet.</p>
+							</c:if>
+									
 						</form>
 					</div>
 				</div>

@@ -128,6 +128,10 @@ public class Engine {
 		return result;
 	}
 
+	public List<ItemBean> doAdvanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost) {
+		return null;
+	}
+
 	public void addItemToCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
 
 		if (cart.containsKey(item)) {

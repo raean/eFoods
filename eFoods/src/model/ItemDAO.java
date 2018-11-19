@@ -56,6 +56,23 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	public List<ItemBean> advanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost)
+			throws Exception {
+		Statement s = con.createStatement();
+		s.executeUpdate("set schema roumani");
+
+		PreparedStatement preS;
+		preS = con.prepareStatement(SEARCH_QUERY);
+
+		preS.setString(1, "%" + searchInputValue + "%");
+
+		ResultSet r = preS.executeQuery();
+
+		List<ItemBean> itemList = makeItemList(r);
+		return itemList;
+
+	}
+
 	public List<ItemBean> getAllItems() throws Exception {
 		List<ItemBean> itemList = new ArrayList<>();
 
