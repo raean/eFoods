@@ -132,31 +132,49 @@ public class Engine {
 		return null;
 	}
 
-	public void addItemToCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
+	/**
+	 * This method adds an item to the shopping cart within the session.
+	 * If the item exists, it appends the original amount with the new quantity.
+	 * If the item doesn't exist, it creates the item with the new quantity.
+	 * @param cart is the cart within the session.
+	 * @param item is the item to add or append.
+	 * @param quantity is the amount of the item to be added or appended by.
+	 * @return the Map of the cart after alterations (addition).
+	 */
+	public Map<ItemBean, Integer> addItemToCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
 
 		if (cart.containsKey(item)) {
-			ItemBean cartItem = cart.get(item);
-			int quantity = cartItem.getQuantity();
-
-			cartItem.setQuantity(++quantity);
-			cart.put(item, cartItem);
+			cart.put(item, cart.get(item)+quantity);
+			
 		} else {
-			item.setQuantity(1);
-			cart.put(item, item);
+			cart.put(item, quantity);
 		}
+		return cart;
 
-	}
-
-	public void removeItemFromCart(Map<ItemBean, ItemBean> cart, ItemBean item) {
+	}	
+	
+	/**
+	 * This method removes all of an item from the cart within the session. 
+	 * If it does not exist, it throws an exception stating so.
+	 * @param cart is the cart within the session.
+	 * @param item is the item to be removed.
+	 * @return the Map of the cart after alterations (removal).
+	 */
+	public Map<ItemBean, Integer> ItemFromCart(Map<ItemBean, Integer> cart, ItemBean item) {
 		if (cart.containsKey(item)) {
-			ItemBean cartItem = cart.get(item);
-			int quantity = cartItem.getQuantity();
-			if (quantity > 1) {
-				cartItem.setQuantity(--quantity);
-				cart.put(item, cartItem);
-			} else {
-				cart.remove(item);
-			}
+			cart.remove(item);
+		} else {
+			throw new IllegalArgumentException("That item is not in the cart!");
 		}
+		return cart;
 	}
+	
+//	public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
+//		if (cart.containsKey(item)) {
+//			cart.put(item, cart.get(item)-quantity);
+//			if (cart.get(key)) 
+//		} else {
+//			throw new IllegalArgumentException("That item is not in the cart!");
+//		}
+//	}
 }
