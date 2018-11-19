@@ -119,6 +119,10 @@ public class Engine {
 	 */
 	public List<ItemBean> doSearch(String searchInputValue) throws Exception {
 
+		if (searchInputValue.isEmpty()) {
+			throw new IllegalArgumentException("Search query is empty.");
+		}
+
 		List<ItemBean> result = itemDao.search(searchInputValue);
 
 		if (result.isEmpty()) {
@@ -128,8 +132,20 @@ public class Engine {
 		return result;
 	}
 
-	public List<ItemBean> doAdvanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost) {
-		return null;
+	public List<ItemBean> doAdvanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
+			throws Exception {
+
+		if (searchInputValue.isEmpty()) {
+			throw new IllegalArgumentException("Search query is empty.");
+		}
+
+		List<ItemBean> result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
+
+		if (result.isEmpty()) {
+			throw new Exception("No results returned.");
+		}
+
+		return result;
 	}
 
 	public void addItemToCart(Map<ItemBean, ItemBean> cart, ItemBean item) {

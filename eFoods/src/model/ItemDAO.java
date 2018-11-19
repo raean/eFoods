@@ -10,26 +10,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Data access layer for the item table in the database. Handles searching and
+ * retrieving functionality. Should be called by the engine
+ *
+ */
 public class ItemDAO {
 
 	public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
 	public static final String DB_URL = "jdbc:derby://localhost:64413/EECS;user=student;password=secret";
+	public static final String SET_SCHEMA = "set schema roumani";
 
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
+	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= MIN PRICE AND PRICE <= MAX PRICE";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
-	public static final String[] COLUMNS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
-
-	private Connection con;
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
+	public static final String[] SORT_OPTIONS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
+	public static final String[] USER_SORT_INPUT = { "NONE", "ascPrice", "descPrice", "ascName", "descName" };
 	private HashMap<String, String> orderMap;
 
-	public ItemDAO() {
-		this.orderMap = new HashMap<String, String>();
+	private Connection con;
 
-		for (String order : COLUMNS) {
-			orderMap.put(order, order);
-		}
+	/**
+	 * Constructs an ItemDao, initializing the driver and constructing the orderMap
+	 * used to prevent SQL injections when the user wants to order their sort.
+	 */
+	public ItemDAO() {
+		this.orderMap = new HashMap<>();
 
 		try {
 			Class.forName(DERBY_DRIVER).newInstance();
@@ -38,37 +46,62 @@ public class ItemDAO {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
+
+		for (int i = 0; i < SORT_OPTIONS.length; i++) {
+			orderMap.put(USER_SORT_INPUT[i], SORT_OPTIONS[i]);
+		}
 	}
 
 	public List<ItemBean> search(String searchInputValue) throws Exception {
+		PreparedStatement searchStatement;
+		Statement setRoumani;
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		searchStatement = con.prepareStatement(SEARCH_QUERY);
+		searchStatement.setString(1, "%" + searchInputValue + "%");
 
-		preS.setString(1, "%" + searchInputValue + "%");
+		itemResults = searchStatement.executeQuery();
 
-		ResultSet r = preS.executeQuery();
-
-		List<ItemBean> itemList = makeItemList(r);
+		itemList = makeItemList(itemResults);
 		return itemList;
 	}
 
-	public List<ItemBean> advanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost)
+	public List<ItemBean> advanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		PreparedStatement searchStatement;
+		Statement setRoumani;
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
 
-		preS.setString(1, "%" + searchInputValue + "%");
+		if (sortBy.isEmpty()) {
+			searchStatement = con.prepareStatement(ADVANCE_QUERY);
+		} else {
+			searchStatement = con.prepareStatement(ADVANCE_QUERY + " ORDER BY " + getSort(sortBy));
+		}
 
-		ResultSet r = preS.executeQuery();
+		if (minCost.isEmpty()) {
+			searchStatement.setString(2, "0.0");
+		} else {
+			searchStatement.setString(2, minCost);
+		}
 
-		List<ItemBean> itemList = makeItemList(r);
+		if (maxCost.isEmpty()) {
+			searchStatement.setString(3, "9999.999");
+		} else {
+			searchStatement.setString(3, maxCost);
+		}
+
+		searchStatement.setString(1, "%" + searchInputValue + "%");
+
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
 		return itemList;
 
 	}
