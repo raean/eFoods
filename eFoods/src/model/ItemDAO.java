@@ -52,15 +52,19 @@ public class ItemDAO {
 		}
 	}
 
+	private void setSchema() throws SQLException {
+		Statement setRoumani;
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
+	}
+
 	public List<ItemBean> search(String searchInputValue) throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
 
 		ResultSet itemResults;
 		List<ItemBean> itemList;
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		searchStatement = con.prepareStatement(SEARCH_QUERY);
 		searchStatement.setString(1, "%" + searchInputValue + "%");
@@ -74,13 +78,11 @@ public class ItemDAO {
 	public List<ItemBean> advanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
 
 		ResultSet itemResults;
 		List<ItemBean> itemList;
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		if (sortBy.isEmpty()) {
 			searchStatement = con.prepareStatement(ADVANCE_QUERY);
@@ -110,13 +112,11 @@ public class ItemDAO {
 
 	public List<ItemBean> getAllItems() throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
 
 		ResultSet itemResults;
 		List<ItemBean> itemList;
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		searchStatement = con.prepareStatement(SEARCH_QUERY);
 		searchStatement.setString(1, "%");
@@ -127,15 +127,30 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
+		PreparedStatement searchStatement;
+
+		ResultSet itemResults;
+		List<ItemBean> itemList;
+
+		setSchema();
+
+		searchStatement = con.prepareStatement(SEARCH_QUERY + " ORDER BY " + getSort(sortBy));
+		searchStatement.setString(1, "%");
+
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
+
+		return itemList;
+	}
+
 	public ItemBean getItem(String itemId) throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
 
 		ResultSet itemResults;
 		ItemBean item = new ItemBean();
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		searchStatement = con.prepareStatement(SEARCH_QUERY);
 		searchStatement.setString(1, itemId);
