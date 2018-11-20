@@ -58,6 +58,10 @@ public class Engine {
 	public List<ItemBean> getAllItems() throws Exception {
 		return itemDao.getAllItems();
 	}
+	
+	public List<ItemBean> getAllItems(String sortBy) throws Exception{
+		return itemDao.getAllItems(sortBy);
+	}
 
 	/**
 	 * Returns a single categorybean containing all the information about that

@@ -65,20 +65,41 @@ public class Catalog extends HttpServlet {
 		
 		// If the sorted button is clicked, then get the previously selected catalog ID and return the sorted category.
 		if (request.getParameter("sortByButton") != null) {
+			String sortBy = request.getParameter("sortBy");
+			String catId = request.getParameter("catalogId");
+			System.out.println(catId + ", " + sortBy);
 			if (!request.getParameter("catalogId").equals("")) { // If a catalog was selected, sort the catalog items specifically.
-				String catId = request.getParameter("catalogId");
-				System.out.println(catId + ",  Here it be!");
+				
+				System.out.println(catId + ", " );
 				request.setAttribute("catalogId", catId);
+				request.setAttribute("sortBy", sortBy);
 				try {
 					request.setAttribute("selectedCatalogName", engine.getCategory(catId).getName());
+					List<ItemBean> itemList = engine.getCategoryItems(catId, sortBy);
+					request.setAttribute("itemList", itemList);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			} else { // If no catalog is selected, sort all the items.
+				
+			}else if (request.getParameter("catalogId").equals("")) {
+				System.out.println(catId + ", " );
+				request.setAttribute("catalogId", catId);
+				request.setAttribute("sortBy", sortBy);
+				try {
+					request.setAttribute("selectedCatalogName", "All items");
+					List<ItemBean> itemList = engine.getAllItems(sortBy);
+					request.setAttribute("itemList", itemList);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			else { // If no catalog is selected, sort all the items.
 				request.setAttribute("selectedCatalogName", "All items");
+				request.setAttribute("sortBy", "NONE");
 				try {
 					List<ItemBean> itemList = engine.getAllItems();
 					request.setAttribute("itemList", itemList);
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
