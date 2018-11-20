@@ -14,7 +14,9 @@ import java.util.Base64.Encoder;
 public class CategoryDAO {
 
 	public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
+	public static final String SET_SCHEMA = "set schema roumani";
 	public static final String DB_URL = "jdbc:derby://localhost:64413/EECS;user=student;password=secret";
+
 	public static final String ALL_CATEGORIES_QUERY = "SELECT * FROM CATEGORY";
 	public static final String SINGLE_CATEGORY_QUERY = "SELECT * FROM CATEGORY WHERE ID = ?";
 
@@ -34,37 +36,45 @@ public class CategoryDAO {
 		picEncoder = Base64.getEncoder();
 	}
 
+	private void setSchema() throws SQLException {
+		Statement setRoumani;
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
+	}
+
 	public List<CategoryBean> getAllCategories() throws Exception {
+		PreparedStatement searchStatement;
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		ResultSet categoryResults;
+		List<CategoryBean> categoryList;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(ALL_CATEGORIES_QUERY);
+		setSchema();
 
-		ResultSet r = preS.executeQuery();
+		searchStatement = con.prepareStatement(ALL_CATEGORIES_QUERY);
 
-		List<CategoryBean> categoryList = makeCategoryList(r);
+		categoryResults = searchStatement.executeQuery();
+
+		categoryList = makeCategoryList(categoryResults);
 		return categoryList;
 	}
 
 	public CategoryBean getCategory(int catId) throws SQLException {
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		PreparedStatement searchStatement;
+		ResultSet categoryResults;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SINGLE_CATEGORY_QUERY);
-		preS.setInt(1, catId);
+		setSchema();
 
-		ResultSet r = preS.executeQuery();
-		r.next();
+		searchStatement = con.prepareStatement(SINGLE_CATEGORY_QUERY);
+		searchStatement.setInt(1, catId);
 
-		CategoryBean category = setCategoryBean(r);
+		categoryResults = searchStatement.executeQuery();
+		categoryResults.next();
+
+		CategoryBean category = setCategoryBean(categoryResults);
 		return category;
 	}
 
 	private List<CategoryBean> makeCategoryList(ResultSet r) throws SQLException {
-
 		List<CategoryBean> categoryList = new ArrayList<>();
 
 		while (r.next()) {
@@ -77,6 +87,7 @@ public class CategoryDAO {
 
 	private CategoryBean setCategoryBean(ResultSet r) throws SQLException {
 		CategoryBean category = new CategoryBean();
+
 		category.setDescription(r.getString("DESCRIPTION"));
 		category.setName(r.getString("NAME"));
 		category.setId(r.getInt("ID"));

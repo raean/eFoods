@@ -21,7 +21,8 @@ import model.ItemBean;
 public class Cart implements HttpSessionListener, HttpSessionAttributeListener {
 
 	public void sessionCreated(HttpSessionEvent se) {
-		Map<ItemBean, ItemBean> cart = new HashMap<>();
+		System.out.println("Session is created!");
+		Map<String, Integer> cart = new HashMap<>();
 		se.getSession().setAttribute("cart", cart);
 	}
 
