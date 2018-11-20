@@ -1,5 +1,7 @@
 package model;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -174,19 +176,20 @@ public class Engine {
 	 * @param quantity
 	 *            is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity) throws Exception {
+	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
+			throws Exception {
 		int quantityInt = Integer.parseInt(quantity);
-		
+
 		if (cart.containsKey(itemNo)) {
-			cart.put(itemNo, cart.get(itemNo)+quantityInt);
+			cart.put(itemNo, cart.get(itemNo) + quantityInt);
 
 		} else {
 			cart.put(itemNo, quantityInt);
 		}
-		
+
 		return cart;
 
 	}
@@ -210,25 +213,74 @@ public class Engine {
 		return cart;
 	}
 
-
 	public Map<ItemBean, Integer> viewableCart(Map<String, Integer> cart) throws Exception {
-		
+
 		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
-		
+
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
 		}
-		
+
 		return viewableCart;
 	}
-	
-//	public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
-//		if (cart.containsKey(item)) {
-//			cart.put(item, cart.get(item)-quantity);
-//			if (cart.get(key)) 
-//		} else {
-//			throw new IllegalArgumentException("That item is not in the cart!");
-//		}
-//	}
+
+	// public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int
+	// quantity) {
+	// if (cart.containsKey(item)) {
+	// cart.put(item, cart.get(item)-quantity);
+	// if (cart.get(key))
+	// } else {
+	// throw new IllegalArgumentException("That item is not in the cart!");
+	// }
+	// }
+
+	private OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
+		OrderBean order = new OrderBean();
+		List<ItemBean> itemList = new ArrayList<>();
+		double HST, total, grandTotal, shipping;
+
+		total = 0.0;
+
+		for (ItemBean item : viewableCart.keySet()) {
+			item.setQuantity(viewableCart.get(item));
+			item.setCostPrice(item.getQuantity() * item.getPrice());
+			itemList.add(item);
+			total += item.getCostPrice();
+		}
+
+		if (total >= 100) {
+			shipping = 0.0;
+		} else {
+			shipping = 5.0;
+		}
+
+		HST = (total + shipping) * 0.13;
+		grandTotal = total + HST + shipping;
+
+		order.setItems(itemList);
+		order.setSubmitted(this.getTime());
+		order.setCustomer(customer);
+
+		order.setTotal(total);
+		order.setHST(HST);
+		order.setShipping(shipping);
+		order.setGrandTotal(grandTotal);
+
+		return order;
+
+	}
+
+	/**
+	 * Gives the current date of the server as "yyyy-mm-dd"
+	 * 
+	 * @return the date formatted as "yyyy-mm-dd"
+	 */
+	private String getTime() {
+		ZonedDateTime currTime = ZonedDateTime.now();
+		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+
+		String formattedTime = currTime.format(timeFormat);
+		return formattedTime;
+	}
 
 }
