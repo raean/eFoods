@@ -53,14 +53,19 @@ public class ItemDAO {
 		}
 	}
 
+	private void setSchema() throws SQLException {
+		Statement setRoumani;
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
+	}
+
 	public List<ItemBean> search(String searchInputValue) throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
+
 		ResultSet itemResults;
 		List<ItemBean> itemList;
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		searchStatement = con.prepareStatement(SEARCH_QUERY);
 		searchStatement.setString(1, "%" + searchInputValue + "%");
@@ -74,12 +79,11 @@ public class ItemDAO {
 	public List<ItemBean> advanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
 		PreparedStatement searchStatement;
-		Statement setRoumani;
+
 		ResultSet itemResults;
 		List<ItemBean> itemList;
 
-		setRoumani = con.createStatement();
-		setRoumani.executeUpdate(SET_SCHEMA);
+		setSchema();
 
 		if (sortBy.isEmpty()) {
 			searchStatement = con.prepareStatement(ADVANCE_QUERY);
@@ -94,7 +98,7 @@ public class ItemDAO {
 		}
 
 		if (maxCost.isEmpty()) {
-			searchStatement.setString(3, "9999.999");
+			searchStatement.setString(3, "INF");
 		} else {
 			searchStatement.setString(3, maxCost);
 		}
@@ -108,36 +112,54 @@ public class ItemDAO {
 	}
 
 	public List<ItemBean> getAllItems() throws Exception {
-		List<ItemBean> itemList = new ArrayList<>();
+		PreparedStatement searchStatement;
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		setSchema();
 
-		preS.setString(1, "%");
+		searchStatement = con.prepareStatement(SEARCH_QUERY);
+		searchStatement.setString(1, "%");
 
-		ResultSet r = preS.executeQuery();
-		itemList = makeItemList(r);
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
+
+		return itemList;
+	}
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
+		PreparedStatement searchStatement;
+
+		ResultSet itemResults;
+		List<ItemBean> itemList;
+
+		setSchema();
+
+		searchStatement = con.prepareStatement(SEARCH_QUERY + " ORDER BY " + getSort(sortBy));
+		searchStatement.setString(1, "%");
+
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
 
 		return itemList;
 	}
 
 	public ItemBean getItem(String itemId) throws Exception {
+		PreparedStatement searchStatement;
+
+		ResultSet itemResults;
 		ItemBean item = new ItemBean();
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		setSchema();
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(ITEM_NUM_QUERY);
-		preS.setString(1, itemId);
+		searchStatement = con.prepareStatement(SEARCH_QUERY);
+		searchStatement.setString(1, itemId);
 
-		ResultSet r = preS.executeQuery();
+		itemResults = searchStatement.executeQuery();
 
-		if (r.next()) {
-			item = setItemBean(r);
+		if (itemResults.next()) {
+			item = setItemBean(itemResults);
 		} else {
 			throw new IllegalArgumentException(itemId + " is not a valid item number.");
 		}
@@ -174,9 +196,15 @@ public class ItemDAO {
 		return item;
 	}
 
-	// Checks the input string against its value in a map and returns the mapped
-	// value. If there is no matching mapped value, an exception is thrown. This
-	// could indicate the user replaced the value of the options.
+	/**
+	 * Checks the input string against its value in a map and returns the mapped
+	 * value. If there is no matching mapped value, an exception is thrown. This
+	 * could indicate the user replaced the value of the options.
+	 * 
+	 * @param order
+	 *            input string from the user from a select element
+	 * @return the sort parameter.
+	 */
 	private String getSort(String order) {
 
 		String sanitizedOrder = orderMap.get(order);

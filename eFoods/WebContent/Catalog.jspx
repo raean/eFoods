@@ -47,10 +47,10 @@
 				<form name="catalogOrder" action="Catalog.do" method="POST">
 					<select id="sortBy" name="sortBy">
 						<option selected="any" value="NONE">Select One:</option>
-						<option value="NAME ASC">A to Z</option>
-						<option value="NAME DESC">Z to A</option>
-						<option value="PRICE ASC">Price: Low to High</option>
-						<option value="PRICE DESC"> Price: High to Low</option>
+						<option value="ascName">A to Z</option>
+						<option value="descName">Z to A</option>
+						<option value="ascPrice">Price: Low to High</option>
+						<option value="descPrice"> Price: High to Low</option>
 					</select>
 					<input type="submit" name="sortByButton" value="Sort"/> 
 					<input type="hidden" value="${catalogId}" name="catalogId"/>
