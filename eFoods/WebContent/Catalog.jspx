@@ -63,10 +63,9 @@
 				<table border="1pt"  class="table table-hover text-centered">
 					<c:forEach items="${itemList}" var="item">
 						<tr>
+							<form name="cartItemForm" action="Catalog.do" method="POST">
 							<td> 
 								Name: ${item.getName()}
-								<br />
-								QTY: ${item.getQuantity()} 
 								<br />
 								Price: <fmt:formatNumber  type="number" value="${item.getPrice()}" /> CAD
 								<br />
@@ -76,6 +75,8 @@
 								<br />
 								ID: ${item.getNumber()} 
 							</td>
+							<input type="hidden" name="hiddenItemBeanId" value="${item.getNumber()}"/>
+							</form>
 						</tr>
 					</c:forEach>
 				</table>

@@ -1,9 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -156,15 +156,17 @@ public class Engine {
 	 * @param item is the item to add or append.
 	 * @param quantity is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
+	 * @throws Exception 
 	 */
-	public Map<ItemBean, Integer> addItemToCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
-
-		if (cart.containsKey(item)) {
-			cart.put(item, cart.get(item)+quantity);
-			
+	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity) throws Exception {
+		int quantityInt = Integer.parseInt(quantity);
+		
+		if (cart.containsKey(itemNo)) {
+			cart.put(itemNo, cart.get(itemNo)+quantityInt);
 		} else {
-			cart.put(item, quantity);
+			cart.put(itemNo, quantityInt);
 		}
+		
 		return cart;
 
 	}	
@@ -176,13 +178,24 @@ public class Engine {
 	 * @param item is the item to be removed.
 	 * @return the Map of the cart after alterations (removal).
 	 */
-	public Map<ItemBean, Integer> ItemFromCart(Map<ItemBean, Integer> cart, ItemBean item) {
+	public Map<String, Integer> ItemFromCart(Map<String, Integer> cart, ItemBean item) {
 		if (cart.containsKey(item)) {
 			cart.remove(item);
 		} else {
 			throw new IllegalArgumentException("That item is not in the cart!");
 		}
 		return cart;
+	}
+
+	public Map<ItemBean, Integer> viewableCart(Map<String, Integer> cart) throws Exception {
+		
+		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
+		
+		for (String s : cart.keySet()) {
+			viewableCart.put(this.getItem(s), cart.get(s));
+		}
+		
+		return viewableCart;
 	}
 	
 //	public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
