@@ -10,26 +10,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Data access layer for the item table in the database. Handles searching and
+ * retrieving functionality. Should be called by the engine
+ *
+ */
 public class ItemDAO {
 
 	public static final String DERBY_DRIVER = "org.apache.derby.jdbc.ClientDriver";
 	public static final String DB_URL = "jdbc:derby://localhost:64413/EECS;user=student;password=secret";
+	public static final String SET_SCHEMA = "set schema roumani";
 
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
+	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= MIN PRICE AND PRICE <= MAX PRICE";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
-	public static final String[] COLUMNS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
-
-	private Connection con;
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
+	public static final String[] SORT_OPTIONS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
+	public static final String[] USER_SORT_INPUT = { "NONE", "ascPrice", "descPrice", "ascName", "descName" };
 	private HashMap<String, String> orderMap;
 
-	public ItemDAO() {
-		this.orderMap = new HashMap<String, String>();
+	private Connection con;
 
-		for (String order : COLUMNS) {
-			orderMap.put(order, order);
-		}
+	/**
+	 * Constructs an ItemDao, initializing the driver and constructing the orderMap
+	 * used to prevent SQL injections when the user wants to order their sort.
+	 */
+	public ItemDAO() {
+		this.orderMap = new HashMap<>();
 
 		try {
 			Class.forName(DERBY_DRIVER).newInstance();
@@ -38,72 +46,119 @@ public class ItemDAO {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
+
+		for (int i = 0; i < SORT_OPTIONS.length; i++) {
+			orderMap.put(USER_SORT_INPUT[i], SORT_OPTIONS[i]);
+		}
+	}
+
+	private void setSchema() throws SQLException {
+		Statement setRoumani;
+		setRoumani = con.createStatement();
+		setRoumani.executeUpdate(SET_SCHEMA);
 	}
 
 	public List<ItemBean> search(String searchInputValue) throws Exception {
+		PreparedStatement searchStatement;
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		setSchema();
 
-		preS.setString(1, "%" + searchInputValue + "%");
+		searchStatement = con.prepareStatement(SEARCH_QUERY);
+		searchStatement.setString(1, "%" + searchInputValue + "%");
 
-		ResultSet r = preS.executeQuery();
+		itemResults = searchStatement.executeQuery();
 
-		List<ItemBean> itemList = makeItemList(r);
+		itemList = makeItemList(itemResults);
 		return itemList;
 	}
 
-	public List<ItemBean> advanceSearch(String searchInputValue, String sortBy, String maxCost, String minCost)
+	public List<ItemBean> advanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		PreparedStatement searchStatement;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		preS.setString(1, "%" + searchInputValue + "%");
+		setSchema();
 
-		ResultSet r = preS.executeQuery();
+		if (sortBy.isEmpty()) {
+			searchStatement = con.prepareStatement(ADVANCE_QUERY);
+		} else {
+			searchStatement = con.prepareStatement(ADVANCE_QUERY + " ORDER BY " + getSort(sortBy));
+		}
 
-		List<ItemBean> itemList = makeItemList(r);
+		if (minCost.isEmpty()) {
+			searchStatement.setString(2, "0.0");
+		} else {
+			searchStatement.setString(2, minCost);
+		}
+
+		if (maxCost.isEmpty()) {
+			searchStatement.setString(3, "INF");
+		} else {
+			searchStatement.setString(3, maxCost);
+		}
+
+		searchStatement.setString(1, "%" + searchInputValue + "%");
+
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
 		return itemList;
 
 	}
 
 	public List<ItemBean> getAllItems() throws Exception {
-		List<ItemBean> itemList = new ArrayList<>();
+		PreparedStatement searchStatement;
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		ResultSet itemResults;
+		List<ItemBean> itemList;
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
+		setSchema();
 
-		preS.setString(1, "%");
+		searchStatement = con.prepareStatement(SEARCH_QUERY);
+		searchStatement.setString(1, "%");
 
-		ResultSet r = preS.executeQuery();
-		itemList = makeItemList(r);
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
+
+		return itemList;
+	}
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
+		PreparedStatement searchStatement;
+
+		ResultSet itemResults;
+		List<ItemBean> itemList;
+
+		setSchema();
+
+		searchStatement = con.prepareStatement(SEARCH_QUERY + " ORDER BY " + getSort(sortBy));
+		searchStatement.setString(1, "%");
+
+		itemResults = searchStatement.executeQuery();
+		itemList = makeItemList(itemResults);
 
 		return itemList;
 	}
 
 	public ItemBean getItem(String itemId) throws Exception {
+		PreparedStatement searchStatement;
+
+		ResultSet itemResults;
 		ItemBean item = new ItemBean();
 
-		Statement s = con.createStatement();
-		s.executeUpdate("set schema roumani");
+		setSchema();
 
-		PreparedStatement preS;
-		preS = con.prepareStatement(SEARCH_QUERY);
-		preS.setString(1, itemId);
+		searchStatement = con.prepareStatement(GET_ITEM_QUERY);
+		searchStatement.setString(1, itemId);
 
-		ResultSet r = preS.executeQuery();
+		itemResults = searchStatement.executeQuery();
 
-		if (r.next()) {
-			item = setItemBean(r);
+		if (itemResults.next()) {
+			item = setItemBean(itemResults);
 		} else {
 			throw new IllegalArgumentException(itemId + " is not a valid item number.");
 		}
@@ -140,9 +195,15 @@ public class ItemDAO {
 		return item;
 	}
 
-	// Checks the input string against its value in a map and returns the mapped
-	// value. If there is no matching mapped value, an exception is thrown. This
-	// could indicate the user replaced the value of the options.
+	/**
+	 * Checks the input string against its value in a map and returns the mapped
+	 * value. If there is no matching mapped value, an exception is thrown. This
+	 * could indicate the user replaced the value of the options.
+	 * 
+	 * @param order
+	 *            input string from the user from a select element
+	 * @return the sort parameter.
+	 */
 	private String getSort(String order) {
 
 		String sanitizedOrder = orderMap.get(order);

@@ -3,6 +3,7 @@ package ctrl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -83,6 +84,21 @@ public class Catalog extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		// If the add to cart button is clicked, then we must add it to the cart:
+		if (request.getParameter("cartButton") != null) {
+			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
+			String item = request.getParameter("hiddenItemBeanId");
+			String quantity = request.getParameter("addQuantity");
+			try {
+				Map<String, Integer> newCart = engine.addItemToCart(cart, item, quantity);
+				request.getSession().setAttribute("cart", newCart);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//request.setAttribute("cart", newCart);
 		}
 				
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
