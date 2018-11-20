@@ -2,10 +2,13 @@ package model;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "order")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrderBean {
 	@XmlAttribute
 	private int id;
@@ -17,6 +20,7 @@ public class OrderBean {
 
 	private double total;
 	private double shipping;
+	private double HST;
 	private double grandTotal;
 
 	public int getId() {
@@ -75,9 +79,18 @@ public class OrderBean {
 		this.grandTotal = grandTotal;
 	}
 
+	public double getHST() {
+		return HST;
+	}
+
+	public void setHST(double hST) {
+		HST = hST;
+	}
+
 	@Override
 	public String toString() {
 		return "OrderBean [id=" + id + ", submitted=" + submitted + ", customer=" + customer + ", items=" + items
-				+ ", total=" + total + ", shipping=" + shipping + ", grandTotal=" + grandTotal + "]";
+				+ ", total=" + total + ", shipping=" + shipping + ", HST=" + HST + ", grandTotal=" + grandTotal + "]";
 	}
+
 }

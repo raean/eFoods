@@ -1,10 +1,22 @@
 package model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ItemBean {
+
+	@XmlAttribute
+	private String number; // 8-digit product code. Key
+	private String name; // NAME
+	private double price; // PRICE
+	private int quantity; // QTY
+	@XmlElement(name = "extended")
+	private double costPrice; // COSTPRICE
+
 	@XmlTransient
 	private String unit; // UNIT quantity per unit
 	@XmlTransient
@@ -15,15 +27,6 @@ public class ItemBean {
 	private int reorder; // REORDER
 	@XmlTransient
 	private int onorder; // ONORDER
-
-	@XmlElement(name = "extended")
-	private double costPrice; // COSTPRICE
-
-	@XmlAttribute
-	private String number; // 8-digit product code. Key
-	private int quantity; // QTY
-	private double price; // PRICE
-	private String name; // NAME
 
 	public ItemBean() {
 		super();
