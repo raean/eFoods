@@ -57,7 +57,7 @@
 				</form>
 			</div>
 			<div name="showingCategoryDiv">
-				<h4> Showing: ${selectedCatalogName} </h4>
+				<h4> Showing: ${selectedCatalogName} <br /> Sorted by: ${sortBy}</h4>
 			</div>
 			<div name="catalogResultDiv">
 				<table border="1pt"  class="table table-hover text-centered">
