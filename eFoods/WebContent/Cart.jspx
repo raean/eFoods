@@ -44,23 +44,30 @@
 							<td> Delete </td>
 						</tr>
 						<c:forEach items="${viewableCart}" var="cartItem">
-	
+							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
 							<tr>
 								<td>${cartItem.key.getName()}</td>
 								<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
 								<td>${cartItem.key.getPrice()}</td>
 								<td>${cartItem.key.getPrice() * cartItem.value}</td>
 								<td>${cartItem.key.getNumber()}</td>
-								<td> Delete: <input type="checkbox" name="deleteCheckbox"/> </td>
+								<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
 							</tr>
 						</c:forEach>
-						<tr><td><input type="submit" value="Update" name="updateCartButton"/> </td></tr>
 					</table>
+					<input type="submit" value="Update" name="updateCartButton"/>
 					</form>
 				</c:if>
 			</div>
 			<div class="checkoutDiv">
-				<!-- This is where we will compute costs amd jave a checkout and update button -->
+				<form name="checkoutForm" action="Checkout.do" method="POST">
+					<h2> Price Calculations: </h2>
+					<p name="itemsCost"> Cost of Items: ${itemsCost} </p>
+					<p name="hstAmount"> HST: ${hstAmount} </p>
+					<p name="shippingCost"> Shipping Cost: ${shippingCost} </p>
+					<p name="overallCost"> Total Cost: ${shippingCost+(itemsCost+hstAmount)} </p>
+					<input type="submit" name="checkoutButton" value="Checkout"/> <input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+				</form>
 			</div>
 	</div>
 </body>
