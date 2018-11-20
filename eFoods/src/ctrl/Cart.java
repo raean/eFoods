@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Engine;
 import model.ItemBean;
 
 /**
@@ -20,12 +21,21 @@ public class Cart extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		if (request.getParameter("cartButton") != null) {
-			// waiting for adam to make a add to cart method that returns a set of item beans
+		Engine engine = Engine.getInstance();
+		
+		Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
+		try {
+			Map<ItemBean, Integer> viewableCart = engine.viewableCart(cart);
+			request.setAttribute("viewableCart", viewableCart);
+		} catch (Exception e) { 
+			e.printStackTrace();
 		}
-		Map<ItemBean, Integer> cart = (Map<ItemBean, Integer>) request.getSession().getAttribute("cart");
-		request.setAttribute("cart", cart);
-		System.out.println(cart.isEmpty());
+		
+		if (request.getParameter("updateCartButton")!=null) {
+			System.out.println(request.getParameterValues("deleteCheckbox")[0] +", " + request.getParameterValues("deleteCheckbox")[1] + ", " 
+					+ request.getParameterValues("quantityInput")[0] +",  " + request.getParameterValues("quantityInput")[1]);
+		}
+		
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);
 	}
 
