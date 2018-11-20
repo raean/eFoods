@@ -20,8 +20,7 @@ public class SignOut extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		session.setAttribute("authenticated", false);
-		session.removeAttribute("accountCode");
-		session.removeAttribute("accountName");
+		session.removeAttribute("customer");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

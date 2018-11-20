@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.CustomerBean;
+
 /**
  * Servlet implementation class Auth
  */
@@ -24,10 +26,13 @@ public class Auth extends HttpServlet {
 			response.sendRedirect(REDIRECT);
 		} else {
 			HttpSession session = request.getSession();
+			CustomerBean customer = new CustomerBean();
 
+			customer.setAccount(request.getParameter("user"));
+			customer.setName(request.getParameter("name"));
+
+			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
-			session.setAttribute("accountCode", request.getParameter("user"));
-			session.setAttribute("accountName", request.getParameter("name"));
 
 			response.sendRedirect("Account.jspx");
 
