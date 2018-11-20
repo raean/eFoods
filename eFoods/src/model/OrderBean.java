@@ -5,7 +5,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -18,9 +20,13 @@ public class OrderBean {
 	private CustomerBean customer;
 	private List<ItemBean> items;
 
+	@XmlTransient
 	private double total;
+	@XmlTransient
 	private double shipping;
+	@XmlTransient
 	private double HST;
+	@XmlTransient
 	private double grandTotal;
 
 	public int getId() {
@@ -83,8 +89,28 @@ public class OrderBean {
 		return HST;
 	}
 
-	public void setHST(double hST) {
-		HST = hST;
+	public void setHST(double HST) {
+		this.HST = HST;
+	}
+
+	@XmlElement(name = "total")
+	private String getTotalFormat() {
+		return String.format("%.2f", total);
+	}
+
+	@XmlElement(name = "shipping")
+	private String getShippingFormat() {
+		return String.format("%.2f", shipping);
+	}
+
+	@XmlElement(name = "HST")
+	private String getHSTFormat() {
+		return String.format("%.2f", HST);
+	}
+
+	@XmlElement(name = "grandTotal")
+	private String getGrandTotalFormat() {
+		return String.format("%.2f", grandTotal);
 	}
 
 	@Override

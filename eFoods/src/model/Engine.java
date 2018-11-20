@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -234,7 +236,7 @@ public class Engine {
 	// }
 	// }
 
-	private OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
+	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
 		OrderBean order = new OrderBean();
 		List<ItemBean> itemList = new ArrayList<>();
 		double HST, total, grandTotal, shipping;
@@ -276,8 +278,8 @@ public class Engine {
 	 * @return the date formatted as "yyyy-mm-dd"
 	 */
 	private String getTime() {
-		ZonedDateTime currTime = ZonedDateTime.now();
-		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-mm-dd");
+		LocalDate currTime = LocalDate.now();
+		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		String formattedTime = currTime.format(timeFormat);
 		return formattedTime;
