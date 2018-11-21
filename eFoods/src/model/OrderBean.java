@@ -12,7 +12,8 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat", "grandTotalFormat"})
+@XmlType(propOrder = { "id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat",
+		"grandTotalFormat" })
 public class OrderBean {
 	@XmlAttribute
 	private int id;
@@ -30,6 +31,26 @@ public class OrderBean {
 	private double HST;
 	@XmlTransient
 	private double grandTotal;
+
+	@XmlElement(name = "total")
+	private String getTotalFormat() {
+		return String.format("%.2f", total);
+	}
+
+	@XmlElement(name = "shipping")
+	private String getShippingFormat() {
+		return String.format("%.2f", shipping);
+	}
+
+	@XmlElement(name = "HST")
+	private String getHSTFormat() {
+		return String.format("%.2f", HST);
+	}
+
+	@XmlElement(name = "grandTotal")
+	private String getGrandTotalFormat() {
+		return String.format("%.2f", grandTotal);
+	}
 
 	public int getId() {
 		return id;
@@ -93,26 +114,6 @@ public class OrderBean {
 
 	public void setHST(double HST) {
 		this.HST = HST;
-	}
-
-	@XmlElement(name = "total")
-	private String getTotalFormat() {
-		return String.format("%.2f", total);
-	}
-
-	@XmlElement(name = "shipping")
-	private String getShippingFormat() {
-		return String.format("%.2f", shipping);
-	}
-
-	@XmlElement(name = "HST")
-	private String getHSTFormat() {
-		return String.format("%.2f", HST);
-	}
-
-	@XmlElement(name = "grandTotal")
-	private String getGrandTotalFormat() {
-		return String.format("%.2f", grandTotal);
 	}
 
 	@Override
