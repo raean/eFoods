@@ -1,11 +1,15 @@
 package model;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -17,6 +21,7 @@ public class Engine {
 	private static Engine instance = null;
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
+	public static final String PO_FOLDER = "WebContent/WEB-INF/PO";
 
 	private Engine() {
 		itemDao = new ItemDAO();
@@ -60,8 +65,8 @@ public class Engine {
 	public List<ItemBean> getAllItems() throws Exception {
 		return itemDao.getAllItems();
 	}
-	
-	public List<ItemBean> getAllItems(String sortBy) throws Exception{
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
 
@@ -285,6 +290,16 @@ public class Engine {
 
 		String formattedTime = currTime.format(timeFormat);
 		return formattedTime;
+	}
+
+	public void checkOut(OrderBean order) throws Exception {
+		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
+		Marshaller marshaller = context.createMarshaller();
+
+		String fileName = order.getCustomer().getAccount();
+		File newPO = new File(PO_FOLDER + fileName + ".xml");
+		newPO.createNewFile();
+		marshaller.marshal(order, newPO);
 	}
 
 }
