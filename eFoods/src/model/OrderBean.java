@@ -8,9 +8,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat", "grandTotalFormat"})
 public class OrderBean {
 	@XmlAttribute
 	private int id;
