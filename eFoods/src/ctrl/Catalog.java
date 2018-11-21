@@ -102,7 +102,7 @@ public class Catalog extends HttpServlet {
 				}
 			} else { // If no catalog is selected, sort all the items.
 				request.setAttribute("selectedCatalogName", "All items");
-				request.setAttribute("sortBy", "NONE");
+				request.setAttribute("sortBy", "");
 				try {
 					List<ItemBean> itemList = engine.getAllItems();
 					request.setAttribute("itemList", itemList);
