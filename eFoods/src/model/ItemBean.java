@@ -14,19 +14,12 @@ public class ItemBean {
 	private String name; // NAME
 	private double price; // PRICE
 	private int quantity; // QTY
-	@XmlElement(name = "extended")
-	private double costPrice; // COSTPRICE
+	private double extended; // Total price, equal to quantity * price
 
 	@XmlTransient
 	private String unit; // UNIT quantity per unit
 	@XmlTransient
 	private int catId; // CATID category Id
-	@XmlTransient
-	private int supID; // SUPID
-	@XmlTransient
-	private int reorder; // REORDER
-	@XmlTransient
-	private int onorder; // ONORDER
 
 	public ItemBean() {
 		super();
@@ -40,20 +33,12 @@ public class ItemBean {
 		this.unit = unit;
 	}
 
-	public double getCostPrice() {
-		return costPrice;
+	public double getExtended() {
+		return extended;
 	}
 
-	public void setCostPrice(double costPrice) {
-		this.costPrice = costPrice;
-	}
-
-	public int getSupID() {
-		return supID;
-	}
-
-	public void setSupID(int supID) {
-		this.supID = supID;
+	public void setExtended(double extended) {
+		this.extended = extended;
 	}
 
 	public int getCatId() {
@@ -62,22 +47,6 @@ public class ItemBean {
 
 	public void setCatId(int catId) {
 		this.catId = catId;
-	}
-
-	public int getReorder() {
-		return reorder;
-	}
-
-	public void setReorder(int reorder) {
-		this.reorder = reorder;
-	}
-
-	public int getOnorder() {
-		return onorder;
-	}
-
-	public void setOnorder(int onorder) {
-		this.onorder = onorder;
 	}
 
 	public int getQuantity() {
@@ -114,9 +83,8 @@ public class ItemBean {
 
 	@Override
 	public String toString() {
-		return "itemBean [unit=" + unit + ", costPrice=" + costPrice + ", supID=" + supID + ", catId=" + catId
-				+ ", reorder=" + reorder + ", onorder=" + onorder + ", quantity=" + quantity + ", price=" + price
-				+ ", name=" + name + ", number=" + number + "]";
+		return "itemBean [unit=" + unit + ", costPrice=" + extended + ", catId=" + catId + ", quantity=" + quantity
+				+ ", price=" + price + ", name=" + name + ", number=" + number + "]";
 	}
 
 }

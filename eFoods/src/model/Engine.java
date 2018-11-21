@@ -243,9 +243,9 @@ public class Engine {
 
 		for (ItemBean item : viewableCart.keySet()) {
 			item.setQuantity(viewableCart.get(item));
-			item.setCostPrice(item.getQuantity() * item.getPrice());
+			item.setExtended(item.getQuantity() * item.getPrice());
 			itemList.add(item);
-			total += item.getCostPrice();
+			total += item.getExtended();
 		}
 
 		if (total >= 100) {

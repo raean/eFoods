@@ -182,12 +182,7 @@ public class ItemDAO {
 		ItemBean item = new ItemBean();
 
 		item.setUnit(r.getString("UNIT"));
-		item.setCostPrice(r.getDouble("COSTPRICE"));
-		item.setSupID(r.getInt("SUPID"));
 		item.setCatId(r.getInt("CATID"));
-		item.setReorder(r.getInt("REORDER"));
-		item.setOnorder(r.getInt("ONORDER"));
-		item.setQuantity(r.getInt("QTY"));
 		item.setPrice(r.getDouble("PRICE"));
 		item.setName(r.getString("NAME"));
 		item.setNumber(r.getString("NUMBER"));
