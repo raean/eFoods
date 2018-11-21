@@ -21,12 +21,13 @@ import model.ItemBean;
 @WebServlet("/Catalog.do")
 public class Catalog extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-  
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// Regular instantiation:
 		request.getSession(true);
 		Engine engine = Engine.getInstance();
-		
+
 		// We get the categories that exist to populate the user page with options.
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
@@ -34,8 +35,9 @@ public class Catalog extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		// We check if the user is coming for a catalog option selection. Populate the items only of that selected category.
+
+		// We check if the user is coming for a catalog option selection. Populate the
+		// items only of that selected category.
 		if (request.getParameter("catalogId") != null) {
 			String catId = request.getParameter("catalogId");
 			request.setAttribute("catalogId", catId);
@@ -62,15 +64,17 @@ public class Catalog extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		
-		// If the sorted button is clicked, then get the previously selected catalog ID and return the sorted category.
+
+		// If the sorted button is clicked, then get the previously selected catalog ID
+		// and return the sorted category.
 		if (request.getParameter("sortByButton") != null) {
 			String sortBy = request.getParameter("sortBy");
 			String catId = request.getParameter("catalogId");
 			System.out.println(catId + ", " + sortBy);
-			if (!request.getParameter("catalogId").equals("")) { // If a catalog was selected, sort the catalog items specifically.
-				
-				System.out.println(catId + ", " );
+			if (!request.getParameter("catalogId").equals("")) { // If a catalog was selected, sort the catalog items
+																	// specifically.
+
+				System.out.println(catId + ", ");
 				request.setAttribute("catalogId", catId);
 				request.setAttribute("sortBy", sortBy);
 				try {
@@ -80,11 +84,15 @@ public class Catalog extends HttpServlet {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
-			}else if (request.getParameter("catalogId").equals("")) {
-				System.out.println(catId + ", " );
+
+			} else if (request.getParameter("catalogId").equals("")) {
+				System.out.println(catId + ", ");
 				request.setAttribute("catalogId", catId);
-				request.setAttribute("sortBy", sortBy);
+				if (sortBy.matches("NONE")) {
+					request.setAttribute("sortBy", "");
+				}else {
+					request.setAttribute("sortBy", sortBy);
+				}
 				try {
 					request.setAttribute("selectedCatalogName", "All items");
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
@@ -92,21 +100,20 @@ public class Catalog extends HttpServlet {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
-			else { // If no catalog is selected, sort all the items.
+			} else { // If no catalog is selected, sort all the items.
 				request.setAttribute("selectedCatalogName", "All items");
 				request.setAttribute("sortBy", "NONE");
 				try {
 					List<ItemBean> itemList = engine.getAllItems();
 					request.setAttribute("itemList", itemList);
-					
+
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		// If the add to cart button is clicked, then we must add it to the cart:
 		if (request.getParameter("cartButton") != null) {
 			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
@@ -119,16 +126,18 @@ public class Catalog extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//request.setAttribute("cart", newCart);
+			// request.setAttribute("cart", newCart);
 		}
-				
+
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
