@@ -15,6 +15,8 @@ public class Engine {
 	private static Engine instance = null;
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
+	private static final double SHIPPING_FEE = 5.0;
+	private static final double HST = 0.13;
 
 	private Engine() {
 		itemDao = new ItemDAO();
@@ -214,8 +216,18 @@ public class Engine {
 		return cart;
 	}
 
-
-	public Map<ItemBean, Integer> viewableCart(Map<String, Integer> cart) throws Exception {
+	/**
+	 * This method is in support of the view. It creates a cart that is viewable
+	 * as it contains information such as the price, name, etc. of the item as opposed
+	 * to the cart that is stored in the session that only contains IDs.
+	 * It gets the rest of the information using the item ID string by calling the
+	 * getItem method in this Engine.
+	 * @param cart is the cart within the session.
+	 * @return is a Map that is viewable since it has the entire ItemBean along with the Integer
+	 * quantity.
+	 * @throws Exception is thrown if there is an issue getting the item with the ItemNo id.
+	 */
+	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
 		
 		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
 		
@@ -225,14 +237,77 @@ public class Engine {
 		
 		return viewableCart;
 	}
+
+	/**
+	 * 
+	 * @param cart
+	 * @param itemIds
+	 * @param itemQuantities
+	 * @return
+	 */
+	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities, String[] deleteCheckboxes) {
+		for (int i = 0 ; i < itemIds.length ; i++) {
+			if (0 == Integer.parseInt(itemQuantities[i])) {
+				cart.remove(itemIds[i]);
+			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
+				cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
+			}
+		}
+
+		if (deleteCheckboxes != null) {
+			for (String s : deleteCheckboxes) {
+				if (cart.containsKey(s)) {
+					cart.remove(s);
+				}
+			}
+		}
+		
+		return cart;
+	}
 	
-//	public void updateCart(Map<ItemBean, Integer> cart, ItemBean item, int quantity) {
-//		if (cart.containsKey(item)) {
-//			cart.put(item, cart.get(item)-quantity);
-//			if (cart.get(key)) 
-//		} else {
-//			throw new IllegalArgumentException("That item is not in the cart!");
-//		}
-//	}
+	/**
+	 * Checks if the session's cart is empty.
+	 * @param cart
+	 * @return
+	 */
+	public boolean isCartEmpty(Map<String, Integer> cart) {
+		return cart.isEmpty();
+	}
+
+	/**
+	 * Returns the cost of all items, cost and HST. 
+	 * @param cart
+	 * @return
+	 */
+	public double getItemsCost(Map<ItemBean, Integer> cart) {
+		double itemsCost = 0;
+		for (ItemBean i : cart.keySet()) {
+			itemsCost = itemsCost + i.getPrice()*cart.get(i);
+		}
+		return itemsCost;
+	}
+
+	/**
+	 * Get's HST amount.
+	 * @param cart
+	 * @return
+	 */
+	public double getHstAmount(Map<ItemBean, Integer> cart) {
+		return this.getItemsCost(cart)*HST;
+	}
+
+	/**
+	 * Get's shipping cost.
+	 * @param cart
+	 * @return
+	 */
+	public double getShippingCost(Map<ItemBean, Integer> cart) {
+		double itemsCost = this.getItemsCost(cart);
+		if (itemsCost >= 100) {
+			return 0;
+		} else {
+			return SHIPPING_FEE;
+		}
+	}	
 
 }
