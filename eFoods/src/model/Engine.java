@@ -17,6 +17,7 @@ public class Engine {
 	private CategoryDAO catDao;
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
+	private static final String itemMatcher = "([0-9]{4}[a-z|A-Z][0-9]{3})";
 
 	private Engine() {
 		itemDao = new ItemDAO();
@@ -138,17 +139,19 @@ public class Engine {
 	 *             if there is an SQL error or if the list returned is empty.
 	 */
 	public List<ItemBean> doSearch(String searchInputValue) throws Exception {
-
+		List<ItemBean> result = new ArrayList<>();
 		if (searchInputValue.isEmpty()) {
-			throw new IllegalArgumentException("Search query is empty.");
+			throw new IllegalArgumentException("");
 		}
-
-		List<ItemBean> result = itemDao.search(searchInputValue);
-
-		if (result.isEmpty()) {
-			throw new Exception("No results returned.");
+		if(searchInputValue.matches(itemMatcher)) {
+			result.add(getItem(searchInputValue));
+		}else {
+			result = itemDao.search(searchInputValue);
+	
+			if (result.isEmpty()) {
+				throw new Exception("No results found.");
+			}
 		}
-
 		return result;
 	}
 
