@@ -1,12 +1,17 @@
 package model;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -21,11 +26,23 @@ public class Engine {
 	private static Engine instance = null;
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
-	public static final String PO_FOLDER = "WebContent/WEB-INF/PO";
+	public static final String PO_FOLDER = "WebContent/WEB-INF/PO/";
+	private long fileCount;
 
 	private Engine() {
 		itemDao = new ItemDAO();
 		catDao = new CategoryDAO();
+
+		Stream<Path> files = null;
+		try {
+			files = Files.list(Paths.get(PO_FOLDER));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		fileCount = files.count();
+		files.close();
 	}
 
 	/**
@@ -295,11 +312,12 @@ public class Engine {
 	public void checkOut(OrderBean order) throws Exception {
 		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
 		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		String fileName = order.getCustomer().getAccount();
-		File newPO = new File(PO_FOLDER + fileName + ".xml");
-		newPO.createNewFile();
-		marshaller.marshal(order, newPO);
+		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
+		File newPo = new File(PO_FOLDER + poName);
+		newPo.createNewFile();
+		marshaller.marshal(order, newPo);
 	}
 
 }
