@@ -27,27 +27,56 @@ public class Engine {
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
 
-  public static final String PO_FOLDER = "WebContent/WEB-INF/PO/";
 	private long fileCount;
-  
+	private String poPath;
+
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
-
 
 	private Engine() {
 		itemDao = new ItemDAO();
 		catDao = new CategoryDAO();
+	}
 
+	public void initPoFolder(String poPath) {
 		Stream<Path> files = null;
-		try {
-			files = Files.list(Paths.get(PO_FOLDER));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		fileCount = files.count();
+		try {
+			files = Files.list(Paths.get(poPath));
+		} catch (IOException e) {
+			System.out.println("EXCEPTION " + e.getMessage());
+		}
+		this.fileCount = files.count();
+		this.poPath = poPath;
+
 		files.close();
+	}
+
+	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
+	public void testPathNonsense() throws Exception {
+
+		System.out.println(this.poPath);
+
+		OrderBean order;
+		CustomerBean customer = new CustomerBean();
+
+		customer.setAccount("adamzis");
+		customer.setName("Adam Adindji");
+
+		ItemBean item1 = getItem("0905A044");
+		ItemBean item2 = getItem("0905A112");
+		ItemBean item3 = getItem("0905A123");
+
+		Map<ItemBean, Integer> viewableCart = new HashMap<>();
+		viewableCart.put(item1, 3);
+		viewableCart.put(item2, 1);
+		viewableCart.put(item3, 2);
+
+		order = makeOrder(viewableCart, customer);
+		checkOut(order);
+
+		System.out.println(this.fileCount);
+
 	}
 
 	/**
@@ -244,20 +273,23 @@ public class Engine {
 		return cart;
 	}
 
-
 	/**
-	 * This method is in support of the view. It creates a cart that is viewable
-	 * as it contains information such as the price, name, etc. of the item as opposed
-	 * to the cart that is stored in the session that only contains IDs.
-	 * It gets the rest of the information using the item ID string by calling the
-	 * getItem method in this Engine.
-	 * @param cart is the cart within the session.
-	 * @return is a Map that is viewable since it has the entire ItemBean along with the Integer
-	 * quantity.
-	 * @throws Exception is thrown if there is an issue getting the item with the ItemNo id.
+	 * This method is in support of the view. It creates a cart that is viewable as
+	 * it contains information such as the price, name, etc. of the item as opposed
+	 * to the cart that is stored in the session that only contains IDs. It gets the
+	 * rest of the information using the item ID string by calling the getItem
+	 * method in this Engine.
+	 * 
+	 * @param cart
+	 *            is the cart within the session.
+	 * @return is a Map that is viewable since it has the entire ItemBean along with
+	 *         the Integer quantity.
+	 * @throws Exception
+	 *             is thrown if there is an issue getting the item with the ItemNo
+	 *             id.
 	 */
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
-		
+
 		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
 
 		for (String s : cart.keySet()) {
@@ -322,7 +354,10 @@ public class Engine {
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
-		File newPo = new File(PO_FOLDER + poName);
+		File newPo = new File(poPath + poName);
+		System.out.println(newPo.getAbsolutePath());
+		System.out.println(newPo.getPath());
+		System.out.println(newPo.getCanonicalPath());
 		newPo.createNewFile();
 		marshaller.marshal(order, newPo);
 	}
@@ -334,8 +369,9 @@ public class Engine {
 	 * @param itemQuantities
 	 * @return
 	 */
-	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities, String[] deleteCheckboxes) {
-		for (int i = 0 ; i < itemIds.length ; i++) {
+	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
+			String[] deleteCheckboxes) {
+		for (int i = 0; i < itemIds.length; i++) {
 			if (0 == Integer.parseInt(itemQuantities[i])) {
 				cart.remove(itemIds[i]);
 			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
@@ -350,12 +386,13 @@ public class Engine {
 				}
 			}
 		}
-		
+
 		return cart;
 	}
-	
+
 	/**
 	 * Checks if the session's cart is empty.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -364,29 +401,32 @@ public class Engine {
 	}
 
 	/**
-	 * Returns the cost of all items, cost and HST. 
+	 * Returns the cost of all items, cost and HST.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getItemsCost(Map<ItemBean, Integer> cart) {
 		double itemsCost = 0;
 		for (ItemBean i : cart.keySet()) {
-			itemsCost = itemsCost + i.getPrice()*cart.get(i);
+			itemsCost = itemsCost + i.getPrice() * cart.get(i);
 		}
 		return itemsCost;
 	}
 
 	/**
 	 * Get's HST amount.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
-		return this.getItemsCost(cart)*HST;
+		return this.getItemsCost(cart) * HST;
 	}
 
 	/**
 	 * Get's shipping cost.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -397,6 +437,6 @@ public class Engine {
 		} else {
 			return SHIPPING_FEE;
 		}
-	}	
+	}
 
 }
