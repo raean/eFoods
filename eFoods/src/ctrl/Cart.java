@@ -20,20 +20,45 @@ public class Cart extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		Engine engine = Engine.getInstance();
-		
 		Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
+		Map<ItemBean, Integer> viewableCart = null;
 		try {
-			Map<ItemBean, Integer> viewableCart = engine.viewableCart(cart);
-			request.setAttribute("viewableCart", viewableCart);
+			viewableCart = engine.makeViewableCart(cart);
+			request.setAttribute("viewableCart", viewableCart);		
 		} catch (Exception e) { 
 			e.printStackTrace();
 		}
 		
 		if (request.getParameter("updateCartButton")!=null) {
-			System.out.println(request.getParameterValues("deleteCheckbox")[0] +", " + request.getParameterValues("deleteCheckbox")[1] + ", " 
-					+ request.getParameterValues("quantityInput")[0] +",  " + request.getParameterValues("quantityInput")[1]);
+			String[] itemIds = request.getParameterValues("itemId");
+			String[] itemQuantities = request.getParameterValues("quantityInput");
+			String[] deleteCheckboxes = null;
+			System.out.println(itemQuantities.length + " " + itemIds.length);
+			if ( request.getParameterValues("deleteCheckbox") != null ) {
+				deleteCheckboxes = request.getParameterValues("deleteCheckbox");
+			}
+			Map<String, Integer> newCart = engine.updateCart(cart, itemIds, itemQuantities, deleteCheckboxes);
+			request.getSession().setAttribute("cart", newCart);
+			try {
+				viewableCart = engine.makeViewableCart(newCart);
+				request.setAttribute("viewableCart", viewableCart);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (engine.isCartEmpty(cart)) {
+			request.setAttribute("itemsCost", 0.0);
+			request.setAttribute("hstAmount", 0.0);
+			request.setAttribute("shippingCost", 0.0);
+		} else {
+			double itemsCost = engine.getItemsCost(viewableCart);
+			double hstAmount = engine.getHstAmount(viewableCart);
+			double shippingCost = engine.getShippingCost(viewableCart);
+			request.setAttribute("itemsCost", itemsCost);
+			request.setAttribute("hstAmount", hstAmount);
+			request.setAttribute("shippingCost", shippingCost);
 		}
 		
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);

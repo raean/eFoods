@@ -1,5 +1,6 @@
 package model;
 
+
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat",
 		"grandTotalFormat" })
+
 public class OrderBean {
 	@XmlAttribute
 	private int id;
@@ -22,6 +24,7 @@ public class OrderBean {
 	private String submitted;
 
 	private CustomerBean customer;
+
 	@XmlElementWrapper
 	@XmlElement(name="item")
 	private List<ItemBean> items;
