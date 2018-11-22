@@ -2,8 +2,10 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -61,8 +63,8 @@ public class Engine {
 	public List<ItemBean> getAllItems() throws Exception {
 		return itemDao.getAllItems();
 	}
-	
-	public List<ItemBean> getAllItems(String sortBy) throws Exception{
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
 
@@ -143,11 +145,11 @@ public class Engine {
 		if (searchInputValue.isEmpty()) {
 			throw new IllegalArgumentException("");
 		}
-		if(searchInputValue.matches(itemMatcher)) {
+		if (searchInputValue.matches(itemMatcher)) {
 			result.add(getItem(searchInputValue));
-		}else {
+		} else {
 			result = itemDao.search(searchInputValue);
-	
+
 			if (result.isEmpty()) {
 				throw new Exception("No results found.");
 			}
@@ -183,19 +185,20 @@ public class Engine {
 	 * @param quantity
 	 *            is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity) throws Exception {
+	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
+			throws Exception {
 		int quantityInt = Integer.parseInt(quantity);
-		
+
 		if (cart.containsKey(itemNo)) {
-			cart.put(itemNo, cart.get(itemNo)+quantityInt);
+			cart.put(itemNo, cart.get(itemNo) + quantityInt);
 
 		} else {
 			cart.put(itemNo, quantityInt);
 		}
-		
+
 		return cart;
 
 	}
@@ -220,24 +223,28 @@ public class Engine {
 	}
 
 	/**
-	 * This method is in support of the view. It creates a cart that is viewable
-	 * as it contains information such as the price, name, etc. of the item as opposed
-	 * to the cart that is stored in the session that only contains IDs.
-	 * It gets the rest of the information using the item ID string by calling the
-	 * getItem method in this Engine.
-	 * @param cart is the cart within the session.
-	 * @return is a Map that is viewable since it has the entire ItemBean along with the Integer
-	 * quantity.
-	 * @throws Exception is thrown if there is an issue getting the item with the ItemNo id.
+	 * This method is in support of the view. It creates a cart that is viewable as
+	 * it contains information such as the price, name, etc. of the item as opposed
+	 * to the cart that is stored in the session that only contains IDs. It gets the
+	 * rest of the information using the item ID string by calling the getItem
+	 * method in this Engine.
+	 * 
+	 * @param cart
+	 *            is the cart within the session.
+	 * @return is a Map that is viewable since it has the entire ItemBean along with
+	 *         the Integer quantity.
+	 * @throws Exception
+	 *             is thrown if there is an issue getting the item with the ItemNo
+	 *             id.
 	 */
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
-		
-		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
-		
+
+		Map<ItemBean, Integer> viewableCart = new LinkedHashMap<ItemBean, Integer>();
+
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
 		}
-		
+
 		return viewableCart;
 	}
 
@@ -248,8 +255,9 @@ public class Engine {
 	 * @param itemQuantities
 	 * @return
 	 */
-	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities, String[] deleteCheckboxes) {
-		for (int i = 0 ; i < itemIds.length ; i++) {
+	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
+			String[] deleteCheckboxes) {
+		for (int i = 0; i < itemIds.length; i++) {
 			if (0 == Integer.parseInt(itemQuantities[i])) {
 				cart.remove(itemIds[i]);
 			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
@@ -264,12 +272,13 @@ public class Engine {
 				}
 			}
 		}
-		
+
 		return cart;
 	}
-	
+
 	/**
 	 * Checks if the session's cart is empty.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -278,29 +287,32 @@ public class Engine {
 	}
 
 	/**
-	 * Returns the cost of all items, cost and HST. 
+	 * Returns the cost of all items, cost and HST.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getItemsCost(Map<ItemBean, Integer> cart) {
 		double itemsCost = 0;
 		for (ItemBean i : cart.keySet()) {
-			itemsCost = itemsCost + i.getPrice()*cart.get(i);
+			itemsCost = itemsCost + i.getPrice() * cart.get(i);
 		}
 		return itemsCost;
 	}
 
 	/**
 	 * Get's HST amount.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
-		return this.getItemsCost(cart)*HST;
+		return this.getItemsCost(cart) * HST;
 	}
 
 	/**
 	 * Get's shipping cost.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -311,6 +323,6 @@ public class Engine {
 		} else {
 			return SHIPPING_FEE;
 		}
-	}	
+	}
 
 }
