@@ -74,7 +74,7 @@
 							<td> 
 								Name: ${item.getName()}
 								<br />
-								Price: <fmt:formatNumber  type="number" value="${item.getPrice()}" /> CAD
+								Price: CAD<fmt:formatNumber  type="currency" value="${item.getPrice()}" /> 
 								<br />
 								Quantity: 
 										<input type="number" value="1" placeholder="1" name="addQuantity" step="1" min="1"/> 
