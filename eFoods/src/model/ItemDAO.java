@@ -26,8 +26,8 @@ public class ItemDAO {
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
-	public static final String[] SORT_OPTIONS = { "NONE", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
-	public static final String[] USER_SORT_INPUT = { "NONE", "ascPrice", "descPrice", "ascName", "descName" };
+	public static final String[] SORT_OPTIONS = { "NUMBER", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
+	public static final String[] USER_SORT_INPUT = { "NONE", "Price: Low to High", "Price: High to Low", "A to Z", "Z to A" };
 	private HashMap<String, String> orderMap;
 
 	private Connection con;
