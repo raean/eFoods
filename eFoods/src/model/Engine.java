@@ -323,7 +323,7 @@ public class Engine {
 		grandTotal = total + HST + shipping;
 
 		order.setItems(itemList);
-		order.setSubmitted(this.getTime());
+		order.setSubmitted(this.getDate());
 		order.setCustomer(customer);
 
 		order.setTotal(total);
@@ -340,7 +340,7 @@ public class Engine {
 	 * 
 	 * @return the date formatted as "yyyy-mm-dd"
 	 */
-	private String getTime() {
+	private String getDate() {
 		LocalDate currTime = LocalDate.now();
 		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -353,7 +353,15 @@ public class Engine {
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
+		String fileCountString;
+		if (++fileCount < 10) {
+			fileCountString = "0" + fileCount;
+		} else {
+			fileCountString = Long.toString(fileCount);
+		}
+		System.out.println("filecount is " + fileCount + " " + fileCountString);
+
+		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
 		File newPo = new File(poPath + poName);
 		System.out.println(newPo.getAbsolutePath());
 		System.out.println(newPo.getPath());

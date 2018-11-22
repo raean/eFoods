@@ -25,6 +25,7 @@ public class Dash extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		try {
+			engine.testPathNonsense();
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
 		} catch (Exception e) {
