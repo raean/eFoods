@@ -31,26 +31,33 @@
 		<div name="mainDiv" class="">
 			<div name="catalogDiv">
 				<h2>Select a Catalog</h2>
-				<table>
+				<div class="row justify-content-md-center">
 					<c:forEach items="${catalogList}" var="catalogItem">
-						<tr>
-						<form name="catalogForm" action="Catalog.do" method="POST">
-							<input class="btn" type="submit" value="${catalogItem.getName()}" name="catalogName"/>
-							<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
-							<input type="image" name="submit" src="data:image/png;base64,${catalogItem.getPicture()}" />
-						</form>
-						</tr>
+						<div class="col-sm-3 text-center">
+							<div class="card">
+								<div class="card-text">
+									${catalogItem.getName()}
+								</div>
+									<form name="catalogForm" action="Catalog.do" method="POST">
+										<input type="image" name="submit" src="data:image/png;base64,${catalogItem.getPicture()}" />
+										<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
+									</form>
+								<div class="card-body">
+									${catalogItem.getDescription()}
+								</div>
+							</div>
+						</div>
 					</c:forEach>
-				</table>
+				</div>
 			</div>
-			<div name="sortByDiv" class="right">
+			<div name="sortByDiv" class="text-right">
 				<form name="catalogOrder" action="Catalog.do" method="POST">
 					<select id="sortBy" name="sortBy">
 						<option selected="any" value="NONE">Select One:</option>
-						<option value="ascName">A to Z</option>
-						<option value="descName">Z to A</option>
-						<option value="ascPrice">Price: Low to High</option>
-						<option value="descPrice"> Price: High to Low</option>
+						<option value="A to Z">A to Z</option>
+						<option value="Z to A">Z to A</option>
+						<option value="Price: Low to High">Price: Low to High</option>
+						<option value="Price: High to Low"> Price: High to Low</option>
 					</select>
 					<input type="submit" name="sortByButton" value="Sort"/> 
 					<input type="hidden" value="${catalogId}" name="catalogId"/>
