@@ -26,6 +26,25 @@ public class Search extends HttpServlet {
 				try {
 					List<ItemBean> result = engine.doSearch(searchInputValue);
 					request.setAttribute("result",  result);
+					request.setAttribute("searchInputValue", searchInputValue);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			} else {
+				
+			}
+		}
+		if (request.getParameter("advancedSearchButton") != null) {
+			Engine engine = Engine.getInstance();
+			String searchInputValue = request.getParameter("searchInput");
+			String min = request.getParameter("minInput");
+			String max = request.getParameter("maxInput");
+			String sort = request.getParameter("");
+			System.out.println(searchInputValue);
+			if (!searchInputValue.isEmpty()) {
+				try {
+					List<ItemBean> result = engine.doAdvanceSearch(searchInputValue, min, max, sort);
+					request.setAttribute("result",  result);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}

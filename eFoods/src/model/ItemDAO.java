@@ -22,7 +22,7 @@ public class ItemDAO {
 	public static final String SET_SCHEMA = "set schema roumani";
 
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
-	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= MIN PRICE AND PRICE <= MAX PRICE";
+	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= ? PRICE AND PRICE <= ?";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
@@ -91,7 +91,7 @@ public class ItemDAO {
 		}
 
 		if (minCost.isEmpty()) {
-			searchStatement.setString(2, "0.0");
+			searchStatement.setDouble(2, 0.0);
 		} else {
 			searchStatement.setString(2, minCost);
 		}
@@ -103,7 +103,7 @@ public class ItemDAO {
 		}
 
 		searchStatement.setString(1, "%" + searchInputValue + "%");
-
+		System.out.println(searchStatement);
 		itemResults = searchStatement.executeQuery();
 		itemList = makeItemList(itemResults);
 		return itemList;

@@ -22,9 +22,8 @@
 			name="authentication"> Sign in! </a> <a href="Cart.do"> Cart </a>
 		<div class="searchDiv">
 			<form name="searchForm" action="Search.do" method="POST">
-				<input type="text" name="searchInput" placeholder="Looking an item?"
-					value="${searchInputValue}" /> <input type="submit"
-					name="searchButton" value="Search" />
+				<input type="text" name="searchInput" placeholder="Looking an item?" value="${searchInputValue}" /> 
+				<input type="submit" name="searchButton" value="Search" />
 			</form>
 		</div>
 	</div>
@@ -32,6 +31,7 @@
 	<div class="advancedSearchDiv">
 		<div class="searchOptions">
 			<form name="searchOptionsForm" action="Search.do" method="POST">
+			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
 				<select id="sortBy" name="sortBy">
 							<option selected="any" value="NONE">Select One:</option>
 							<option value="descName">Z to A</option>
@@ -44,7 +44,7 @@
 				<br/>
 					Max cost: <input type="text" name="maxInput" value="${maxInputValue}" />
 				<br/>
-				<input type="submit" name="advancedSearchButton" value="Advanced Search"/>
+				<input type="submit" name="advancedSearchButton" value="Search"/>
 			</form>
  		</div>
 		<div class="searchResultDiv">

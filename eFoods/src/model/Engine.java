@@ -157,13 +157,17 @@ public class Engine {
 
 	public List<ItemBean> doAdvanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
-
+		List<ItemBean> result = new ArrayList<>();
 		if (searchInputValue.isEmpty()) {
 			throw new IllegalArgumentException("Search query is empty.");
 		}
-
-		List<ItemBean> result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
-
+		if(searchInputValue.matches(itemMatcher)) {
+			result = itemDao.advanceSearch((getItem(searchInputValue).getName()), minCost, maxCost, sortBy);
+		}else {
+			System.out.println("IN else");
+			result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
+			System.out.println(result);
+		}
 		if (result.isEmpty()) {
 			throw new Exception("No results returned.");
 		}
