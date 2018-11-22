@@ -20,8 +20,9 @@ public class SignOut extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		session.setAttribute("authenticated", false);
-		session.removeAttribute("accountCode");
-		session.removeAttribute("accountName");
+		session.removeAttribute("customer");
+
+		this.getServletContext().getRequestDispatcher("/Dash.do").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

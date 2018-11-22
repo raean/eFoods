@@ -1,9 +1,20 @@
 package model;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -15,12 +26,28 @@ public class Engine {
 	private static Engine instance = null;
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
+
+  public static final String PO_FOLDER = "WebContent/WEB-INF/PO/";
+	private long fileCount;
+  
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
+
 
 	private Engine() {
 		itemDao = new ItemDAO();
 		catDao = new CategoryDAO();
+
+		Stream<Path> files = null;
+		try {
+			files = Files.list(Paths.get(PO_FOLDER));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		fileCount = files.count();
+		files.close();
 	}
 
 	/**
@@ -60,8 +87,8 @@ public class Engine {
 	public List<ItemBean> getAllItems() throws Exception {
 		return itemDao.getAllItems();
 	}
-	
-	public List<ItemBean> getAllItems(String sortBy) throws Exception{
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
 
@@ -180,19 +207,20 @@ public class Engine {
 	 * @param quantity
 	 *            is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity) throws Exception {
+	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
+			throws Exception {
 		int quantityInt = Integer.parseInt(quantity);
-		
+
 		if (cart.containsKey(itemNo)) {
-			cart.put(itemNo, cart.get(itemNo)+quantityInt);
+			cart.put(itemNo, cart.get(itemNo) + quantityInt);
 
 		} else {
 			cart.put(itemNo, quantityInt);
 		}
-		
+
 		return cart;
 
 	}
@@ -216,6 +244,7 @@ public class Engine {
 		return cart;
 	}
 
+
 	/**
 	 * This method is in support of the view. It creates a cart that is viewable
 	 * as it contains information such as the price, name, etc. of the item as opposed
@@ -230,12 +259,72 @@ public class Engine {
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
 		
 		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
-		
+
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
 		}
-		
+
 		return viewableCart;
+	}
+
+	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
+		OrderBean order = new OrderBean();
+		List<ItemBean> itemList = new ArrayList<>();
+		double HST, total, grandTotal, shipping;
+
+		total = 0.0;
+
+		for (ItemBean item : viewableCart.keySet()) {
+			item.setQuantity(viewableCart.get(item));
+			item.setExtended(item.getQuantity() * item.getPrice());
+			itemList.add(item);
+			total += item.getExtended();
+		}
+
+		if (total >= 100) {
+			shipping = 0.0;
+		} else {
+			shipping = 5.0;
+		}
+
+		HST = (total + shipping) * 0.13;
+		grandTotal = total + HST + shipping;
+
+		order.setItems(itemList);
+		order.setSubmitted(this.getTime());
+		order.setCustomer(customer);
+
+		order.setTotal(total);
+		order.setHST(HST);
+		order.setShipping(shipping);
+		order.setGrandTotal(grandTotal);
+
+		return order;
+
+	}
+
+	/**
+	 * Gives the current date of the server as "yyyy-mm-dd"
+	 * 
+	 * @return the date formatted as "yyyy-mm-dd"
+	 */
+	private String getTime() {
+		LocalDate currTime = LocalDate.now();
+		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String formattedTime = currTime.format(timeFormat);
+		return formattedTime;
+	}
+
+	public void checkOut(OrderBean order) throws Exception {
+		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
+		File newPo = new File(PO_FOLDER + poName);
+		newPo.createNewFile();
+		marshaller.marshal(order, newPo);
 	}
 
 	/**
