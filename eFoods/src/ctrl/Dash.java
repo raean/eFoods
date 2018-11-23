@@ -11,17 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.CategoryBean;
+import model.CustomerBean;
 import model.Engine;
 
-@WebServlet(name="Controller", urlPatterns= {"/index.html", "/Dash.do"})
+@WebServlet(name = "Controller", urlPatterns = { "/index.html", "/Dash.do" })
 public class Dash extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-   
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
-		
+
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
@@ -29,17 +31,18 @@ public class Dash extends HttpServlet {
 			e.printStackTrace();
 		}
 		System.out.println(session.getAttribute("accountName"));
-		
-		if (session.getAttribute("accountName") != null) {
-			request.setAttribute("username", session.getAttribute("accountName").toString().split(" ")[0]);
-		} 
-		
+
+		if (session.getAttribute("customer") != null) {
+			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
+			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
+		}
+
 		request.getSession(true);
 		this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 

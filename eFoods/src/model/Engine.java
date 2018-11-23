@@ -1,9 +1,20 @@
 package model;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -15,12 +26,57 @@ public class Engine {
 	private static Engine instance = null;
 	private ItemDAO itemDao;
 	private CategoryDAO catDao;
+
+	private long fileCount;
+	private String poPath;
+
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
 
 	private Engine() {
 		itemDao = new ItemDAO();
 		catDao = new CategoryDAO();
+	}
+
+	public void initPoFolder(String poPath) {
+		Stream<Path> files = null;
+
+		try {
+			files = Files.list(Paths.get(poPath));
+		} catch (IOException e) {
+			System.out.println("EXCEPTION " + e.getMessage());
+		}
+		this.fileCount = files.count();
+		this.poPath = poPath;
+
+		files.close();
+	}
+
+	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
+	public void testPathNonsense() throws Exception {
+
+		System.out.println(this.poPath);
+
+		OrderBean order;
+		CustomerBean customer = new CustomerBean();
+
+		customer.setAccount("adamzis");
+		customer.setName("Adam Adindji");
+
+		ItemBean item1 = getItem("0905A044");
+		ItemBean item2 = getItem("0905A112");
+		ItemBean item3 = getItem("0905A123");
+
+		Map<ItemBean, Integer> viewableCart = new HashMap<>();
+		viewableCart.put(item1, 3);
+		viewableCart.put(item2, 1);
+		viewableCart.put(item3, 2);
+
+		order = makeOrder(viewableCart, customer);
+		checkOut(order);
+
+		System.out.println(this.fileCount);
+
 	}
 
 	/**
@@ -60,8 +116,8 @@ public class Engine {
 	public List<ItemBean> getAllItems() throws Exception {
 		return itemDao.getAllItems();
 	}
-	
-	public List<ItemBean> getAllItems(String sortBy) throws Exception{
+
+	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
 
@@ -180,19 +236,20 @@ public class Engine {
 	 * @param quantity
 	 *            is the amount of the item to be added or appended by.
 	 * @return the Map of the cart after alterations (addition).
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 
-	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity) throws Exception {
+	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
+			throws Exception {
 		int quantityInt = Integer.parseInt(quantity);
-		
+
 		if (cart.containsKey(itemNo)) {
-			cart.put(itemNo, cart.get(itemNo)+quantityInt);
+			cart.put(itemNo, cart.get(itemNo) + quantityInt);
 
 		} else {
 			cart.put(itemNo, quantityInt);
 		}
-		
+
 		return cart;
 
 	}
@@ -217,25 +274,92 @@ public class Engine {
 	}
 
 	/**
-	 * This method is in support of the view. It creates a cart that is viewable
-	 * as it contains information such as the price, name, etc. of the item as opposed
-	 * to the cart that is stored in the session that only contains IDs.
-	 * It gets the rest of the information using the item ID string by calling the
-	 * getItem method in this Engine.
-	 * @param cart is the cart within the session.
-	 * @return is a Map that is viewable since it has the entire ItemBean along with the Integer
-	 * quantity.
-	 * @throws Exception is thrown if there is an issue getting the item with the ItemNo id.
+	 * This method is in support of the view. It creates a cart that is viewable as
+	 * it contains information such as the price, name, etc. of the item as opposed
+	 * to the cart that is stored in the session that only contains IDs. It gets the
+	 * rest of the information using the item ID string by calling the getItem
+	 * method in this Engine.
+	 * 
+	 * @param cart
+	 *            is the cart within the session.
+	 * @return is a Map that is viewable since it has the entire ItemBean along with
+	 *         the Integer quantity.
+	 * @throws Exception
+	 *             is thrown if there is an issue getting the item with the ItemNo
+	 *             id.
 	 */
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
-		
+
 		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
-		
+
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
 		}
-		
+
 		return viewableCart;
+	}
+
+	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
+		OrderBean order = new OrderBean();
+		List<ItemBean> itemList = new ArrayList<>();
+		double HST, total, grandTotal, shipping;
+
+		total = 0.0;
+
+		for (ItemBean item : viewableCart.keySet()) {
+			item.setQuantity(viewableCart.get(item));
+			item.setExtended(item.getQuantity() * item.getPrice());
+			itemList.add(item);
+			total += item.getExtended();
+		}
+
+		if (total >= 100) {
+			shipping = 0.0;
+		} else {
+			shipping = 5.0;
+		}
+
+		HST = (total + shipping) * 0.13;
+		grandTotal = total + HST + shipping;
+
+		order.setItems(itemList);
+		order.setSubmitted(this.getTime());
+		order.setCustomer(customer);
+
+		order.setTotal(total);
+		order.setHST(HST);
+		order.setShipping(shipping);
+		order.setGrandTotal(grandTotal);
+
+		return order;
+
+	}
+
+	/**
+	 * Gives the current date of the server as "yyyy-mm-dd"
+	 * 
+	 * @return the date formatted as "yyyy-mm-dd"
+	 */
+	private String getTime() {
+		LocalDate currTime = LocalDate.now();
+		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String formattedTime = currTime.format(timeFormat);
+		return formattedTime;
+	}
+
+	public void checkOut(OrderBean order) throws Exception {
+		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
+		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
+		File newPo = new File(poPath + poName);
+		System.out.println(newPo.getAbsolutePath());
+		System.out.println(newPo.getPath());
+		System.out.println(newPo.getCanonicalPath());
+		newPo.createNewFile();
+		marshaller.marshal(order, newPo);
 	}
 
 	/**
@@ -245,8 +369,9 @@ public class Engine {
 	 * @param itemQuantities
 	 * @return
 	 */
-	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities, String[] deleteCheckboxes) {
-		for (int i = 0 ; i < itemIds.length ; i++) {
+	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
+			String[] deleteCheckboxes) {
+		for (int i = 0; i < itemIds.length; i++) {
 			if (0 == Integer.parseInt(itemQuantities[i])) {
 				cart.remove(itemIds[i]);
 			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
@@ -261,12 +386,13 @@ public class Engine {
 				}
 			}
 		}
-		
+
 		return cart;
 	}
-	
+
 	/**
 	 * Checks if the session's cart is empty.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -275,29 +401,32 @@ public class Engine {
 	}
 
 	/**
-	 * Returns the cost of all items, cost and HST. 
+	 * Returns the cost of all items, cost and HST.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getItemsCost(Map<ItemBean, Integer> cart) {
 		double itemsCost = 0;
 		for (ItemBean i : cart.keySet()) {
-			itemsCost = itemsCost + i.getPrice()*cart.get(i);
+			itemsCost = itemsCost + i.getPrice() * cart.get(i);
 		}
 		return itemsCost;
 	}
 
 	/**
 	 * Get's HST amount.
+	 * 
 	 * @param cart
 	 * @return
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
-		return this.getItemsCost(cart)*HST;
+		return this.getItemsCost(cart) * HST;
 	}
 
 	/**
 	 * Get's shipping cost.
+	 * 
 	 * @param cart
 	 * @return
 	 */
@@ -308,6 +437,6 @@ public class Engine {
 		} else {
 			return SHIPPING_FEE;
 		}
-	}	
+	}
 
 }

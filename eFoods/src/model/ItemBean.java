@@ -1,16 +1,25 @@
 package model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ItemBean {
-	private String unit; // UNIT
-	private double costPrice; // COSTPRICE
-	private int supID; // SUPID
-	private int catId; // CATID
-	private int reorder; // REORDER
-	private int onorder; // ONORDER
-	private int quantity; // QTY
-	private double price; // PRICE
-	private String name; // NAME
+
+	@XmlAttribute
 	private String number; // 8-digit product code. Key
+	private String name; // NAME
+	private double price; // PRICE
+	private int quantity; // QTY
+	private double extended; // Total price, equal to quantity * price
+
+	@XmlTransient
+	private String unit; // UNIT quantity per unit
+	@XmlTransient
+	private int catId; // CATID category Id
 
 	public ItemBean() {
 		super();
@@ -24,20 +33,12 @@ public class ItemBean {
 		this.unit = unit;
 	}
 
-	public double getCostPrice() {
-		return costPrice;
+	public double getExtended() {
+		return extended;
 	}
 
-	public void setCostPrice(double costPrice) {
-		this.costPrice = costPrice;
-	}
-
-	public int getSupID() {
-		return supID;
-	}
-
-	public void setSupID(int supID) {
-		this.supID = supID;
+	public void setExtended(double extended) {
+		this.extended = extended;
 	}
 
 	public int getCatId() {
@@ -46,22 +47,6 @@ public class ItemBean {
 
 	public void setCatId(int catId) {
 		this.catId = catId;
-	}
-
-	public int getReorder() {
-		return reorder;
-	}
-
-	public void setReorder(int reorder) {
-		this.reorder = reorder;
-	}
-
-	public int getOnorder() {
-		return onorder;
-	}
-
-	public void setOnorder(int onorder) {
-		this.onorder = onorder;
 	}
 
 	public int getQuantity() {
@@ -98,9 +83,8 @@ public class ItemBean {
 
 	@Override
 	public String toString() {
-		return "itemBean [unit=" + unit + ", costPrice=" + costPrice + ", supID=" + supID + ", catId=" + catId
-				+ ", reorder=" + reorder + ", onorder=" + onorder + ", quantity=" + quantity + ", price=" + price
-				+ ", name=" + name + ", number=" + number + "]";
+		return "itemBean [unit=" + unit + ", costPrice=" + extended + ", catId=" + catId + ", quantity=" + quantity
+				+ ", price=" + price + ", name=" + name + ", number=" + number + "]";
 	}
 
 }
