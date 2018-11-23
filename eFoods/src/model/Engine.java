@@ -80,9 +80,14 @@ public class Engine {
 		viewableCart.put(item3, 2);
 
 		order = makeOrder(viewableCart, customer);
+
 		checkOut(order);
 
-		List<OrderBean> noobList = getCustomerOrders(customer);
+		List<OrderBean> orderList = getCustomerOrders(customer);
+
+		for (OrderBean customerOrder : orderList) {
+			System.out.println(customerOrder.getId());
+		}
 
 	}
 
@@ -306,6 +311,21 @@ public class Engine {
 		return viewableCart;
 	}
 
+	/**
+	 * Creates an OrderBean from the viewableCart and a customerBean. The OrderBean
+	 * contains the customerBean and a list of ItemBeans where the quantity and
+	 * total price (extended) are set. The orderBean also contains shipping, HST,
+	 * total, and grandtotal pricing easily accessible.
+	 * 
+	 * TODO: Remove calculations into their own methods.
+	 * 
+	 * @param viewableCart
+	 *            a non empty viewableCart.
+	 * @param customer
+	 *            a non-empty customerBean
+	 * @return
+	 * @throws Exception
+	 */
 	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
 		OrderBean order = new OrderBean();
 		List<ItemBean> itemList = new ArrayList<>();
@@ -355,17 +375,19 @@ public class Engine {
 		return formattedTime;
 	}
 
+	/**
+	 * Turns an orderBean into an XML file on disk (A recieved order). The OrderBean
+	 * should be removed from the session and cart emptied after calling this
+	 * method.
+	 * 
+	 * @param order
+	 *            a populated orderBean
+	 * @throws Exception
+	 */
 	public void checkOut(OrderBean order) throws Exception {
-		String fileCountString;
-
-		if (++fileCount < 10) {
-			fileCountString = "0" + fileCount;
-		} else {
-			fileCountString = Long.toString(fileCount);
-		}
+		String fileCountString = makeOrderId();
 
 		order.setId(Integer.parseInt(fileCountString));
-
 		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
 		File newPo = new File(poPath + poName);
 
@@ -373,11 +395,36 @@ public class Engine {
 		orderMarshaller.marshal(order, newPo);
 	}
 
+	/**
+	 * Creates a 2+ digit orderId for the orderBean. Used in the filename, and
+	 * inside the P XML.
+	 * 
+	 * @return
+	 */
+	private String makeOrderId() {
+		String fileCountString;
+		if (++fileCount < 10) {
+			fileCountString = "0" + fileCount;
+		} else {
+			fileCountString = Long.toString(fileCount);
+		}
+
+		return fileCountString;
+	}
+
+	/**
+	 * Generates a list of customer orders based on the CustomerBean.
+	 * 
+	 * @param customer
+	 *            a populated customerBean.
+	 * @return A List of orders the customer made, may be empty if the customer has
+	 *         made no orders.
+	 * @throws Exception
+	 */
 	public List<OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
 		List<OrderBean> customerOrders = new ArrayList<>();
 		File poDir = new File(poPath);
 		File[] directoryListing = poDir.listFiles();
-		System.out.println("THERE ARE " + directoryListing.length + " PO FILES!");
 
 		for (File file : directoryListing) {
 			if (file.getName().contains(customer.getAccount())) {
