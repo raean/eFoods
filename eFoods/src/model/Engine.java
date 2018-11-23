@@ -14,7 +14,9 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Back-end logic singleton for the webstore app. Mainly functions to retrieve
@@ -30,33 +32,38 @@ public class Engine {
 	private long fileCount;
 	private String poPath;
 
+	private JAXBContext orderContext;
+	private Marshaller orderMarshaller;
+	private Unmarshaller orderUnMarshaller;
+
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
 
 	private Engine() {
-		itemDao = new ItemDAO();
-		catDao = new CategoryDAO();
+		this.itemDao = new ItemDAO();
+		this.catDao = new CategoryDAO();
+
+		try {
+			this.orderContext = JAXBContext.newInstance(OrderBean.class);
+			this.orderMarshaller = orderContext.createMarshaller();
+			this.orderUnMarshaller = orderContext.createUnmarshaller();
+
+			this.orderMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		} catch (JAXBException e) {
+			System.err.println("Fatal error " + e.getMessage());
+		}
+
 	}
 
 	public void initPoFolder(String poPath) {
-		Stream<Path> files = null;
+		File poDir = new File(poPath);
 
-		try {
-			files = Files.list(Paths.get(poPath));
-		} catch (IOException e) {
-			System.out.println("EXCEPTION " + e.getMessage());
-		}
-		this.fileCount = files.count();
+		this.fileCount = poDir.listFiles().length;
 		this.poPath = poPath;
-
-		files.close();
 	}
 
 	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
 	public void testPathNonsense() throws Exception {
-
-		System.out.println(this.poPath);
-
 		OrderBean order;
 		CustomerBean customer = new CustomerBean();
 
@@ -75,7 +82,7 @@ public class Engine {
 		order = makeOrder(viewableCart, customer);
 		checkOut(order);
 
-		System.out.println(this.fileCount);
+		List<OrderBean> noobList = getCustomerOrders(customer);
 
 	}
 
@@ -349,25 +356,38 @@ public class Engine {
 	}
 
 	public void checkOut(OrderBean order) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
 		String fileCountString;
+
 		if (++fileCount < 10) {
 			fileCountString = "0" + fileCount;
 		} else {
 			fileCountString = Long.toString(fileCount);
 		}
-		System.out.println("filecount is " + fileCount + " " + fileCountString);
+
+		order.setId(Integer.parseInt(fileCountString));
 
 		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
 		File newPo = new File(poPath + poName);
-		System.out.println(newPo.getAbsolutePath());
-		System.out.println(newPo.getPath());
-		System.out.println(newPo.getCanonicalPath());
+
 		newPo.createNewFile();
-		marshaller.marshal(order, newPo);
+		orderMarshaller.marshal(order, newPo);
+	}
+
+	public List<OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
+		List<OrderBean> customerOrders = new ArrayList<>();
+		File poDir = new File(poPath);
+		File[] directoryListing = poDir.listFiles();
+		System.out.println("THERE ARE " + directoryListing.length + " PO FILES!");
+
+		for (File file : directoryListing) {
+			if (file.getName().contains(customer.getAccount())) {
+				OrderBean customerOrder = new OrderBean();
+				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				customerOrders.add(customerOrder);
+			}
+		}
+
+		return customerOrders;
 	}
 
 	/**
