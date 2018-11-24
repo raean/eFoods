@@ -429,9 +429,10 @@ public class Engine {
 	 *            a populated customerBean.
 	 * @return A List of orders the customer made, may be empty if the customer has
 	 *         made no orders.
+	 * @throws JAXBException
 	 * @throws Exception
 	 */
-	public Map<String, OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
+	public Map<String, OrderBean> getCustomerOrders(CustomerBean customer) throws JAXBException {
 		Map<String, OrderBean> customerOrders = new TreeMap<>();
 		File inPODir[] = new File(IN_PO).listFiles();
 		File outPODir[] = new File(OUT_PO).listFiles();
