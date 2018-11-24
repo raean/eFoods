@@ -439,16 +439,14 @@ public class Engine {
 
 		for (File file : inPODir) {
 			if (file.getName().contains(customer.getAccount())) {
-				OrderBean customerOrder = new OrderBean();
-				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
 
 		for (File file : outPODir) {
 			if (file.getName().contains(customer.getAccount())) {
-				OrderBean customerOrder = new OrderBean();
-				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
