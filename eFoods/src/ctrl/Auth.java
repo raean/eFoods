@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/Auth.do")
 public class Auth extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	public static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://localhost:4413/eFoods/Auth.do";
+	private static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://localhost:4413/eFoods/Auth.do";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

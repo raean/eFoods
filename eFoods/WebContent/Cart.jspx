@@ -66,7 +66,10 @@
 					<p name="hstAmount"> HST: ${hstAmount} </p>
 					<p name="shippingCost"> Shipping Cost: ${shippingCost} </p>
 					<p name="overallCost"> Total Cost: ${shippingCost+(itemsCost+hstAmount)} </p>
-					<input type="submit" name="checkoutButton" value="Checkout"/> <input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+					<input type="submit" name="checkoutButton" value="Checkout"/> 
+				</form>
+				<form name="continueShoppingForm" action="Catalog.do" method="POST">
+					<input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
 				</form>
 			</div>
 	</div>
