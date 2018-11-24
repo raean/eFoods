@@ -21,11 +21,13 @@ public class Auth extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		HttpSession session = request.getSession();
 		if (request.getParameter("name") == null && request.getParameter("user") == null
 				&& request.getParameter("hash") == null) {
+			String referer = request.getHeader("referer");
+			session.setAttribute("referer", referer);
 			response.sendRedirect(REDIRECT);
 		} else {
-			HttpSession session = request.getSession();
 			CustomerBean customer = new CustomerBean();
 
 			customer.setAccount(request.getParameter("user"));
@@ -34,7 +36,8 @@ public class Auth extends HttpServlet {
 			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
 
-			response.sendRedirect("Account.jspx");
+			String referer = (String) session.getAttribute("referer");
+			response.sendRedirect(referer);
 
 		}
 		// this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request,

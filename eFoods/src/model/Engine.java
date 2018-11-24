@@ -1,10 +1,6 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,9 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Stream;
-
-import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -41,6 +34,7 @@ public class Engine {
 
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
+	private static final String itemMatcher = "([0-9]{4}[a-z|A-Z][0-9]{3})";
 
 	private Engine() {
 		this.itemDao = new ItemDAO();
@@ -206,17 +200,19 @@ public class Engine {
 	 *             if there is an SQL error or if the list returned is empty.
 	 */
 	public List<ItemBean> doSearch(String searchInputValue) throws Exception {
-
+		List<ItemBean> result = new ArrayList<>();
 		if (searchInputValue.isEmpty()) {
-			throw new IllegalArgumentException("Search query is empty.");
+			throw new IllegalArgumentException("");
 		}
+		if (searchInputValue.matches(itemMatcher)) {
+			result.add(getItem(searchInputValue));
+		} else {
+			result = itemDao.search(searchInputValue);
 
-		List<ItemBean> result = itemDao.search(searchInputValue);
-
-		if (result.isEmpty()) {
-			throw new Exception("No results returned.");
+			if (result.isEmpty()) {
+				throw new Exception("No results found.");
+			}
 		}
-
 		return result;
 	}
 
@@ -302,7 +298,7 @@ public class Engine {
 	 */
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
 
-		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
+		Map<ItemBean, Integer> viewableCart = new LinkedHashMap<ItemBean, Integer>();
 
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
@@ -315,7 +311,7 @@ public class Engine {
 	 * Creates an OrderBean from the viewableCart and a customerBean. The OrderBean
 	 * contains the customerBean and a list of ItemBeans where the quantity and
 	 * total price (extended) are set. The orderBean also contains shipping, HST,
-	 * total, and grandtotal pricing easily accessible.
+	 * total, and grand total pricing easily accessible.
 	 * 
 	 * TODO: Remove calculations into their own methods.
 	 * 
