@@ -9,8 +9,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import javax.swing.filechooser.FileSystemView;
@@ -69,7 +71,7 @@ public class Engine {
 		OrderBean order;
 		CustomerBean customer = new CustomerBean();
 
-		customer.setAccount("adamzis");
+		customer.setAccount("loser");
 		customer.setName("Adam Adindji");
 
 		ItemBean item1 = getItem("0905A044");
@@ -85,11 +87,7 @@ public class Engine {
 
 		checkOut(order);
 
-		List<OrderBean> orderList = getCustomerOrders(customer);
-
-		for (OrderBean customerOrder : orderList) {
-			System.out.println(customerOrder.getId());
-		}
+		// Map<OrderBean> orderList = getCustomerOrders(customer);
 
 	}
 
@@ -423,8 +421,8 @@ public class Engine {
 	 *         made no orders.
 	 * @throws Exception
 	 */
-	public List<OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
-		List<OrderBean> customerOrders = new ArrayList<>();
+	public Map<String, OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
+		Map<String, OrderBean> customerOrders = new TreeMap<>();
 		File poDir = new File(PO_PATH);
 		File[] directoryListing = poDir.listFiles();
 
@@ -432,7 +430,7 @@ public class Engine {
 			if (file.getName().contains(customer.getAccount())) {
 				OrderBean customerOrder = new OrderBean();
 				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
-				customerOrders.add(customerOrder);
+				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
 
