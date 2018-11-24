@@ -13,14 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import javax.swing.filechooser.FileSystemView;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 /**
- * Back-end logic singleton for the webstore app. Mainly functions to retrieve
- * information from the database.
+ * Back-end logic singleton for the webstore app. Returns data from the DAO and
+ * handles the business logic of the eFoods application.
  *
  */
 public class Engine {
@@ -30,7 +31,7 @@ public class Engine {
 	private CategoryDAO catDao;
 
 	private long fileCount;
-	private String poPath;
+	private static final String PO_PATH = System.getProperty("user.home") + "/PO/";
 
 	private JAXBContext orderContext;
 	private Marshaller orderMarshaller;
@@ -42,6 +43,7 @@ public class Engine {
 	private Engine() {
 		this.itemDao = new ItemDAO();
 		this.catDao = new CategoryDAO();
+		initPoFolder();
 
 		try {
 			this.orderContext = JAXBContext.newInstance(OrderBean.class);
@@ -55,11 +57,11 @@ public class Engine {
 
 	}
 
-	public void initPoFolder(String poPath) {
-		File poDir = new File(poPath);
+	private void initPoFolder() {
+		File poDir = new File(PO_PATH);
+		poDir.mkdirs();
 
 		this.fileCount = poDir.listFiles().length;
-		this.poPath = poPath;
 	}
 
 	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
@@ -389,7 +391,7 @@ public class Engine {
 
 		order.setId(Integer.parseInt(fileCountString));
 		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
-		File newPo = new File(poPath + poName);
+		File newPo = new File(PO_PATH + poName);
 
 		newPo.createNewFile();
 		orderMarshaller.marshal(order, newPo);
@@ -423,7 +425,7 @@ public class Engine {
 	 */
 	public List<OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
 		List<OrderBean> customerOrders = new ArrayList<>();
-		File poDir = new File(poPath);
+		File poDir = new File(PO_PATH);
 		File[] directoryListing = poDir.listFiles();
 
 		for (File file : directoryListing) {
