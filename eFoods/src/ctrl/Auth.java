@@ -42,17 +42,6 @@ public class Auth extends HttpServlet {
 			customer.setAccount(request.getParameter("user"));
 			customer.setName(request.getParameter("name"));
 
-			Map<String, OrderBean> customerOrders;
-
-			// I am unsure about the catch block, but checked exception.
-			try {
-				customerOrders = model.getCustomerOrders(customer);
-			} catch (JAXBException e) {
-				customerOrders = new TreeMap<>();
-				customerOrders.put("Error processing PO Xml", null);
-			}
-
-			session.setAttribute("customerOrders", customerOrders);
 			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
 
