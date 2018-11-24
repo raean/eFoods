@@ -27,6 +27,8 @@ public class Engine {
 
 	private long fileCount;
 	private static final String PO_PATH = System.getProperty("user.home") + "/PO/";
+	private static final String IN_PO = PO_PATH + "inPO/";
+	private static final String OUT_PO = PO_PATH + "outPO";
 
 	private JAXBContext orderContext;
 	private Marshaller orderMarshaller;
@@ -55,9 +57,14 @@ public class Engine {
 
 	private void initPoFolder() {
 		File poDir = new File(PO_PATH);
-		poDir.mkdirs();
+		File inDir = new File(IN_PO);
+		File outDir = new File(OUT_PO);
 
-		this.fileCount = poDir.listFiles().length;
+		poDir.mkdirs();
+		inDir.mkdir();
+		outDir.mkdir();
+
+		this.fileCount = inDir.listFiles().length + outDir.listFiles().length;
 	}
 
 	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
@@ -65,8 +72,8 @@ public class Engine {
 		OrderBean order;
 		CustomerBean customer = new CustomerBean();
 
-		customer.setAccount("loser");
-		customer.setName("Adam Adindji");
+		customer.setAccount("adamzis");
+		customer.setName("Adam Adjindji");
 
 		ItemBean item1 = getItem("0905A044");
 		ItemBean item2 = getItem("0905A112");
@@ -80,8 +87,6 @@ public class Engine {
 		order = makeOrder(viewableCart, customer);
 
 		checkOut(order);
-
-		// Map<OrderBean> orderList = getCustomerOrders(customer);
 
 	}
 
@@ -123,6 +128,15 @@ public class Engine {
 		return itemDao.getAllItems();
 	}
 
+	/**
+	 * Returns every available item as a list, sorted by the input.
+	 * 
+	 * @param sortBy
+	 *            an input from the select tag in html
+	 * @return a list containing every available item sorted by what the user wants.
+	 * @throws Exceptionif
+	 *             an SQL exception is thrown.
+	 */
 	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
@@ -385,7 +399,7 @@ public class Engine {
 
 		order.setId(Integer.parseInt(fileCountString));
 		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
-		File newPo = new File(PO_PATH + poName);
+		File newPo = new File(IN_PO + poName);
 
 		newPo.createNewFile();
 		orderMarshaller.marshal(order, newPo);
@@ -419,10 +433,18 @@ public class Engine {
 	 */
 	public Map<String, OrderBean> getCustomerOrders(CustomerBean customer) throws Exception {
 		Map<String, OrderBean> customerOrders = new TreeMap<>();
-		File poDir = new File(PO_PATH);
-		File[] directoryListing = poDir.listFiles();
+		File inPODir[] = new File(IN_PO).listFiles();
+		File outPODir[] = new File(OUT_PO).listFiles();
 
-		for (File file : directoryListing) {
+		for (File file : inPODir) {
+			if (file.getName().contains(customer.getAccount())) {
+				OrderBean customerOrder = new OrderBean();
+				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				customerOrders.put(file.getName(), customerOrder);
+			}
+		}
+
+		for (File file : outPODir) {
 			if (file.getName().contains(customer.getAccount())) {
 				OrderBean customerOrder = new OrderBean();
 				customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
