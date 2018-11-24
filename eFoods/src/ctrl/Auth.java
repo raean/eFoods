@@ -1,12 +1,20 @@
 package ctrl;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.JAXBException;
+
+import model.CustomerBean;
+import model.Engine;
+import model.OrderBean;
 
 /**
  * Servlet implementation class Auth
@@ -19,17 +27,26 @@ public class Auth extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		HttpSession session = request.getSession();
 		if (request.getParameter("name") == null && request.getParameter("user") == null
 				&& request.getParameter("hash") == null) {
-			response.sendRedirect(REDIRECT);
+			String referer = request.getHeader("referer");
+			session.setAttribute("referer", referer);
+
+			String authServer = String.format(REDIRECT, request.getServerName(), request.getServerPort());
+			response.sendRedirect(authServer);
 		} else {
-			HttpSession session = request.getSession();
+			Engine model = Engine.getInstance();
+			CustomerBean customer = new CustomerBean();
 
+			customer.setAccount(request.getParameter("user"));
+			customer.setName(request.getParameter("name"));
+
+			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
-			session.setAttribute("accountCode", request.getParameter("user"));
-			session.setAttribute("accountName", request.getParameter("name"));
 
-			response.sendRedirect("Account.jspx");
+			String referer = (String) session.getAttribute("referer");
+			response.sendRedirect(referer);
 
 		}
 		// this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request,

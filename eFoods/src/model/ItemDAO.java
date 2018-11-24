@@ -27,7 +27,7 @@ public class ItemDAO {
 
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
 	public static final String[] SORT_OPTIONS = { "NUMBER", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
-	public static final String[] USER_SORT_INPUT = { "NONE", "Price: Low to High", "Price: High to Low", "A to Z", "Z to A" };
+	public static final String[] USER_SORT_INPUT = { "NONE", "Price - Low to High", "Price - High to Low", "A to Z", "Z to A" };
 	private HashMap<String, String> orderMap;
 
 	private Connection con;
@@ -182,12 +182,7 @@ public class ItemDAO {
 		ItemBean item = new ItemBean();
 
 		item.setUnit(r.getString("UNIT"));
-		item.setCostPrice(r.getDouble("COSTPRICE"));
-		item.setSupID(r.getInt("SUPID"));
 		item.setCatId(r.getInt("CATID"));
-		item.setReorder(r.getInt("REORDER"));
-		item.setOnorder(r.getInt("ONORDER"));
-		item.setQuantity(r.getInt("QTY"));
 		item.setPrice(r.getDouble("PRICE"));
 		item.setName(r.getString("NAME"));
 		item.setNumber(r.getString("NUMBER"));
