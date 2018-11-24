@@ -48,8 +48,8 @@
 							<tr>
 								<td>${cartItem.key.getName()}</td>
 								<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
-								<td>${cartItem.key.getPrice()}</td>
-								<td>${cartItem.key.getPrice() * cartItem.value}</td>
+								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
 								<td>${cartItem.key.getNumber()}</td>
 								<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
 							</tr>
@@ -62,10 +62,10 @@
 			<div class="checkoutDiv">
 				<form name="checkoutForm" action="Checkout.do" method="POST">
 					<h2> Price Calculations: </h2>
-					<p name="itemsCost"> Cost of Items: ${itemsCost} </p>
-					<p name="hstAmount"> HST: ${hstAmount} </p>
-					<p name="shippingCost"> Shipping Cost: ${shippingCost} </p>
-					<p name="overallCost"> Total Cost: ${shippingCost+(itemsCost+hstAmount)} </p>
+					<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
+					<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
+					<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
+					<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
 					<input type="submit" name="checkoutButton" value="Checkout"/> <input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
 				</form>
 			</div>
