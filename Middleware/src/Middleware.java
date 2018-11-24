@@ -1,6 +1,9 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -23,8 +26,8 @@ public class Middleware {
 	private File[] inFiles;
 	private File[] outFiles;
 
-	private Unmarshaller orderUnMarshaller;
 	private Marshaller reportMarshaller;
+	private Unmarshaller orderUnMarshaller;
 
 	public Middleware(File poDir) {
 		setJAXB(ORDER_BEAN, REPORT_BEAN);
@@ -33,10 +36,10 @@ public class Middleware {
 
 	private void setJAXB(Class<OrderBean> orderBean, Class<ReportBean> reportBean) {
 		try {
-			JAXBContext orderContext = JAXBContext.newInstance(orderBean);
 			JAXBContext reportContext = JAXBContext.newInstance(reportBean);
+			JAXBContext orderContext = JAXBContext.newInstance(orderBean);
 
-			this.reportMarshaller = orderContext.createMarshaller();
+			this.reportMarshaller = reportContext.createMarshaller();
 			this.orderUnMarshaller = orderContext.createUnmarshaller();
 
 			this.reportMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -60,6 +63,7 @@ public class Middleware {
 		outFiles = outDir.listFiles();
 	}
 
+	// TODO The files should be moved right after being read into the array.
 	public List<OrderBean> listInboxFiles() throws JAXBException {
 		List<OrderBean> orderList = new ArrayList<>();
 
@@ -70,6 +74,14 @@ public class Middleware {
 		}
 
 		return orderList;
+	}
+
+	public ReportBean consolidateOrders(List<OrderBean> orders) throws Exception {
+		ReportBean report = new ReportBean();
+		List<TotalItemsBean> totalItems = new LinkedList<>();
+		Map<String, Integer> mappedOrders = new HashMap<>();
+
+		return report;
 	}
 
 	public static void main(String[] args) throws Exception {
