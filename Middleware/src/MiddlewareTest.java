@@ -1,6 +1,9 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -9,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import model.OrderBean;
 
 class MiddlewareTest {
 
@@ -59,6 +64,12 @@ class MiddlewareTest {
 			fail("Wrong exception thrown");
 		}
 
+	}
+
+	@Test
+	void testListPoFiles() throws JAXBException {
+		List<OrderBean> returnedOrders = b2c.listInboxFiles();
+		assertTrue(!returnedOrders.isEmpty());
 	}
 
 }

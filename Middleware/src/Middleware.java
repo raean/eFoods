@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,31 +13,33 @@ public class Middleware {
 
 	private static final String IN_PO_PATH = "/inPO/";
 	private static final String OUT_PO_PATH = "/outPO/";
-	private static final Class<OrderBean> ORDERBEAN = OrderBean.class;
-	private String poPath;
+	private static final Class<OrderBean> ORDER_BEAN = OrderBean.class;
+	private static final Class<ReportBean> REPORT_BEAN = ReportBean.class;
 
+	private String poPath;
 	private File inDir;
 	private File outDir;
 
 	private File[] inFiles;
 	private File[] outFiles;
 
-	private JAXBContext orderContext;
-	private Marshaller orderMarshaller;
 	private Unmarshaller orderUnMarshaller;
+	private Marshaller reportMarshaller;
 
 	public Middleware(File poDir) {
-		setOrderJAXB(ORDERBEAN);
+		setJAXB(ORDER_BEAN, REPORT_BEAN);
 		setInOutDir(poDir);
 	}
 
-	private void setOrderJAXB(Class<OrderBean> orderBean) {
+	private void setJAXB(Class<OrderBean> orderBean, Class<ReportBean> reportBean) {
 		try {
-			this.orderContext = JAXBContext.newInstance(orderBean);
-			this.orderMarshaller = orderContext.createMarshaller();
+			JAXBContext orderContext = JAXBContext.newInstance(orderBean);
+			JAXBContext reportContext = JAXBContext.newInstance(reportBean);
+
+			this.reportMarshaller = orderContext.createMarshaller();
 			this.orderUnMarshaller = orderContext.createUnmarshaller();
 
-			this.orderMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			this.reportMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		} catch (JAXBException e) {
 			System.err.println("Fatal JAXB error " + e.getMessage());
 			System.exit(1);
@@ -56,13 +60,19 @@ public class Middleware {
 		outFiles = outDir.listFiles();
 	}
 
-	public void listPoFiles() {
+	public List<OrderBean> listInboxFiles() throws JAXBException {
+		List<OrderBean> orderList = new ArrayList<>();
+
 		for (File fileName : inFiles) {
-			System.out.println(fileName.getName());
+			OrderBean order = (OrderBean) orderUnMarshaller.unmarshal(fileName);
+			orderList.add(order);
+			System.out.println(order.getId());
 		}
+
+		return orderList;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		if (args.length != 1) {
 			System.err.println("Usage: java Middleware <PO Folder Path>");
@@ -77,7 +87,7 @@ public class Middleware {
 		}
 
 		Middleware b2c = new Middleware(poDir);
-		b2c.listPoFiles();
+		List<OrderBean> orders = b2c.listInboxFiles();
 
 	}
 
