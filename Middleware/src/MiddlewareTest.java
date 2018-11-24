@@ -14,9 +14,11 @@ class MiddlewareTest {
 
 	static final String PO_FOLDER = System.getProperty("user.home") + "/PO/";
 	static final File PO_FILE = new File(PO_FOLDER);
+	static Middleware b2c;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
+		b2c = new Middleware(PO_FILE);
 	}
 
 	@AfterAll
@@ -35,7 +37,7 @@ class MiddlewareTest {
 	void testMiddleware() {
 
 		try {
-			Middleware b2c = new Middleware(PO_FILE);
+			Middleware testConstruct = new Middleware(PO_FILE);
 			assertTrue(true);
 		} catch (Exception e) {
 			fail("Error thrown " + e.getMessage());
@@ -43,16 +45,18 @@ class MiddlewareTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "bad directory", "/eecs/adamzis/test" })
+	@ValueSource(strings = { "bad directory", "/cs/adamzis/test", "/eecs/home/adamzis/PO/inPO", "505",
+			"/eecs/home/adamzis/PO/ouPO" })
 	void testMiddlewareException(String nonsense) {
 		try {
 			File dummyfile = new File(nonsense);
+			Middleware badMiddle = new Middleware(dummyfile);
 
-			Middleware testMiddle = new Middleware(dummyfile);
+			fail("No exception thrown");
 		} catch (IllegalArgumentException e) {
 			assertTrue(true);
 		} catch (Exception e) {
-			fail("wrong exception thrown");
+			fail("Wrong exception thrown");
 		}
 
 	}
