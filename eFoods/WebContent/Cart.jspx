@@ -93,8 +93,10 @@
 					<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
 					<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
 					<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-					<input type="submit" name="checkoutButton" value="Checkout"/> <input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-
+					<input type="submit" name="checkoutButton" value="Checkout"/> 
+				</form>
+				<form name="checkoutForm" action="Catalog.do" method="POST">
+					<input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
 				</form>
 			</div>
 	</div>

@@ -50,7 +50,7 @@ public class Cart extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} //else if (request.getParameter(""))
+		} 
 
 		if (engine.isCartEmpty(cart)) {
 			request.setAttribute("itemsCost", 0.0);

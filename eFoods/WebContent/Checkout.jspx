@@ -12,7 +12,7 @@
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 		<title> Check Out - Foods R Us </title>
-		<<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />				<link href="css/style.css" rel="stylesheet" type="text/css"></link>
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
 		
@@ -44,11 +44,11 @@
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 
 					<form>
-						<c:if test="${empty username}">
+						<c:if test="${!sessionScope.authenticated}">
 							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
 						</c:if>
-						<c:if test="${!empty username}">
-							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${username}</small><br />Your account</a>
+						<c:if test="${sessionScope.authenticated}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${sessionScope.customer.getName().split(" ")[0]} </small><br />Your account</a>
 						</c:if>
 					</form>
 				</li>
