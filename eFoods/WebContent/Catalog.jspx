@@ -64,9 +64,8 @@
 								<div class="card-header">
 									${catalogItem.getName()}
 								</div>
-									<form name="catalogForm" action="Catalog.do" method="POST">
+									<form name="catalogForm" action="Catalog.do?catalogId=${catalogItem.getId()}" method="POST">
 										<input type="image" name="submit" src="data:image/png;base64,${catalogItem.getPicture()}" />
-										<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>	
 										<div class="card-body">
 											<small class="text-muted">
 									        	${catalogItem.getDescription()}
@@ -87,8 +86,8 @@
 						<option value="Price - Low to High">Price - Low to High</option>
 						<option value="Price - High to Low"> Price - High to Low</option>
 					</select>
+					<input value="${catalogId}" name="catalogId" type="hidden"/>
 					<input type="submit" name="sortByButton" value="Sort"/> 
-					<input type="hidden" value="${catalogId}" name="catalogId"/>
 				</form>
 			</div>
 			<div name="showingCategoryDiv">
@@ -119,6 +118,8 @@
 									</c:if>
 							</td>
 							<input type="hidden" name="hiddenItemBeanId" value="${item.getNumber()}"/>
+							<input value="${sortBy}" name="sortBy" type="hidden"/>
+							<input value="${catalogId}" name="catalogId" type="hidden"/>
 							</form>
 						</tr>
 					</c:forEach>
