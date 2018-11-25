@@ -1,7 +1,9 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -18,13 +20,16 @@ import model.OrderBean;
 
 class MiddlewareTest {
 
-	static final String PO_FOLDER = System.getProperty("user.home") + "/PO/";
-	static final File PO_FILE = new File(PO_FOLDER);
-	static Middleware b2c;
+	static String poPath;
+	static File poFolder;
+	static Middleware middleware;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
-		b2c = new Middleware(PO_FILE);
+		poPath = System.getProperty("user.home") + "/POTest/";
+		poFolder = new File(poPath);
+		middleware = new Middleware(poFolder);
+
 	}
 
 	@AfterAll
@@ -41,9 +46,8 @@ class MiddlewareTest {
 
 	@Test
 	void testMiddleware() {
-
 		try {
-			Middleware testConstruct = new Middleware(PO_FILE);
+			Middleware testConstruct = new Middleware(poFolder);
 			assertTrue(true);
 		} catch (Exception e) {
 			fail("Error thrown " + e.getMessage());
@@ -54,23 +58,54 @@ class MiddlewareTest {
 	@ValueSource(strings = { "bad directory", "/cs/adamzis/test", "/eecs/home/adamzis/PO/inPO", "505",
 			"/eecs/home/adamzis/PO/ouPO" })
 	void testMiddlewareException(String nonsense) {
-		try {
+		Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
 			File dummyfile = new File(nonsense);
 			Middleware badMiddle = new Middleware(dummyfile);
+		});
 
-			fail("No exception thrown");
-		} catch (IllegalArgumentException e) {
-			assertTrue(true);
-		} catch (Exception e) {
-			fail("Wrong exception thrown");
-		}
+		assertEquals("There is no inPO or outPO directory in the PO folder, exiting", exception.getMessage());
 
 	}
 
 	@Test
 	void testListPoFiles() throws JAXBException {
-		List<OrderBean> returnedOrders = b2c.listInboxFiles();
-		assertTrue(!returnedOrders.isEmpty());
+		List<OrderBean> returnedOrders = middleware.listInboxFiles();
+
+		assertAll("Check list", () -> assertTrue(!returnedOrders.isEmpty()),
+				() -> assertEquals(middleware.getInDir().listFiles().length, returnedOrders.size()));
+
+		for (OrderBean order : returnedOrders) {
+			assertNotNull(order);
+			assertEquals("adamzis", order.getCustomer().getAccount());
+		}
+	}
+
+	@Test
+	void testInOutDirectories() {
+
+		assertAll("Check that inPo and outPO point to right directories",
+				() -> assertEquals("/cs/home/adamzis/POTest/inPO", middleware.getInDir().getPath()),
+				() -> assertEquals("/cs/home/adamzis/POTest/outPO", middleware.getOutDir().getPath()));
+
+		assertAll("Check that inPo and outPo are directories", () -> assertTrue(middleware.getInDir().isDirectory()),
+				() -> assertTrue(middleware.getOutDir().isDirectory()));
+
+	}
+
+	@Test
+	void testGetTotalItemQuantity() throws JAXBException {
+		List<OrderBean> orderList = middleware.listInboxFiles();
+
+		Map<String, TotalItemsBean> quantityMap = middleware.getTotalItemQuantity(orderList);
+
+		assertTrue(!quantityMap.isEmpty());
+		
+		assertTrue(quantityMap.containsKey("0905A123"));
+
+		for (TotalItemsBean item : quantityMap.values()) {
+			System.out.println(item.getName());
+			System.out.println(item.getQuantity());
+		}
 	}
 
 }

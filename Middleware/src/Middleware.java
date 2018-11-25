@@ -16,6 +16,7 @@ public class Middleware {
 
 	private static final String IN_PO_PATH = "/inPO/";
 	private static final String OUT_PO_PATH = "/outPO/";
+
 	private static final Class<OrderBean> ORDER_BEAN = OrderBean.class;
 	private static final Class<ReportBean> REPORT_BEAN = ReportBean.class;
 
@@ -63,25 +64,80 @@ public class Middleware {
 		outFiles = outDir.listFiles();
 	}
 
-	// TODO The files should be moved right after being read into the array.
+	// TODO The files should be moved right after being read into the array or after
+	// report made
+
+	/**
+	 * O(n) time
+	 * 
+	 * @return
+	 * @throws JAXBException
+	 */
 	public List<OrderBean> listInboxFiles() throws JAXBException {
 		List<OrderBean> orderList = new ArrayList<>();
 
 		for (File fileName : inFiles) {
 			OrderBean order = (OrderBean) orderUnMarshaller.unmarshal(fileName);
 			orderList.add(order);
-			System.out.println(order.getId());
 		}
 
 		return orderList;
 	}
 
-	public ReportBean consolidateOrders(List<OrderBean> orders) throws Exception {
+	public Map<String, TotalItemsBean> getTotalItemQuantity(List<OrderBean> orderList) {
+		Map<String, TotalItemsBean> quantityMap = new HashMap<>();
+
+		for (OrderBean order : orderList) {
+			List<ItemBean> orderItems = order.getItems();
+
+			for (ItemBean orderItem : orderItems) {
+				String orderItemNumber = orderItem.getNumber();
+				String orderItemName = orderItem.getName();
+				int orderItemQty = orderItem.getQuantity();
+
+				if (!quantityMap.containsKey(orderItemNumber)) {
+					TotalItemsBean totalItem = new TotalItemsBean();
+
+					totalItem.setNumber(orderItemNumber);
+					totalItem.setName(orderItemName);
+					totalItem.setQuantity(orderItemQty);
+
+					quantityMap.put(orderItemNumber, totalItem);
+				} else {
+					TotalItemsBean totalItem = quantityMap.get(orderItemNumber);
+					totalItem.setQuantity(totalItem.getQuantity() + orderItemQty);
+					quantityMap.put(orderItemNumber, totalItem);
+				}
+			}
+		}
+
+		return quantityMap;
+	}
+
+	public ReportBean consolidateOrders() throws Exception {
 		ReportBean report = new ReportBean();
-		List<TotalItemsBean> totalItems = new LinkedList<>();
-		Map<String, Integer> mappedOrders = new HashMap<>();
 
 		return report;
+	}
+
+	public void movePoToOu() throws Exception {
+
+	}
+
+	public File getInDir() {
+		return inDir;
+	}
+
+	public void setInDir(File inDir) {
+		this.inDir = inDir;
+	}
+
+	public File getOutDir() {
+		return outDir;
+	}
+
+	public void setOutDir(File outDir) {
+		this.outDir = outDir;
 	}
 
 	public static void main(String[] args) throws Exception {
