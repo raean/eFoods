@@ -54,49 +54,54 @@
 		</nav>
 	<br />
 	<div class="cartDiv">
-			<div class="cartItemTableDiv">
-				<c:if test="${viewableCart.isEmpty()}">
-					<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
-				</c:if>
-				<c:if test="${!viewableCart.isEmpty()}">
-					<form name="updateCartForm" action="Cart.do" method="POST">
-					<table border="1pt">
-						<tr>
-							<td> Name </td> 
-							<td> Quantity </td> 
-							<td> Cost Per Unit </td> 
-							<td> Price </td>
-							<td> ID </td>
-							<td> Delete </td>
-						</tr>
-						<c:forEach items="${viewableCart}" var="cartItem">
-							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
-							<tr>
-								<td>${cartItem.key.getName()}</td>
-								<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
-								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
-								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
-								<td>${cartItem.key.getNumber()}</td>
-								<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
-							</tr>
-						</c:forEach>
-					</table>
-					<input type="submit" value="Update" name="updateCartButton"/>
-					</form>
-				</c:if>
-			</div>
-			<div class="checkoutDiv">
-				<form name="checkoutForm" action="Checkout.do" method="POST">
-					<h2> Price Calculations: </h2>
+		<h2>Your Cart</h2>
+	</div>
+	<br />
+	<div class="cartItemTableDiv">
+		<c:if test="${viewableCart.isEmpty()}">
+			<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
+		</c:if>
+		<c:if test="${!viewableCart.isEmpty()}">
+			<form name="updateCartForm" action="Cart.do" method="POST">
+			<table class="table">
+				<tr class="font-weight-bold">
+					<td> Name </td> 
+					<td> Quantity </td> 
+					<td> Cost Per Unit </td> 
+					<td> Price </td>
+					<td> ID </td>
+					<td> Delete </td>
+				</tr>
+				<c:forEach items="${viewableCart}" var="cartItem">
+					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
+					<tr>
+						<td>${cartItem.key.getName()}</td>
+						<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
+						<td>${cartItem.key.getNumber()}</td>
+						<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
+					</tr>
+				</c:forEach>
+			</table>
+				<div class="text-right">
+				<button class="btn btn-outline" type="submit" name="updateCartButton">Update</button>
+				</div>
+			</form>
+		</c:if>
+	</div>
+	<div class="checkoutDiv">
+		<form name="checkoutForm" action="Checkout.do" method="POST">
+			<h2> Price Calculations: </h2>
 
-					<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
-					<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
-					<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
-					<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-					<input type="submit" name="checkoutButton" value="Checkout"/> <input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
+			<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
+			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
+			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
+			<input class="btn btn-outline" type="submit" name="checkoutButton" value="Checkout"/> 
+			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
 
-				</form>
-			</div>
+		</form>
 	</div>
 </body>
 	</html>

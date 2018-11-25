@@ -69,10 +69,10 @@
 			<h3> Canada's Leading Online Food Market</h3>
 		 	<br />	
 		 	<br />
-				<c:if test="${empty username}">
+				<c:if test="${!sessionScope.authenticated}">
 					<img src="img/welcomeBanner.png" id="banner"/>
 				</c:if>
-				<c:if test="${!empty username}">
+				<c:if test="${sessionScope.authenticated}">
 					<img src="img/featuredBanner.png"  id="banner"/>
 				</c:if>
 			</div>

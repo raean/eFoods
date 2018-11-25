@@ -64,7 +64,7 @@
 					<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
 				</c:if>
 				<c:if test="${!viewableCart.isEmpty()}">
-					<table border="1pt">
+					<table class="table">
 						<tr>
 							<td> Name </td> 
 							<td> Quantity </td> 
@@ -75,11 +75,14 @@
 						<c:forEach items="${viewableCart}" var="cartItem">
 							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
 							<tr>
-								<td>${cartItem.key.getName()}</td>
-								<td>x ${cartItem.value}</td>
-								<td>${cartItem.key.getPrice()}</td>
-								<td>${cartItem.key.getPrice() * cartItem.value}</td>
-								<td>${cartItem.key.getNumber()}</td>
+								<tr>
+									<td>${cartItem.key.getName()}</td>
+									<td>x ${cartItem.value}"</td>
+									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
+									<td>${cartItem.key.getNumber()}</td>
+									<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
+								</tr>
 							</tr>
 						</c:forEach>
 					</table>

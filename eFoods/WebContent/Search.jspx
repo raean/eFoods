@@ -59,21 +59,27 @@
 	<br />
 	<div class="advancedSearchDiv row">
 		<div class="searchOptions col-lg-4">
+		
 			<form name="searchOptionsForm" action="Search.do" method="POST">
+			<div>
 			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
-				<select id="sortBy" name="sortBy">
+			</div>
+				<div>
+				<select id="sortBy" name="sortBy" class="m-2">
 					<option selected="any" value="NONE">Select One:</option>
 					<option value="A to Z">A to Z</option>
 					<option value="Z to A">Z to A</option>
 					<option value="Price - Low to High">Price - Low to High</option>
 					<option value="Price - High to Low"> Price - High to Low</option>
 				</select>
+				</div>
+				
+					Min cost: <input class="m-2" type="text" name="minInput" value="${minInputValue}" />
 				<br/>
-					Min cost:  <input type="text" name="minInput" value="${minInputValue}" />
+					Max cost: <input  class="m-1" type="text"  name="maxInput" value="${maxInputValue}" />
 				<br/>
-					Max cost: <input type="text" name="maxInput" value="${maxInputValue}" />
-				<br/>
-				<input type="submit" name="advancedSearchButton" value="Search"/>
+
+				<input class="btn btn-outline m-2" type="submit" name="advancedSearchButton" value="Search"/>
 			</form>
  		</div>
 		<div class="searchResultDiv col-lg-8">
@@ -90,7 +96,7 @@
 							<br />
 							Quantity: 
 							<input type="number" placeholder="1" name="addQuantity" step="1" min="1"/> 
-							<input type="submit" name="cartButton" value="Add to Cart"/>
+							<input class="btn btn-outline m-2" type="submit" name="cartButton" value="Add to Cart"/>
 							<br />
 							ID: ${item.getNumber()} 
 						</form>
