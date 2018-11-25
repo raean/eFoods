@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat",
 		"grandTotalFormat" })
+
 public class OrderBean {
 	@XmlAttribute
 	private int id;

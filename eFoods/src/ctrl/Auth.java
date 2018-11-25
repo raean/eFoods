@@ -22,7 +22,7 @@ import model.OrderBean;
 @WebServlet("/Auth.do")
 public class Auth extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	public static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://%s:%s/eFoods/Auth.do";
+	private static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://localhost:4413/eFoods/Auth.do";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -42,17 +42,6 @@ public class Auth extends HttpServlet {
 			customer.setAccount(request.getParameter("user"));
 			customer.setName(request.getParameter("name"));
 
-			Map<String, OrderBean> customerOrders;
-
-			// I am unsure about the catch block, but checked exception.
-			try {
-				customerOrders = model.getCustomerOrders(customer);
-			} catch (JAXBException e) {
-				customerOrders = new TreeMap<>();
-				customerOrders.put("Error processing PO Xml", null);
-			}
-
-			session.setAttribute("customerOrders", customerOrders);
 			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
 
