@@ -32,7 +32,7 @@ public class Catalog extends HttpServlet {
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
 		request.setAttribute("cart", session.getAttribute("cart"));
-
+		request.setAttribute("sortBy", "NONE");
 		// We get the categories that exist to populate the user page with options.
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
