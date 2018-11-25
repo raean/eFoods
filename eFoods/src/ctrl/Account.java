@@ -28,12 +28,10 @@ public class Account extends HttpServlet {
 			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
 			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
 
-			if (session.getAttribute("previousOrders") == null) {
-				try {
-					session.setAttribute("previousOrders", engine.getCustomerOrders(customer));
-				} catch (JAXBException e) {
-					response.getWriter().write("Fatal error " + e.getMessage());
-				}
+			try {
+				session.setAttribute("previousOrders", engine.getCustomerOrders(customer));
+			} catch (JAXBException e) {
+				response.getWriter().write("Fatal error " + e.getMessage());
 			}
 
 			this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
