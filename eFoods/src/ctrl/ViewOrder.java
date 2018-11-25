@@ -29,9 +29,9 @@ public class ViewOrder extends HttpServlet {
 		if (orderFileName != null && authenticated) {
 
 			Map<String, OrderBean> orders = (Map<String, OrderBean>) session.getAttribute("previousOrders");
-			OrderBean requestedOrder = orders.get(request.getParameter("order"));
+			OrderBean order = orders.get(request.getParameter("order"));
 
-			request.setAttribute("requestedOrder", requestedOrder);
+			request.setAttribute("order", order);
 			request.setAttribute("orderFileName", orderFileName);
 
 			this.getServletContext().getRequestDispatcher("/ViewOrder.jspx").forward(request, response);
