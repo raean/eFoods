@@ -27,6 +27,7 @@ public class Dash extends HttpServlet {
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
+			request.setAttribute("cart", session.getAttribute("cart"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

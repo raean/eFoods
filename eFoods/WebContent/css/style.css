@@ -52,6 +52,11 @@ body {
   cursor: pointer;
 }
 
+#banner {
+	align:center;
+	width: 100%;
+}
+
 .navigation .searchDiv input[type=submit] {
   background: #ccc;
 }

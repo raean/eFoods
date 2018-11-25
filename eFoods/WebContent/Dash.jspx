@@ -22,7 +22,7 @@
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efood.jpg"  class="img-circle" width="75pt" height="75pt" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
@@ -34,11 +34,13 @@
 			<ul class="navbar-nav ml-auto">
 				<!-- CATALOG -->
 				<li class="nav-item active"> 
-					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+					<a class ="nav-link" href="Catalog.do" name="browse"> <large>Browse</large> </a>
 				</li>
 				<!-- CART -->
 				<li class="nav-item nav-a nav-a-2 active"> 
-					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart</a>
+					<form>
+						<a class ="nav-link" href="Cart.do"><small>Your</small><br />Cart <small>(${cart.size()})</small></a>
+					</form>
 				</li>
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 
@@ -57,11 +59,15 @@
 		<!-- MAIN DIV START -->
 		<div name="mainDiv">
 			<!-- WELCOME TEXT -->	
-		 	<div name="welcomeDiv"><h1> Welcome to the Homepage babe xo</h1></div>
+		 	<div name="welcomeDiv"><h1> Canada's Leading Online Food Market</h1></div>
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
-				<h2>Featured Items</h2>
-				<img src="img/featuredDefault.jpg" alt="img/featuredDefault.jpg"/> 
+				<c:if test="${empty username}">
+					<img src="img/welcomeBanner.png" id="banner"/>
+				</c:if>
+				<c:if test="${!empty username}">
+					<img src="img/featuredBanner.png"  id="banner"/>
+				</c:if>
 			</div>
 			<!-- CONTENT DIV -->
 			<div name="contentDiv" class="container row justify-content-between">
