@@ -21,13 +21,13 @@ public class Search extends HttpServlet {
 		if (request.getParameter("searchButton") != null) {
 			Engine engine = Engine.getInstance();
 			String searchInputValue = request.getParameter("searchInput");
+			System.out.println(searchInputValue);
 			if (!searchInputValue.isEmpty()) {
 				try {
 					List<ItemBean> result = engine.doSearch(searchInputValue);
 					request.setAttribute("result",  result);
 				} catch (Exception e) {
-					// I don't know what we're meant to do here.
-					System.out.println(e.getMessage() + "poop");
+					System.out.println(e.getMessage());
 				}
 			} else {
 				

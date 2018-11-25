@@ -5,21 +5,35 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "number", "name", "priceFormat", "quantity", "extendedFormat" })
 public class ItemBean {
 
 	@XmlAttribute
 	private String number; // 8-digit product code. Key
 	private String name; // NAME
-	private double price; // PRICE
 	private int quantity; // QTY
-	private double extended; // Total price, equal to quantity * price
 
+	@XmlTransient
+	private double price; // PRICE
+	@XmlTransient
+	private double extended; // Total price, equal to quantity * price
 	@XmlTransient
 	private String unit; // UNIT quantity per unit
 	@XmlTransient
 	private int catId; // CATID category Id
+
+	@XmlElement(name = "extended")
+	private String getExtendedFormat() {
+		return String.format("%.2f", this.extended);
+	}
+
+	@XmlElement(name = "price")
+	private String getPriceFormat() {
+		return String.format("%.2f", this.price);
+	}
 
 	public ItemBean() {
 		super();

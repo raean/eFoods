@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.CategoryBean;
 import model.Engine;
@@ -24,9 +25,12 @@ public class Catalog extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		// Regular instantiation:
 		request.getSession(true);
 		Engine engine = Engine.getInstance();
+		HttpSession session = request.getSession();
+		request.setAttribute("cart", session.getAttribute("cart"));
 
 		// We get the categories that exist to populate the user page with options.
 		try {
@@ -114,22 +118,27 @@ public class Catalog extends HttpServlet {
 			}
 		}
 
+		String queryString= "";
 		// If the add to cart button is clicked, then we must add it to the cart:
 		if (request.getParameter("cartButton") != null) {
 			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 			String item = request.getParameter("hiddenItemBeanId");
 			String quantity = request.getParameter("addQuantity");
 			try {
+				queryString = "?catalogId=" + engine.getItem(request.getParameter("hiddenItemBeanId")).getCatId()
+					+ "&sortBy=" + request.getParameter("sortBy") + "&sortByButton=1";
 				Map<String, Integer> newCart = engine.addItemToCart(cart, item, quantity);
 				request.getSession().setAttribute("cart", newCart);
+				request.setAttribute("sortBy", request.getParameter("sortBy"));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			// request.setAttribute("cart", newCart);
 		}
-
-		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
+		
+		
+		this.getServletContext().getRequestDispatcher("/Catalog.jspx"+queryString).forward(request, response);
 	}
 
 	/**

@@ -12,20 +12,13 @@ import model.Engine;
  */
 @WebListener
 public class Init implements ServletContextListener {
-	
-	public static final String PO_FOLDER = "/WEB-INF/PO/";
 
-    public void contextDestroyed(ServletContextEvent sce)  { 
-         // TODO Auto-generated method stub
-    }
+	public void contextDestroyed(ServletContextEvent sce) {
+		// TODO Auto-generated method stub
+	}
 
-	/**
-     * @see ServletContextListener#contextInitialized(ServletContextEvent)
-     */
-    public void contextInitialized(ServletContextEvent sce)  { 
-         String poPath = sce.getServletContext().getRealPath(PO_FOLDER);
-         Engine firstEngine = Engine.getInstance();
-         firstEngine.initPoFolder(poPath);
-    }
-	
+	public void contextInitialized(ServletContextEvent sce) {
+		Engine.getInstance();
+	}
+
 }

@@ -1,24 +1,22 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
-
+import java.util.TreeMap;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 /**
- * Back-end logic singleton for the webstore app. Mainly functions to retrieve
- * information from the database.
+ * Back-end logic singleton for the webstore app. Returns data from the DAO and
+ * handles the business logic of the eFoods application.
  *
  */
 public class Engine {
@@ -28,40 +26,54 @@ public class Engine {
 	private CategoryDAO catDao;
 
 	private long fileCount;
-	private String poPath;
+	private static final String PO_PATH = System.getProperty("user.home") + "/PO/";
+	private static final String IN_PO = PO_PATH + "inPO/";
+	private static final String OUT_PO = PO_PATH + "outPO";
+
+	private JAXBContext orderContext;
+	private Marshaller orderMarshaller;
+	private Unmarshaller orderUnMarshaller;
 
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
+	private static final String itemMatcher = "([0-9]{4}[a-z|A-Z][0-9]{3})";
 
 	private Engine() {
-		itemDao = new ItemDAO();
-		catDao = new CategoryDAO();
-	}
-
-	public void initPoFolder(String poPath) {
-		Stream<Path> files = null;
+		this.itemDao = new ItemDAO();
+		this.catDao = new CategoryDAO();
+		initPoFolder();
 
 		try {
-			files = Files.list(Paths.get(poPath));
-		} catch (IOException e) {
-			System.out.println("EXCEPTION " + e.getMessage());
-		}
-		this.fileCount = files.count();
-		this.poPath = poPath;
+			this.orderContext = JAXBContext.newInstance(OrderBean.class);
+			this.orderMarshaller = orderContext.createMarshaller();
+			this.orderUnMarshaller = orderContext.createUnmarshaller();
 
-		files.close();
+			this.orderMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		} catch (JAXBException e) {
+			System.err.println("Fatal error " + e.getMessage());
+		}
+
+	}
+
+	private void initPoFolder() {
+		File poDir = new File(PO_PATH);
+		File inDir = new File(IN_PO);
+		File outDir = new File(OUT_PO);
+
+		poDir.mkdirs();
+		inDir.mkdir();
+		outDir.mkdir();
+
+		this.fileCount = inDir.listFiles().length + outDir.listFiles().length;
 	}
 
 	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
 	public void testPathNonsense() throws Exception {
-
-		System.out.println(this.poPath);
-
 		OrderBean order;
 		CustomerBean customer = new CustomerBean();
 
 		customer.setAccount("adamzis");
-		customer.setName("Adam Adindji");
+		customer.setName("Adam Adjindji");
 
 		ItemBean item1 = getItem("0905A044");
 		ItemBean item2 = getItem("0905A112");
@@ -73,9 +85,8 @@ public class Engine {
 		viewableCart.put(item3, 2);
 
 		order = makeOrder(viewableCart, customer);
-		checkOut(order);
 
-		System.out.println(this.fileCount);
+		checkOut(order);
 
 	}
 
@@ -117,6 +128,15 @@ public class Engine {
 		return itemDao.getAllItems();
 	}
 
+	/**
+	 * Returns every available item as a list, sorted by the input.
+	 * 
+	 * @param sortBy
+	 *            an input from the select tag in html
+	 * @return a list containing every available item sorted by what the user wants.
+	 * @throws Exceptionif
+	 *             an SQL exception is thrown.
+	 */
 	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		return itemDao.getAllItems(sortBy);
 	}
@@ -194,17 +214,19 @@ public class Engine {
 	 *             if there is an SQL error or if the list returned is empty.
 	 */
 	public List<ItemBean> doSearch(String searchInputValue) throws Exception {
-
+		List<ItemBean> result = new ArrayList<>();
 		if (searchInputValue.isEmpty()) {
-			throw new IllegalArgumentException("Search query is empty.");
+			throw new IllegalArgumentException("");
 		}
+		if (searchInputValue.matches(itemMatcher)) {
+			result.add(getItem(searchInputValue));
+		} else {
+			result = itemDao.search(searchInputValue);
 
-		List<ItemBean> result = itemDao.search(searchInputValue);
-
-		if (result.isEmpty()) {
-			throw new Exception("No results returned.");
+			if (result.isEmpty()) {
+				throw new Exception("No results found.");
+			}
 		}
-
 		return result;
 	}
 
@@ -290,7 +312,7 @@ public class Engine {
 	 */
 	public Map<ItemBean, Integer> makeViewableCart(Map<String, Integer> cart) throws Exception {
 
-		Map<ItemBean, Integer> viewableCart = new HashMap<ItemBean, Integer>();
+		Map<ItemBean, Integer> viewableCart = new LinkedHashMap<ItemBean, Integer>();
 
 		for (String s : cart.keySet()) {
 			viewableCart.put(this.getItem(s), cart.get(s));
@@ -299,6 +321,21 @@ public class Engine {
 		return viewableCart;
 	}
 
+	/**
+	 * Creates an OrderBean from the viewableCart and a customerBean. The OrderBean
+	 * contains the customerBean and a list of ItemBeans where the quantity and
+	 * total price (extended) are set. The orderBean also contains shipping, HST,
+	 * total, and grand total pricing easily accessible.
+	 * 
+	 * TODO: Remove calculations into their own methods.
+	 * 
+	 * @param viewableCart
+	 *            a non empty viewableCart.
+	 * @param customer
+	 *            a non-empty customerBean
+	 * @return
+	 * @throws Exception
+	 */
 	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
 		OrderBean order = new OrderBean();
 		List<ItemBean> itemList = new ArrayList<>();
@@ -323,7 +360,7 @@ public class Engine {
 		grandTotal = total + HST + shipping;
 
 		order.setItems(itemList);
-		order.setSubmitted(this.getTime());
+		order.setSubmitted(this.getDate());
 		order.setCustomer(customer);
 
 		order.setTotal(total);
@@ -340,7 +377,7 @@ public class Engine {
 	 * 
 	 * @return the date formatted as "yyyy-mm-dd"
 	 */
-	private String getTime() {
+	private String getDate() {
 		LocalDate currTime = LocalDate.now();
 		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -348,18 +385,73 @@ public class Engine {
 		return formattedTime;
 	}
 
+	/**
+	 * Turns an orderBean into an XML file on disk (A recieved order). The OrderBean
+	 * should be removed from the session and cart emptied after calling this
+	 * method.
+	 * 
+	 * @param order
+	 *            a populated orderBean
+	 * @throws Exception
+	 */
 	public void checkOut(OrderBean order) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(OrderBean.class);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		String fileCountString = makeOrderId();
 
-		String poName = "po" + order.getCustomer().getAccount() + "_" + (++fileCount) + ".xml";
-		File newPo = new File(poPath + poName);
-		System.out.println(newPo.getAbsolutePath());
-		System.out.println(newPo.getPath());
-		System.out.println(newPo.getCanonicalPath());
+		order.setId(Integer.parseInt(fileCountString));
+		String poName = "po" + order.getCustomer().getAccount() + "_" + fileCountString + ".xml";
+		File newPo = new File(IN_PO + poName);
+
 		newPo.createNewFile();
-		marshaller.marshal(order, newPo);
+		orderMarshaller.marshal(order, newPo);
+	}
+
+	/**
+	 * Creates a 2+ digit orderId for the orderBean. Used in the filename, and
+	 * inside the P XML.
+	 * 
+	 * @return
+	 */
+	private String makeOrderId() {
+		String fileCountString;
+		if (++fileCount < 10) {
+			fileCountString = "0" + fileCount;
+		} else {
+			fileCountString = Long.toString(fileCount);
+		}
+
+		return fileCountString;
+	}
+
+	/**
+	 * Generates a list of customer orders based on the CustomerBean.
+	 * 
+	 * @param customer
+	 *            a populated customerBean.
+	 * @return A List of orders the customer made, may be empty if the customer has
+	 *         made no orders.
+	 * @throws JAXBException
+	 * @throws Exception
+	 */
+	public Map<String, OrderBean> getCustomerOrders(CustomerBean customer) throws JAXBException {
+		Map<String, OrderBean> customerOrders = new TreeMap<>();
+		File inPODir[] = new File(IN_PO).listFiles();
+		File outPODir[] = new File(OUT_PO).listFiles();
+
+		for (File file : inPODir) {
+			if (file.getName().contains(customer.getAccount())) {
+				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				customerOrders.put(file.getName(), customerOrder);
+			}
+		}
+
+		for (File file : outPODir) {
+			if (file.getName().contains(customer.getAccount())) {
+				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
+				customerOrders.put(file.getName(), customerOrder);
+			}
+		}
+
+		return customerOrders;
 	}
 
 	/**
