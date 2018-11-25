@@ -18,18 +18,42 @@
 
 		</head>
 		<body class="container">
-		<div class="navigation">
-			<a href="Dash.do" name="home"> Home </a>
-			<a href="Catalog.do" name="browse"> Browse </a>
-			<a href="Auth.do" name="authentication">Sign In</a>
-			<a href="Cart.do"> Cart </a>
-			<div class="searchDiv">
-				<form name="searchForm" action="Search.do" method="POST">
-					<input type="text" name="searchInput" placeholder="Looking an item?" value="${searchInputValue}"/>
-					<input type="submit" name="searchButton" value="Search"/>
-				</form>
-			</div>
-		</div>
+		<!-- STRAT OF NAVIGATION -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<!-- START OF LOGO -->
+			<div class="navbar-brand col-md-2">
+				<a href="Dash.do" name="home" >
+					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+				</a>
+			</div>		  	
+			<!-- SEARCH -->
+			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
+				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
+				<button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+			</form>
+			<!-- LINKS -->
+			<ul class="navbar-nav ml-auto">
+				<!-- CATALOG -->
+				<li class="nav-item active"> 
+					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+				</li>
+				<!-- CART -->
+				<li class="nav-item nav-a nav-a-2 active"> 
+					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart</a>
+				</li>
+				<!-- SIGN IN -->
+				<li class="nav-item active"> 
+					<form>
+						<c:if test="${empty username}">
+							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
+						</c:if>
+						<c:if test="${!empty username}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${username}</small><br />Your account</a>
+						</c:if>
+					</form>
+				</li>
+			</ul>
+		</nav>
 		<div name="mainDiv" class="">
 			<div name="catalogDiv">
 				<h2>Select a Catalog</h2>

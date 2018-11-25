@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.CategoryBean;
+import model.CustomerBean;
 import model.Engine;
 import model.ItemBean;
 
@@ -136,7 +137,10 @@ public class Catalog extends HttpServlet {
 			}
 			// request.setAttribute("cart", newCart);
 		}
-		
+		if (session.getAttribute("customer") != null) {
+			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
+			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
+		}
 		
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx"+queryString).forward(request, response);
 	}
