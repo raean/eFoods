@@ -22,7 +22,7 @@ public class ItemDAO {
 	public static final String SET_SCHEMA = "set schema roumani";
 
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
-	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE >= MIN PRICE AND PRICE <= MAX PRICE";
+	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE BETWEEN ? AND ?";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
@@ -30,6 +30,8 @@ public class ItemDAO {
 	public static final String[] USER_SORT_INPUT = { "NONE", "Price - Low to High", "Price - High to Low", "A to Z", "Z to A" };
 	private HashMap<String, String> orderMap;
 
+	private final double MAX_RANGE_VALUE = 1000000.00; 
+			
 	private Connection con;
 
 	/**
@@ -91,19 +93,19 @@ public class ItemDAO {
 		}
 
 		if (minCost.isEmpty()) {
-			searchStatement.setString(2, "0.0");
+			searchStatement.setDouble(2, 0.0);
 		} else {
-			searchStatement.setString(2, minCost);
+			searchStatement.setDouble(2, Double.parseDouble(minCost));
 		}
 
 		if (maxCost.isEmpty()) {
-			searchStatement.setString(3, "INF");
+			searchStatement.setDouble(3, MAX_RANGE_VALUE);
 		} else {
-			searchStatement.setString(3, maxCost);
+			searchStatement.setDouble(3, Double.parseDouble(maxCost));
 		}
 
 		searchStatement.setString(1, "%" + searchInputValue + "%");
-
+		System.out.println(searchStatement);
 		itemResults = searchStatement.executeQuery();
 		itemList = makeItemList(itemResults);
 		return itemList;

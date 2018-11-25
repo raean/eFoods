@@ -57,19 +57,20 @@
 	<div class="advancedSearchDiv row">
 		<div class="searchOptions col-lg-4">
 			<form name="searchOptionsForm" action="Search.do" method="POST">
+			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
 				<select id="sortBy" name="sortBy">
-							<option selected="any" value="NONE">Select One:</option>
-							<option value="descName">Z to A</option>
-							<option value="ascName">A to Z</option>
-							<option value="ascPrice">Price: Low to High</option>
-							<option value="descPrice">Price: High to Low</option>
-						</select>
+					<option selected="any" value="NONE">Select One:</option>
+					<option value="A to Z">A to Z</option>
+					<option value="Z to A">Z to A</option>
+					<option value="Price - Low to High">Price - Low to High</option>
+					<option value="Price - High to Low"> Price - High to Low</option>
+				</select>
 				<br/>
 					Min cost:  <input type="text" name="minInput" value="${minInputValue}" />
 				<br/>
 					Max cost: <input type="text" name="maxInput" value="${maxInputValue}" />
 				<br/>
-				<input type="submit" name="advancedSearchButton" value="Advanced Search"/>
+				<input type="submit" name="advancedSearchButton" value="Search"/>
 			</form>
  		</div>
 		<div class="searchResultDiv col-lg-8">
