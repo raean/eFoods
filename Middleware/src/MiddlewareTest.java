@@ -93,19 +93,42 @@ class MiddlewareTest {
 	}
 
 	@Test
-	void testGetTotalItemQuantity() throws JAXBException {
+	void testConsolidateOrders() throws JAXBException {
 		List<OrderBean> orderList = middleware.listInboxFiles();
-
-		Map<String, TotalItemsBean> quantityMap = middleware.getTotalItemQuantity(orderList);
+		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 
 		assertTrue(!quantityMap.isEmpty());
-		
-		assertTrue(quantityMap.containsKey("0905A123"));
 
+		assertAll("check that Map contains the three keys", () -> assertTrue(quantityMap.containsKey("0905A123")),
+				() -> assertTrue(quantityMap.containsKey("0905A112")),
+				() -> assertTrue(quantityMap.containsKey("0905A044")));
+
+		// Make sure each item in the map is not null.
 		for (TotalItemsBean item : quantityMap.values()) {
-			System.out.println(item.getName());
-			System.out.println(item.getQuantity());
+			assertNotNull(item);
+			assertTrue(item.getQuantity() > 0);
 		}
 	}
 
+	@Test
+	void testMakeReport() throws JAXBException {
+		List<OrderBean> orderList = middleware.listInboxFiles();
+		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
+
+		ReportBean report = middleware.makeReport(quantityMap);
+		List<TotalItemsBean> totalItems = report.getItems();
+
+		assertNotNull(report);
+
+		for (int i = 0; i < totalItems.size(); i++) {
+			String itemNumber = totalItems.get(i).getNumber();
+
+			for (int j = 0; j < totalItems.size(); j++) {
+
+				if (j != i) {
+					assertNotEquals(totalItems.get(j).getNumber(), totalItems.get(i).getNumber());
+				}
+			}
+		}
+	}
 }

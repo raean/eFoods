@@ -84,7 +84,7 @@ public class Middleware {
 		return orderList;
 	}
 
-	public Map<String, TotalItemsBean> getTotalItemQuantity(List<OrderBean> orderList) {
+	public Map<String, TotalItemsBean> consolidateOrders(List<OrderBean> orderList) {
 		Map<String, TotalItemsBean> quantityMap = new HashMap<>();
 
 		for (OrderBean order : orderList) {
@@ -114,13 +114,20 @@ public class Middleware {
 		return quantityMap;
 	}
 
-	public ReportBean consolidateOrders() throws Exception {
+	public ReportBean makeReport(Map<String, TotalItemsBean> quantityMap) {
 		ReportBean report = new ReportBean();
+
+		List<TotalItemsBean> totalItemsList = new LinkedList<>(quantityMap.values());
+		report.setItems(totalItemsList);
 
 		return report;
 	}
 
-	public void movePoToOu() throws Exception {
+	public void marshallReport(ReportBean report) throws JAXBException {
+
+	}
+
+	public void movePoToOut() throws Exception {
 
 	}
 

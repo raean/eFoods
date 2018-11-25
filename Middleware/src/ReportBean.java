@@ -13,4 +13,12 @@ public class ReportBean {
 	@XmlElementWrapper
 	@XmlElement(name = "item")
 	private List<TotalItemsBean> items;
+
+	public List<TotalItemsBean> getItems() {
+		return items;
+	}
+
+	public void setItems(List<TotalItemsBean> items) {
+		this.items = items;
+	}
 }
