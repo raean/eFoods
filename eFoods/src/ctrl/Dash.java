@@ -33,11 +33,6 @@ public class Dash extends HttpServlet {
 		}
 		System.out.println(session.getAttribute("accountName"));
 
-		if (session.getAttribute("customer") != null) {
-			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
-			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
-		}
-
 		request.getSession(true);
 		this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 	}

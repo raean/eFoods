@@ -22,10 +22,6 @@ public class Account extends HttpServlet {
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
 		
-		if (session.getAttribute("customer") != null) {
-			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
-			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
-		}
 		this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
 	}
 

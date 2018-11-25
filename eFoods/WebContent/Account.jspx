@@ -3,7 +3,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
 	<jsp:directive.page contentType="text/html; charset=ISO-8859-1"
-		pageEncoding="ISO-8859-1" session="false" />
+		pageEncoding="ISO-8859-1" session="true" />
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -42,11 +42,11 @@
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 
 					<form>
-						<c:if test="${empty username}">
+						<c:if test="${!sessionScope.authenticated}">
 							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
 						</c:if>
-						<c:if test="${!empty username}">
-							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${username}</small><br />Your account</a>
+						<c:if test="${sessionScope.authenticated}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${sessionScope.customer.getName().split(" ")[0]} </small><br />Your account</a>
 						</c:if>
 					</form>
 				</li>
