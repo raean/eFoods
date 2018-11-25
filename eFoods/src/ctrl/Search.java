@@ -30,8 +30,6 @@ public class Search extends HttpServlet {
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
-			} else {
-				
 			}
 		}
 		if (request.getParameter("advancedSearchButton") != null) {
@@ -39,17 +37,16 @@ public class Search extends HttpServlet {
 			String searchInputValue = request.getParameter("searchInput");
 			String min = request.getParameter("minInput");
 			String max = request.getParameter("maxInput");
-			String sort = request.getParameter("");
+			String sort = request.getParameter("sortBy");
 			System.out.println(searchInputValue);
 			if (!searchInputValue.isEmpty()) {
 				try {
 					List<ItemBean> result = engine.doAdvanceSearch(searchInputValue, min, max, sort);
+					request.setAttribute("searchInputValue", searchInputValue);
 					request.setAttribute("result",  result);
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
-			} else {
-				
 			}
 		}
 		this.getServletContext().getRequestDispatcher("/Search.jspx").forward(request, response);
