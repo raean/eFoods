@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ public class Middleware {
 	private File inDir;
 	private File outDir;
 
+	private File[] poFiles;
 	private File[] inFiles;
 	private File[] outFiles;
 
@@ -31,6 +33,8 @@ public class Middleware {
 	private Unmarshaller orderUnMarshaller;
 
 	public Middleware(File poDir) {
+		this.poFiles = poDir.listFiles();
+
 		setJAXB(ORDER_BEAN, REPORT_BEAN);
 		setInOutDir(poDir);
 	}
@@ -71,14 +75,18 @@ public class Middleware {
 	 * O(n) time
 	 * 
 	 * @return
-	 * @throws JAXBException
+	 * @throws Exception
 	 */
-	public List<OrderBean> listInboxFiles() throws JAXBException {
+	public List<OrderBean> listInboxFiles() throws Exception {
 		List<OrderBean> orderList = new ArrayList<>();
 
 		for (File fileName : inFiles) {
 			OrderBean order = (OrderBean) orderUnMarshaller.unmarshal(fileName);
 			orderList.add(order);
+		}
+
+		if (orderList.isEmpty()) {
+			throw new Exception("Inbox folder is empty, terminating");
 		}
 
 		return orderList;
@@ -123,11 +131,22 @@ public class Middleware {
 		return report;
 	}
 
-	public void marshallReport(ReportBean report) throws JAXBException {
+	public void marshallReport(ReportBean report) throws JAXBException, IOException {
+		File reportFile = new File(poPath + "/report" + (poFiles.length - 1) + ".xml");
+		reportFile.createNewFile();
+
+		reportMarshaller.marshal(report, reportFile);
+
+		movePoToOut();
 
 	}
 
-	public void movePoToOut() throws Exception {
+	private void movePoToOut() {
+
+		for (File inFile : inFiles) {
+			File outFile = new File(outDir.getPath() + "/" + inFile.getName());
+			inFile.renameTo(outFile);
+		}
 
 	}
 
@@ -147,7 +166,7 @@ public class Middleware {
 		this.outDir = outDir;
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		if (args.length != 1) {
 			System.err.println("Usage: java Middleware <PO Folder Path>");
@@ -161,9 +180,15 @@ public class Middleware {
 			System.exit(1);
 		}
 
-		Middleware b2c = new Middleware(poDir);
-		List<OrderBean> orders = b2c.listInboxFiles();
-
+		try {
+			Middleware b2c = new Middleware(poDir);
+			List<OrderBean> orderList = b2c.listInboxFiles();
+			Map<String, TotalItemsBean> quantityMap = b2c.consolidateOrders(orderList);
+			ReportBean report = b2c.makeReport(quantityMap);
+			b2c.marshallReport(report);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 }

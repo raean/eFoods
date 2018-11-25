@@ -1,7 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -23,6 +23,9 @@ class MiddlewareTest {
 	static String poPath;
 	static File poFolder;
 	static Middleware middleware;
+
+	static File[] inDir;
+	static File[] outDir;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -38,6 +41,16 @@ class MiddlewareTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		File[] outFiles = middleware.getOutDir().listFiles();
+		File inDir = middleware.getInDir();
+
+		for (File outFile : outFiles) {
+			File inFile = new File(inDir.getPath() + "/" + outFile.getName());
+			outFile.renameTo(inFile);
+
+			System.out.println(inFile.exists());
+			System.out.println(outFile.exists());
+		}
 	}
 
 	@AfterEach
@@ -68,7 +81,7 @@ class MiddlewareTest {
 	}
 
 	@Test
-	void testListPoFiles() throws JAXBException {
+	void testListPoFiles() throws Exception {
 		List<OrderBean> returnedOrders = middleware.listInboxFiles();
 
 		assertAll("Check list", () -> assertTrue(!returnedOrders.isEmpty()),
@@ -93,7 +106,7 @@ class MiddlewareTest {
 	}
 
 	@Test
-	void testConsolidateOrders() throws JAXBException {
+	void testConsolidateOrders() throws Exception {
 		List<OrderBean> orderList = middleware.listInboxFiles();
 		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 
@@ -108,10 +121,13 @@ class MiddlewareTest {
 			assertNotNull(item);
 			assertTrue(item.getQuantity() > 0);
 		}
+
+		TotalItemsBean firstItem = quantityMap.get("0905A112");
+		assertEquals(5, firstItem.getQuantity());
 	}
 
 	@Test
-	void testMakeReport() throws JAXBException {
+	void testMakeReport() throws Exception {
 		List<OrderBean> orderList = middleware.listInboxFiles();
 		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 
@@ -121,14 +137,38 @@ class MiddlewareTest {
 		assertNotNull(report);
 
 		for (int i = 0; i < totalItems.size(); i++) {
-			String itemNumber = totalItems.get(i).getNumber();
-
 			for (int j = 0; j < totalItems.size(); j++) {
-
 				if (j != i) {
 					assertNotEquals(totalItems.get(j).getNumber(), totalItems.get(i).getNumber());
 				}
 			}
 		}
 	}
+
+	@Test
+	void testMarshallReport() throws Exception {
+		List<OrderBean> orderList = middleware.listInboxFiles();
+		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
+		ReportBean report = middleware.makeReport(quantityMap);
+
+		File[] poDir = poFolder.listFiles();
+		int totalFiles = poDir.length;
+
+		middleware.marshallReport(report);
+
+		poDir = poFolder.listFiles();
+
+		// Test that the file has been created
+		assertEquals(totalFiles + 1, poDir.length);
+
+		File latestReport = poDir[poDir.length - 1];
+		assertTrue(latestReport.exists());
+		assertTrue(!latestReport.isDirectory());
+
+		inDir = middleware.getInDir().listFiles();
+		
+		assertTrue(inDir.length == 0);
+
+	}
+
 }
