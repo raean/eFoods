@@ -27,7 +27,6 @@ public class Middleware {
 
 	private File[] poFiles;
 	private File[] inFiles;
-	private File[] outFiles;
 
 	private Marshaller reportMarshaller;
 	private Unmarshaller orderUnMarshaller;
@@ -36,7 +35,7 @@ public class Middleware {
 		this.poFiles = poDir.listFiles();
 
 		setJAXB(ORDER_BEAN, REPORT_BEAN);
-		setInOutDir(poDir);
+		setInOutDirFiles(poDir);
 	}
 
 	private void setJAXB(Class<OrderBean> orderBean, Class<ReportBean> reportBean) {
@@ -54,18 +53,17 @@ public class Middleware {
 		}
 	}
 
-	private void setInOutDir(File poDir) {
+	private void setInOutDirFiles(File poDir) {
 		this.poPath = poDir.getPath();
 
-		inDir = new File(poPath + IN_PO_PATH);
-		outDir = new File(poPath + OUT_PO_PATH);
+		this.inDir = new File(poPath + IN_PO_PATH);
+		this.outDir = new File(poPath + OUT_PO_PATH);
 
 		if (!inDir.isDirectory() || !outDir.isDirectory()) {
-			throw new IllegalArgumentException("There is no inPO or outPO directory in the PO folder, exiting");
+			throw new IllegalArgumentException("There is no inPO or outPO directory in the PO folder, terminating.");
 		}
 
-		inFiles = inDir.listFiles();
-		outFiles = outDir.listFiles();
+		this.inFiles = inDir.listFiles();
 	}
 
 	// TODO The files should be moved right after being read into the array or after
@@ -77,16 +75,16 @@ public class Middleware {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<OrderBean> listInboxFiles() throws Exception {
+	public List<OrderBean> getInboxOrders() throws Exception {
 		List<OrderBean> orderList = new ArrayList<>();
+
+		if (inFiles.length == 0) {
+			throw new Exception("Inbox folder is empty, terminating.");
+		}
 
 		for (File fileName : inFiles) {
 			OrderBean order = (OrderBean) orderUnMarshaller.unmarshal(fileName);
 			orderList.add(order);
-		}
-
-		if (orderList.isEmpty()) {
-			throw new Exception("Inbox folder is empty, terminating");
 		}
 
 		return orderList;
@@ -137,11 +135,11 @@ public class Middleware {
 
 		reportMarshaller.marshal(report, reportFile);
 
-		movePoToOut();
+		moveCompletedOrders();
 
 	}
 
-	private void movePoToOut() {
+	private void moveCompletedOrders() {
 
 		for (File inFile : inFiles) {
 			File outFile = new File(outDir.getPath() + "/" + inFile.getName());
@@ -154,16 +152,8 @@ public class Middleware {
 		return inDir;
 	}
 
-	public void setInDir(File inDir) {
-		this.inDir = inDir;
-	}
-
 	public File getOutDir() {
 		return outDir;
-	}
-
-	public void setOutDir(File outDir) {
-		this.outDir = outDir;
 	}
 
 	public static void main(String[] args) {
@@ -182,13 +172,16 @@ public class Middleware {
 
 		try {
 			Middleware b2c = new Middleware(poDir);
-			List<OrderBean> orderList = b2c.listInboxFiles();
+			List<OrderBean> orderList = b2c.getInboxOrders();
 			Map<String, TotalItemsBean> quantityMap = b2c.consolidateOrders(orderList);
 			ReportBean report = b2c.makeReport(quantityMap);
 			b2c.marshallReport(report);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			System.exit(1);
 		}
+
+		System.out.println("Program complete, exiting.");
 	}
 
 }

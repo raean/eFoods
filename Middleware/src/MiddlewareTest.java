@@ -1,12 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -47,9 +42,6 @@ class MiddlewareTest {
 		for (File outFile : outFiles) {
 			File inFile = new File(inDir.getPath() + "/" + outFile.getName());
 			outFile.renameTo(inFile);
-
-			System.out.println(inFile.exists());
-			System.out.println(outFile.exists());
 		}
 	}
 
@@ -76,13 +68,13 @@ class MiddlewareTest {
 			Middleware badMiddle = new Middleware(dummyfile);
 		});
 
-		assertEquals("There is no inPO or outPO directory in the PO folder, exiting", exception.getMessage());
+		assertEquals("There is no inPO or outPO directory in the PO folder, terminating.", exception.getMessage());
 
 	}
 
 	@Test
-	void testListPoFiles() throws Exception {
-		List<OrderBean> returnedOrders = middleware.listInboxFiles();
+	void testGetInboxOrders() throws Exception {
+		List<OrderBean> returnedOrders = middleware.getInboxOrders();
 
 		assertAll("Check list", () -> assertTrue(!returnedOrders.isEmpty()),
 				() -> assertEquals(middleware.getInDir().listFiles().length, returnedOrders.size()));
@@ -107,7 +99,7 @@ class MiddlewareTest {
 
 	@Test
 	void testConsolidateOrders() throws Exception {
-		List<OrderBean> orderList = middleware.listInboxFiles();
+		List<OrderBean> orderList = middleware.getInboxOrders();
 		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 
 		assertTrue(!quantityMap.isEmpty());
@@ -128,7 +120,7 @@ class MiddlewareTest {
 
 	@Test
 	void testMakeReport() throws Exception {
-		List<OrderBean> orderList = middleware.listInboxFiles();
+		List<OrderBean> orderList = middleware.getInboxOrders();
 		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 
 		ReportBean report = middleware.makeReport(quantityMap);
@@ -147,7 +139,7 @@ class MiddlewareTest {
 
 	@Test
 	void testMarshallReport() throws Exception {
-		List<OrderBean> orderList = middleware.listInboxFiles();
+		List<OrderBean> orderList = middleware.getInboxOrders();
 		Map<String, TotalItemsBean> quantityMap = middleware.consolidateOrders(orderList);
 		ReportBean report = middleware.makeReport(quantityMap);
 
@@ -166,7 +158,7 @@ class MiddlewareTest {
 		assertTrue(!latestReport.isDirectory());
 
 		inDir = middleware.getInDir().listFiles();
-		
+
 		assertTrue(inDir.length == 0);
 
 	}
