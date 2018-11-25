@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import model.CustomerBean;
 import model.Engine;
 import model.ItemBean;
 
@@ -21,6 +23,8 @@ public class Cart extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Engine engine = Engine.getInstance();
+		HttpSession session = request.getSession();
+		
 		Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 		Map<ItemBean, Integer> viewableCart = null;
 		try {
@@ -59,6 +63,11 @@ public class Cart extends HttpServlet {
 			request.setAttribute("itemsCost", itemsCost);
 			request.setAttribute("hstAmount", hstAmount);
 			request.setAttribute("shippingCost", shippingCost);
+		}
+		
+		if (session.getAttribute("customer") != null) {
+			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
+			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
 		}
 		
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);

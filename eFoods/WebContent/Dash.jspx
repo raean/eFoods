@@ -36,25 +36,20 @@
 				<li class="nav-item active"> 
 					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
 				</li>
+				<!-- CART -->
+				<li class="nav-item nav-a nav-a-2 active"> 
+					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart</a>
+				</li>
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 
 					<form>
 						<c:if test="${empty username}">
-							<a class ="nav-link" href="Auth.do" name="authentication">Sign In
-							<img src="img/user.png" width="45" height="45" alt="" /></a>
+							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
 						</c:if>
 						<c:if test="${!empty username}">
-							<a class ="nav-link" href="Account.do" name="account">Hello, ${username}!
-							<img src="img/user.png" width="45" height="45" alt="" />	
-							</a>
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${username}</small><br />Your account</a>
 						</c:if>
 					</form>
-				</li>
-				<!-- CART -->
-				<li class="nav-item active"> 
-					<a class ="nav-link" href="Cart.do"> 
-						<img src="img/shopping-cart.png" width="55" height="55" alt="" />
-					</a>
 				</li>
 			</ul>
 		</nav>
