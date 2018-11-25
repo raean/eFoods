@@ -21,7 +21,7 @@ public class Account extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
-		
+		request.setAttribute("cart", session.getAttribute("cart"));
 		if (session.getAttribute("customer") != null) {
 			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
 			request.setAttribute("username", customer.getName().toString().split(" ")[0]);

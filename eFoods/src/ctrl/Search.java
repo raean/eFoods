@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.Engine;
 import model.ItemBean;
@@ -18,9 +19,14 @@ public class Search extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		Engine engine = Engine.getInstance();
+		String searchInputValue = request.getParameter("searchInput");
+		HttpSession session = request.getSession();
+		request.setAttribute("cart", session.getAttribute("cart"));
+		
 		if (request.getParameter("searchButton") != null) {
-			Engine engine = Engine.getInstance();
-			String searchInputValue = request.getParameter("searchInput");
+			
 			System.out.println(searchInputValue);
 			if (!searchInputValue.isEmpty()) {
 				try {
@@ -33,8 +39,7 @@ public class Search extends HttpServlet {
 			}
 		}
 		if (request.getParameter("advancedSearchButton") != null) {
-			Engine engine = Engine.getInstance();
-			String searchInputValue = request.getParameter("searchInput");
+			
 			String min = request.getParameter("minInput");
 			String max = request.getParameter("maxInput");
 			String sort = request.getParameter("sortBy");

@@ -61,6 +61,7 @@ body {
   background: #ccc;
 }
 
+
 @media screen and (max-width: 600px) {
   .navigation .searchDiv {
     float: none;
