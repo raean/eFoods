@@ -20,6 +20,7 @@ public class Checkout extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		Engine engine = Engine.getInstance();
+		request.setAttribute("cart", session.getAttribute("cart"));
 		if (session.getAttribute("accountName") != null) {
 			try {	
 				// Let's get the cart from the session's information:

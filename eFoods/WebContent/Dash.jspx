@@ -18,7 +18,7 @@
 		</head>
 		<body class="container">
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top container">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
@@ -39,7 +39,7 @@
 				<!-- CART -->
 				<li class="nav-item nav-a nav-a-2 active"> 
 					<form>
-						<a class ="nav-link" href="Cart.do"><small>Your</small><br />Cart <small>(${cart.size()})</small></a>
+						<a class ="nav-link" href="Cart.do"><small>Your</small><br />Cart <small class="badge badge-pill badge-danger">${cart.size()}</small></a>
 					</form>
 				</li>
 				<!-- SIGN IN -->
@@ -55,13 +55,20 @@
 				</li>
 			</ul>
 		</nav>
-		
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
 		<!-- MAIN DIV START -->
 		<div name="mainDiv">
-			<!-- WELCOME TEXT -->	
-		 	<div name="welcomeDiv"><h1> Canada's Leading Online Food Market</h1></div>
+			<!-- WELCOME TEXT -->
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
+			<h3> Canada's Leading Online Food Market</h3>
+		 	<br />	
+		 	<br />
 				<c:if test="${empty username}">
 					<img src="img/welcomeBanner.png" id="banner"/>
 				</c:if>
@@ -69,37 +76,55 @@
 					<img src="img/featuredBanner.png"  id="banner"/>
 				</c:if>
 			</div>
+			<br />
+			<br />
 			<!-- CONTENT DIV -->
-			<div name="contentDiv" class="container row justify-content-between">
+			<div name="contentDiv" class="row justify-content-center">
 				<!-- CATALOG CARD -->
-				<div name="catalogDiv" class="card col-4 list-group" >
-					<div class="card-header text-center">
+				<div name="catalogDiv" class="col-5 border border-light rounded-top" >
+					<div class="text-center">
+						<br />
 						Select a Category
+					</div>	
+						<br />					
+				 	<div class="text-center border-top">
+			
+						<ul class="list-group list-group-flush">
+							<c:forEach items="${catalogList}" var="catalogItem">
+							<form name="catalogForm" action="Catalog.do" method="POST">
+								<li class="list-group-item">
+									<button class="btn btn-block btn-outline-success" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
+									<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
+								</li>
+								</form>
+							</c:forEach>
+						</ul>
 					</div>
-					<ul class="card-body text-center">
-						<c:forEach items="${catalogList}" var="catalogItem">
-						<form name="catalogForm" action="Catalog.do" method="POST">
-							<li class="list-group-item"><button class="btn btn-link" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
-								<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
-							</li>
-							</form>
-						</c:forEach>
-					</ul>
 				</div>
+				<!-- INBETWEEN DIV -->
+				<div style="width: 130px">
+				<br />
+				</div>
+				
 				<!-- LAST ORDER CARD -->
-				<div name="lastOrderDiv" class="card col-4">
-					<div class="card-header text-center">
+				<div name="lastOrderDiv" class="col-5 border border-light rounded-top">
+					<br />
+					<div class="text-center">
 						Your Last Order
 					</div>
-					<form>
-						<c:if test="${empty username}">
-							<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
-						</c:if>
-						<c:if test="${!empty username}">
-							<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
-							<p> You have no orders yet.</p>
-						</c:if>		
-					</form>
+					<br />
+					<div class="border-top">
+					<br />
+						<form>
+							<c:if test="${empty username}">
+								<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
+							</c:if>
+							<c:if test="${!empty username}">
+								<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
+								<p> You have no orders yet.</p>
+							</c:if>		
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>

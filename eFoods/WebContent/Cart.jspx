@@ -11,7 +11,7 @@
 
 	<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Foods R Us - Search</title>
+<title> Cart - Foods R Us </title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
@@ -37,7 +37,7 @@
 				</li>
 				<!-- CART -->
 				<li class="nav-item nav-a nav-a-2 active"> 
-					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart</a>
+					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart <small class="badge badge-pill badge-danger">${cart.size()}</small></a>
 				</li>
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 

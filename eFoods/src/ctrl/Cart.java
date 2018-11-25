@@ -25,6 +25,7 @@ public class Cart extends HttpServlet {
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
 		
+		
 		Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 		Map<ItemBean, Integer> viewableCart = null;
 		try {
@@ -69,7 +70,7 @@ public class Cart extends HttpServlet {
 			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
 			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
 		}
-		
+		request.setAttribute("cart", session.getAttribute("cart"));
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);
 	}
 
