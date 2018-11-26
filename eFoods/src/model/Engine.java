@@ -236,9 +236,9 @@ public class Engine {
 		if (searchInputValue.isEmpty()) {
 			throw new IllegalArgumentException("Search query is empty.");
 		}
-		if(searchInputValue.matches(itemMatcher)) {
+		if (searchInputValue.matches(itemMatcher)) {
 			result = itemDao.advanceSearch((getItem(searchInputValue).getName()), minCost, maxCost, sortBy);
-		}else {
+		} else {
 			System.out.println("IN else");
 			result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
 			System.out.println(result);
@@ -442,20 +442,28 @@ public class Engine {
 		File outPODir[] = new File(OUT_PO).listFiles();
 
 		for (File file : inPODir) {
-			if (file.getName().contains(customer.getAccount())) {
+			if (isCustomerOrder(file.getName(), customer.getAccount())) {
 				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
 
 		for (File file : outPODir) {
-			if (file.getName().contains(customer.getAccount())) {
+			if (isCustomerOrder(file.getName(), customer.getAccount())) {
 				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
 
 		return customerOrders;
+	}
+
+	private boolean isCustomerOrder(String fileName, String accountName) {
+		if (fileName.contains(accountName)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
