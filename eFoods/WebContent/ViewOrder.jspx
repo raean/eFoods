@@ -16,6 +16,7 @@
 	<c:set var="customer" value="${order.getCustomer()}"></c:set>
 	<c:set var="items" value="${order.getItems()}"></c:set>
 	<div id="orderInfo">
+		<h3>Order Info:</h3>
 		<p>Order id: ${order.getId()}</p>
 		<p>Submitted on: ${order.getSubmitted()}</p>
 	</div>
@@ -28,14 +29,26 @@
 	</div>
 	<hr />
 	<div id="itemInfo">
+		<h3>Purchase Info:</h3>
 		<table border="1">
+			<tr>
+				<th>Item Number</th>
+				<th>Item Name</th>
+				<th>Price</th>
+				<th>Quantity</th>
+				<th>Total Price</th>
+			</tr>
 			<c:forEach var="item" items="${items}">
 				<tr>
 					<td>${item.getNumber()}</td>
 					<td>${item.getName()}</td>
-					<td>${item.getPrice()}</td>
+					<td><fmt:formatNumber value="${item.getPriceFormat()}"
+							type="currency">
+						</fmt:formatNumber></td>
 					<td>${item.getQuantity()}</td>
-					<td>${item.getExtended()}</td>
+					<td><fmt:formatNumber value="${item.getExtendedFormat()}"
+							type="currency"></fmt:formatNumber></td>
+
 				</tr>
 			</c:forEach>
 		</table>
