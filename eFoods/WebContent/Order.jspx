@@ -22,7 +22,7 @@
 			<br/>
 		</div>
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg rounded-top " style="background-color: #f8b38d;">
+		<nav class="navbar navbar-expand-lg rounded-top " style="background-color: #f8b38d; ">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
@@ -57,41 +57,34 @@
 				</li>
 			</ul>
 		</nav>
-<<<<<<< HEAD
+
 		<br />
 		<br />
 		<br />
 		<br />
 		<div class="row justify-content-md-center">
-		<img src="img/efood.jpg" />
+		
 			
-		</div>
+		
 		
 		<div name="mainDiv" class="text-center">
-			<div id="thankYouDiv" >
-				<h1> Thank you for your order! :) </h1>
-=======
-		<div class="col-md-12" style="background-color: #fffdfc;">
+			<img src="img/efood.jpg" />
+		<div class="col-md-12" style="background-color: #fffdfc; border-radius: 25px;">
 		<br/>
-			<div name="mainDiv" >
+			
 				<div id="thankYouDiv">
 					<h1> Thank you for your order! :) </h1>
 				</div>
->>>>>>> branch 'view' of git@github.com:raean/eFoods.git
-			</div>
-<<<<<<< HEAD
+
+
 			<div id="thankYouOptionsDiv">
 				<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
 				<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
-=======
-			<div>
-				<div id="thankYouOptionsDiv">
-					<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
-					<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
-				</div>
->>>>>>> branch 'view' of git@github.com:raean/eFoods.git
+
 			</div>
 			<br/>
+		</div>
+		</div>
 		</div>
 	</body>
 	</html>
