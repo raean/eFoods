@@ -15,13 +15,16 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
-<body class="container">
+<body class="container" background="img/backdrop2.png">
 	<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div>
+		<br/>
+	</div>
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="60" height="60" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
@@ -52,53 +55,57 @@
 				</li>
 			</ul>
 		</nav>
-	<br />
-	<div class="cartDiv">
-			<div class="cartItemTableDiv">
-				<c:if test="${viewableCart.isEmpty()}">
-					<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
-				</c:if>
-				<c:if test="${!viewableCart.isEmpty()}">
-					<form name="updateCartForm" action="Cart.do" method="POST">
-					<table border="1pt">
-						<tr>
-							<td> Name </td> 
-							<td> Quantity </td> 
-							<td> Cost Per Unit </td> 
-							<td> Price </td>
-							<td> ID </td>
-							<td> Delete </td>
-						</tr>
-						<c:forEach items="${viewableCart}" var="cartItem">
-							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
-							<tr>
-								<td>${cartItem.key.getName()}</td>
-								<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
-								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
-								<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
-								<td>${cartItem.key.getNumber()}</td>
-								<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
-							</tr>
-						</c:forEach>
-					</table>
-					<input type="submit" value="Update" name="updateCartButton"/>
-					</form>
-				</c:if>
-			</div>
-			<div class="checkoutDiv">
-				<form name="checkoutForm" action="Checkout.do" method="POST">
-					<h2> Price Calculations: </h2>
-
-					<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
-					<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
-					<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
-					<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-					<input type="submit" name="checkoutButton" value="Checkout"/> 
-				</form>
-				<form name="checkoutForm" action="Catalog.do" method="POST">
-					<input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-				</form>
-			</div>
+	<div class="cartDiv rounded col-md-12" style="background-color: #fffdfc;">
+	<br/>
+		<h2>Your Cart</h2>
+	 
+	<div class="cartItemTableDiv" >
+		<c:if test="${viewableCart.isEmpty()}">
+			<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
+		</c:if>
+		<c:if test="${!viewableCart.isEmpty()}">
+			<form name="updateCartForm" action="Cart.do" method="POST">
+			<table class="table">
+				<tr class="font-weight-bold">
+					<td> Name </td> 
+					<td> Quantity </td> 
+					<td> Cost Per Unit </td> 
+					<td> Price </td>
+					<td> ID </td>
+					<td> Delete </td>
+				</tr>
+				<c:forEach items="${viewableCart}" var="cartItem">
+					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
+					<tr>
+						<td>${cartItem.key.getName()}</td>
+						<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
+						<td>${cartItem.key.getNumber()}</td>
+						<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
+					</tr>
+				</c:forEach>
+			</table>
+				<div class="text-right">
+				<button class="btn btn-outline" type="submit" name="updateCartButton">Update</button>
+				</div>
+			</form>
+		</c:if>
+	</div>
+	<div class="checkoutDiv">
+		<form name="checkoutForm" action="Checkout.do" method="POST">
+			<h2> Price Calculations: </h2>
+			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
+			<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
+			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
+			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
+			<input class="btn btn-outline" type="submit" name="checkoutButton" value="Checkout"/> 
+		</form>
+		<form name="checkoutForm" action="Catalog.do" method="POST">
+			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+		</form>
+	</div>
+	<br/>
 	</div>
 </body>
 	</html>

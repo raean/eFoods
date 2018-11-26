@@ -12,29 +12,34 @@
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 		<title> Foods R Us </title>
+		<link rel="icon" src="img/favicon.ico"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
 		</head>
-		<body class="container">
+		<body class="container" background="img/backdrop2.png">
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top container">
+		<div>
+			<br/>
+		</div>
+		<div style="color: #FF525;">
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="75pt" height="75pt" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="60pt" height="60pt" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
 			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
 				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
-				<button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+				<button class="btn btn-outline my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
 			</form>
 			<!-- LINKS -->
 			<ul class="navbar-nav ml-auto">
 				<!-- CATALOG -->
 				<li class="nav-item active"> 
-					<a class ="nav-link" href="Catalog.do" name="browse"> <large>Browse</large> </a>
+					<a class ="nav-link" href="Catalog.do" name="browse"> <large>Browse   </large> </a>
 				</li>
 				<!-- CART -->
 				<li class="nav-item nav-a nav-a-2 active"> 
@@ -55,25 +60,22 @@
 				</li>
 			</ul>
 		</nav>
-		<br />
-		<br />
-		<br />
-		<br />
-		<br />
-		<br />
+		</div>
+	
 		<!-- MAIN DIV START -->
-		<div name="mainDiv">
+		<div name="mainDiv" style="background: #fffdfc;">
+		<br />
+		<br /> 
 			<!-- WELCOME TEXT -->
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
-			<h3> Canada's Leading Online Food Market</h3>
-		 	<br />	
-		 	<br />
-				<c:if test="${empty username}">
-					<img src="img/welcomeBanner.png" id="banner"/>
+			<h3 style="color: #f8b39d;"><strong> Foods R Us</strong></h3>
+				<c:if test="${!sessionScope.authenticated}">
+					<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
 				</c:if>
-				<c:if test="${!empty username}">
-					<img src="img/featuredBanner.png"  id="banner"/>
+				<c:if test="${sessionScope.authenticated}">
+					<img src="img/featuredBanner.png"  id="banner" class="rounded"/>
+
 				</c:if>
 			</div>
 			<br />
@@ -81,24 +83,25 @@
 			<!-- CONTENT DIV -->
 			<div name="contentDiv" class="row justify-content-center">
 				<!-- CATALOG CARD -->
-				<div name="catalogDiv" class="col-5 border border-light rounded-top" >
-					<div class="text-center">
+				<div name="catalogDiv" class="col-5  rounded" style="background-color: #f69a7d;">
+					<div class="text-center" style="color: white;">
 						<br />
-						Select a Category
+						<strong>Select a Category</strong>
 					</div>	
 						<br />					
 				 	<div class="text-center border-top">
 			
-						<ul class="list-group list-group-flush">
+						<ul class="list-group list-group-flush" style="background-color: #f69a7d;">
 							<c:forEach items="${catalogList}" var="catalogItem">
 							<form name="catalogForm" action="Catalog.do" method="POST">
-								<li class="list-group-item">
-									<button class="btn btn-block btn-outline-success" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
+								<li class="list-group-item" style="background-color: #f69a7d;">
+									<button class="btn btn-block btn-outline-transparent" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
 									<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
 								</li>
 								</form>
 							</c:forEach>
 						</ul>
+						<br/>
 					</div>
 				</div>
 				<!-- INBETWEEN DIV -->
@@ -107,28 +110,33 @@
 				</div>
 				
 				<!-- LAST ORDER CARD -->
-				<div name="lastOrderDiv" class="col-5 border border-light rounded-top">
+				<div name="lastOrderDiv" class="col-5  rounded" style="background-color: #f69a7d;">
 					<br />
-					<div class="text-center">
-						Your Last Order
+					<div class="text-center" style="color: white;">
+						<strong>Your Last Order</strong>
 					</div>
 					<br />
-					<div class="border-top">
+					<div class="border-top" >
 					<br />
 						<form>
-							<c:if test="${empty username}">
-								<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
+							<c:if test="${!sessionScope.authenticated}">
+								<p style="color: white;"> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
 							</c:if>
-							<c:if test="${!empty username}">
+							<c:if test="${sessionScope.authenticated}">
 								<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
-								<p> You have no orders yet.</p>
+								<p style="color: white;"> You have no orders yet.</p>
 							</c:if>		
 						</form>
 					</div>
 				</div>
 			</div>
+		
+		<div>
+		<br/>
+		<br/>
 		</div>
 		
-		</body>
+		</div>
+				</body>
 	</html>
 </jsp:root>
