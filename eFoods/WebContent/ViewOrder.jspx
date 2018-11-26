@@ -13,11 +13,35 @@
 <title>${orderFileName}</title>
 </head>
 <body>
-	<p>Order id: ${order.getId()}</p>
-	<p>Submitted on: ${order.getSubmitted()}</p>
+	<c:set var="customer" value="${order.getCustomer()}"></c:set>
+	<c:set var="items" value="${order.getItems()}"></c:set>
+	<div id="orderInfo">
+		<p>Order id: ${order.getId()}</p>
+		<p>Submitted on: ${order.getSubmitted()}</p>
+	</div>
+
 	<hr />
-	<h3>Customer Info:</h3>
-	<p>Customer Name: ${order.getCustomer().getName()}</p>
+	<div id="customerInfo">
+		<h3>Customer Info:</h3>
+		<p>Customer Name: ${customer.getName()}</p>
+		<p>Customer Account: ${customer.getAccount()}</p>
+	</div>
+	<hr />
+	<div id="itemInfo">
+		<table border="1">
+			<c:forEach var="item" items="${items}">
+				<tr>
+					<td>${item.getNumber()}</td>
+					<td>${item.getName()}</td>
+					<td>${item.getPrice()}</td>
+					<td>${item.getQuantity()}</td>
+					<td>${item.getExtended()}</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+
+
 </body>
 	</html>
 </jsp:root>
