@@ -38,23 +38,28 @@ public class OrderBean {
 	private double grandTotal;
 
 	@XmlElement(name = "total")
-	private String getTotalFormat() {
-		return String.format("%.2f", total);
-	}
-
+	private String totalFormat;
 	@XmlElement(name = "shipping")
-	private String getShippingFormat() {
-		return String.format("%.2f", shipping);
-	}
-
+	private String shippingFormat;
 	@XmlElement(name = "HST")
-	private String getHSTFormat() {
-		return String.format("%.2f", HST);
+	private String HSTFormat;
+	@XmlElement(name = "grandTotal")
+	private String grandTotalFormat;
+
+	public String getTotalFormat() {
+		return this.totalFormat;
 	}
 
-	@XmlElement(name = "grandTotal")
-	private String getGrandTotalFormat() {
-		return String.format("%.2f", grandTotal);
+	public String getShippingFormat() {
+		return this.shippingFormat;
+	}
+
+	public String getHSTFormat() {
+		return this.HSTFormat;
+	}
+
+	public String getGrandTotalFormat() {
+		return this.grandTotalFormat;
 	}
 
 	public int getId() {
@@ -95,6 +100,7 @@ public class OrderBean {
 
 	public void setTotal(double total) {
 		this.total = total;
+		this.totalFormat = String.format("%.2f", total);
 	}
 
 	public double getShipping() {
@@ -103,6 +109,7 @@ public class OrderBean {
 
 	public void setShipping(double shipping) {
 		this.shipping = shipping;
+		this.shippingFormat = String.format("%.2f", shipping);
 	}
 
 	public double getGrandTotal() {
@@ -111,6 +118,7 @@ public class OrderBean {
 
 	public void setGrandTotal(double grandTotal) {
 		this.grandTotal = grandTotal;
+		this.grandTotalFormat = String.format("%.2f", grandTotal);
 	}
 
 	public double getHST() {
@@ -119,6 +127,7 @@ public class OrderBean {
 
 	public void setHST(double HST) {
 		this.HST = HST;
+		this.HSTFormat = String.format("%.2f", HST);
 	}
 
 	@Override
