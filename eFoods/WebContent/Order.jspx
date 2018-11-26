@@ -58,17 +58,20 @@
 		<br />
 		<br />
 		<br />
-		<div name="mainDiv" class="">
-			<div id="thankYouDiv">
+		<div class="row justify-content-md-center">
+		<img src="img/efood.jpg" />
+			
+		</div>
+		
+		<div name="mainDiv" class="text-center">
+			<div id="thankYouDiv" >
 				<h1> Thank you for your order! :) </h1>
 			</div>
-		</div>
-		<div>
 			<div id="thankYouOptionsDiv">
 				<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
 				<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
 			</div>
 		</div>
-		</body>
-			</html>
+	</body>
+	</html>
 </jsp:root>
