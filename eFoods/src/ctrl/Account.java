@@ -21,18 +21,11 @@ public class Account extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
 
 		if ((boolean) session.getAttribute("authenticated")) {
 			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
 			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
-
-			try {
-				session.setAttribute("previousOrders", engine.getCustomerOrders(customer));
-			} catch (JAXBException e) {
-				response.getWriter().write("Fatal error " + e.getMessage());
-			}
 
 			this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
 		} else {

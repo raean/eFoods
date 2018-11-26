@@ -58,34 +58,34 @@
 			</ul>
 		</nav>
 
-		<br />
-		<br />
-		<br />
-		<br />
-		<div class="row justify-content-md-center">
-		
-			
-		
-		
+
+
 		<div name="mainDiv" class="text-center">
 			<img src="img/efood.jpg" />
-		<div class="col-md-12" style="background-color: #fffdfc; border-radius: 25px;">
-		<br/>
-			
+			<div class="col-md-12"
+				style="background-color: #fffdfc; border-radius: 25px;">
+				<br />
+
 				<div id="thankYouDiv">
-					<h1> Thank you for your order! :) </h1>
+					<h1>Thank you for your order! :)</h1>
 				</div>
 
 
-			<div id="thankYouOptionsDiv">
-				<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
-				<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
+				<div id="thankYouOptionsDiv">
+					<p>
+						View all your orders in your <a href="Account.do" name="account">
+							account </a> page
+					</p>
+					<p>
+						Your order details can be found <a
+							href="ViewOrder.do?${orderName}" name="orderDetails"> here. </a>
+					</p>
 
+				</div>
+				<br />
 			</div>
-			<br/>
 		</div>
-		</div>
-		</div>
-	</body>
+	</div>
+</body>
 	</html>
 </jsp:root>
