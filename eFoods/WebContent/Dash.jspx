@@ -124,7 +124,19 @@
 							</c:if>
 							<c:if test="${sessionScope.authenticated}">
 								<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
-								<p style="color: white;"> You have no orders yet.</p>
+								<c:if test="${!sessionScope.lastOrder}">
+									<p style="color: white;"> You have no orders yet.</p>
+								</c:if>
+								<c:if test="${sessionScope.lastOrder}">
+									<p style="color: white;"> You last ordered: </p>
+									<ul class="list-group list-group-flush">
+									<c:forEach items="${sessionScope.lastOrder}" var="orderItem">
+											<li class="list-group-item">
+												${orderItem}
+											</li>
+									</c:forEach>
+									</ul>
+								</c:if>
 							</c:if>		
 						</form>
 					</div>

@@ -31,7 +31,7 @@ public class Cart extends HttpServlet {
 			viewableCart = engine.makeViewableCart(cart);
 			request.setAttribute("viewableCart", viewableCart);		
 		} catch (Exception e) { 
-			e.printStackTrace();
+			request.setAttribute("error", "Please enter a valid input");
 		}
 		
 		if (request.getParameter("updateCartButton")!=null) {
@@ -42,13 +42,18 @@ public class Cart extends HttpServlet {
 			if ( request.getParameterValues("deleteCheckbox") != null ) {
 				deleteCheckboxes = request.getParameterValues("deleteCheckbox");
 			}
-			Map<String, Integer> newCart = engine.updateCart(cart, itemIds, itemQuantities, deleteCheckboxes);
-			request.getSession().setAttribute("cart", newCart);
+			Map<String, Integer> newCart = null;
 			try {
-				viewableCart = engine.makeViewableCart(newCart);
-				request.setAttribute("viewableCart", viewableCart);
+				newCart = engine.updateCart(cart, itemIds, itemQuantities, deleteCheckboxes);
+				request.getSession().setAttribute("cart", newCart);
+				try {
+					viewableCart = engine.makeViewableCart(newCart);
+					request.setAttribute("viewableCart", viewableCart);
+				} catch (Exception e) {
+					request.setAttribute("error", "Please enter a valid input");
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				request.setAttribute("error", "Please enter a valid input");
 			}
 		} 
 

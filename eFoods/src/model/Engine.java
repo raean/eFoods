@@ -267,6 +267,7 @@ public class Engine {
 
 	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
 			throws Exception {
+		
 		int quantityInt = Integer.parseInt(quantity);
 
 		if (cart.containsKey(itemNo)) {
@@ -466,15 +467,16 @@ public class Engine {
 	 * @return
 	 */
 	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
-			String[] deleteCheckboxes) {
-		for (int i = 0; i < itemIds.length; i++) {
-			if (0 == Integer.parseInt(itemQuantities[i])) {
-				cart.remove(itemIds[i]);
-			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
-				cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
+			String[] deleteCheckboxes) throws Exception {
+		
+			for (int i = 0; i < itemIds.length; i++) {
+				if (0 == Integer.parseInt(itemQuantities[i])) {
+					cart.remove(itemIds[i]);
+				} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
+					cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
+				}
 			}
-		}
-
+		
 		if (deleteCheckboxes != null) {
 			for (String s : deleteCheckboxes) {
 				if (cart.containsKey(s)) {

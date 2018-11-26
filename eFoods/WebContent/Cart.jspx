@@ -89,6 +89,9 @@
 				<div class="text-right">
 				<button class="btn btn-outline" type="submit" name="updateCartButton">Update</button>
 				</div>
+				<c:if test="${!empty error}">
+					<p style="color: red;"> <strong> ${error}</strong></p>
+				</c:if>
 			</form>
 		</c:if>
 	</div>
