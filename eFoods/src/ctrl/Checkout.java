@@ -37,21 +37,6 @@ public class Checkout extends HttpServlet {
 						&& !((Map<String, Integer>) session.getAttribute("cart")).isEmpty()) {
 					OrderBean order = engine.makeOrder(viewableCart, customer);
 					engine.checkOut(order);
-
-					try {
-						Map<String, OrderBean> previousOrders = engine.getCustomerOrders(customer);
-
-						if (!previousOrders.isEmpty()) {
-							TreeMap<String, OrderBean> ordersTree = (TreeMap<String, OrderBean>) previousOrders;
-							OrderBean lastOrder = ordersTree.lastEntry().getValue();
-							session.setAttribute("lastOrder", lastOrder);
-						}
-
-						session.setAttribute("previousOrders", previousOrders);
-
-					} catch (JAXBException e) {
-						response.getWriter().write("Fatal error " + e.getMessage());
-					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
