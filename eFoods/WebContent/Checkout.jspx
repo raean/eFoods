@@ -68,24 +68,22 @@
 				</c:if>
 				<c:if test="${!viewableCart.isEmpty()}">
 					<table class="table">
-						<tr>
+						<tr class="font-weight-bold">
 							<td> Name </td> 
 							<td> Quantity </td> 
 							<td> Cost Per Unit </td> 
 							<td> Price </td>
 							<td> ID </td>
-							<td>Delete</td>
 						</tr>
 						<c:forEach items="${viewableCart}" var="cartItem">
 							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
 							<tr>
 								<tr>
 									<td>${cartItem.key.getName()}</td>
-									<td>x ${cartItem.value}"</td>
+									<td>x ${cartItem.value}</td>
 									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
 									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
 									<td>${cartItem.key.getNumber()}</td>
-									<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
 								</tr>
 							</tr>
 						</c:forEach>
