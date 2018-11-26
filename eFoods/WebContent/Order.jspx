@@ -78,7 +78,7 @@
 					</p>
 					<p>
 						Your order details can be found <a
-							href="ViewOrder.do?${orderName}" name="orderDetails"> here. </a>
+							href="ViewOrder.do?orderName=${orderName}" target="_blank" name="orderDetails"> here. </a>
 					</p>
 
 				</div>
