@@ -20,7 +20,7 @@
 </head>
 <body class="container">
 	<!-- STRAT OF NAVIGATION -->
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" >
 		<!-- START OF LOGO -->
 		<div class="navbar-brand col-md-2">
 			<a href="Dash.do" name="home"> <img src="img/efood.jpg"

@@ -18,19 +18,22 @@
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
 		
 		</head>
-		<body class="container">
+		<body class="container" background="img/backdrop2.png">
+		<div>
+			<br/>
+		</div>
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top container">
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top container" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
-			<div class="navbar-brand col-md-2">
+			<div class="navbar-brand col-md-2"> 
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="50" height="50" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
 			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
 				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
-				<button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+				<button class="btn btn-outline my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
 			</form>
 			<!-- LINKS -->
 			<ul class="navbar-nav ml-auto">
@@ -54,15 +57,14 @@
 					</form>
 				</li>
 			</ul>
-		</nav>
-		<br />
-		<br />
-		<br />
-		<br />
+		</nav> 
 		<!-- MAIN DIV -->
-		<div name="mainDiv" class="">
+		<div name="mainDiv" style="background: #fffdfc;">
+			
+		
+		<br />
 			<!-- TITLE -->
-			<div name="catalogDiv">
+			<div name="catalogDiv" class="m-2">
 				<h2>Select a Catalog</h2>
 			</div>
 			<br />
@@ -70,7 +72,7 @@
 			<div class="row justify-content-md-center">
 				<c:forEach items="${catalogList}" var="catalogItem">
 					<div class="col-sm-3 text-center">
-						<div class="card">
+						<div class="card m-1">
 							<div class="card-header">
 								${catalogItem.getName()}
 							</div>
@@ -89,7 +91,7 @@
 			</div>
 			<br />
 			<!-- SORT OPTIONS -->
-			<div name="sortByDiv" class="text-right">
+			<div name="sortByDiv" class="text-right m-3">
 				<form name="catalogOrder" action="Catalog.do" method="POST">
 					<select id="sortBy" name="sortBy">
 						<option selected="any" value="NONE">Select One:</option>
@@ -99,7 +101,7 @@
 						<option value="Price - High to Low"> Price - High to Low</option>
 					</select>
 
-					<button type="submit" name="sortByButton" value="Sort" class="btn btn-outline-primary">Sort</button> 
+					<button type="submit" name="sortByButton" value="Sort" class="btn btn-outline ">Sort</button> 
 					<input type="hidden" value="${catalogId}" name="catalogId"/>
 				</form>
 			</div>
