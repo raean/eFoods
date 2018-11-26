@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import javax.xml.bind.JAXBException;
 
 import model.CustomerBean;
@@ -42,15 +43,18 @@ public class Checkout extends HttpServlet {
 				e.printStackTrace();
 			}
 
+
 			this.getServletContext().getRequestDispatcher("/Checkout.jspx").forward(request, response);
 		} else {
 			response.sendRedirect("Auth.do");
 		}
 
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		doGet(request, response);
 	}
 

@@ -27,6 +27,7 @@ public class Catalog extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+
 		// Regular instantiation before anything occurs:
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
@@ -91,13 +92,18 @@ public class Catalog extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
+
 			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 			String item = request.getParameter("hiddenItemBeanId");
 			String quantity = request.getParameter("addQuantity");
 			try {
+				queryString = "?catalogId=" + engine.getItem(request.getParameter("hiddenItemBeanId")).getCatId()
+					+ "&sortBy=" + request.getParameter("sortBy") + "&sortByButton=1";
 				Map<String, Integer> newCart = engine.addItemToCart(cart, item, quantity);
 				request.getSession().setAttribute("cart", newCart);
+
 				request.setAttribute("sortBy", sortBy);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -123,7 +129,9 @@ public class Catalog extends HttpServlet {
 			}
 		}
 		
+
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
+
 	}
 
 	/**

@@ -60,6 +60,7 @@ public class Auth extends HttpServlet {
 				response.getWriter().write("Fatal error " + e.getMessage());
 			}
 
+
 			String referer = (String) session.getAttribute("referer");
 			response.sendRedirect(referer);
 
