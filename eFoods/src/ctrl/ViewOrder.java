@@ -23,13 +23,13 @@ public class ViewOrder extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
-		String orderFileName = request.getParameter("order");
+		String orderFileName = request.getParameter("orderName");
 		boolean authenticated = (boolean) session.getAttribute("authenticated");
 
 		if (orderFileName != null && authenticated) {
 
 			Map<String, OrderBean> orders = (Map<String, OrderBean>) session.getAttribute("previousOrders");
-			OrderBean order = orders.get(request.getParameter("order"));
+			OrderBean order = orders.get(request.getParameter("orderName"));
 
 			request.setAttribute("order", order);
 			request.setAttribute("orderFileName", orderFileName);
