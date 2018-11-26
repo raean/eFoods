@@ -130,12 +130,15 @@
 								<c:if test="${!empty sessionScope.lastOrder}">
 									<p style="color: white;"> You last ordered: </p>
 									<ul class="list-group list-group-flush">
-									
-											<li class="list-group-item">
-												${sessionScope.lastOrder}"
-											</li>
-								
+										<c:forEach items="${sessionScope.lastOrder.getItems()}" var="item">
+											
+												${item.getQuantity()} - 
+												${item.getName()} ${ item.getPrice()}, 	
+											
+										</c:forEach>
 									</ul>
+									<br />
+									TOTAL : ${sessionScope.lastOrder.getGrandTotal()}
 								</c:if>
 							</c:if>		
 						</form>

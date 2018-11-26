@@ -188,7 +188,14 @@ public class Engine {
 
 		return categoryItems;
 	}
-
+	/**
+	 * Retrieves all items with a given category ID
+	 * 
+	 * @param catId
+	 * @param sortBy
+	 * @return List<ItemBean>
+	 * @throws Exception
+	 */
 	public List<ItemBean> getCategoryItems(String catId, String sortBy) throws Exception {
 		CategoryBean category = getCategory(catId);
 		List<ItemBean> items = itemDao.getAllItems(sortBy);
@@ -229,7 +236,18 @@ public class Engine {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * Search for an item or items with a given min price, max price and sorting criteria
+	 * 
+	 * @param searchInputValue
+	 * @param minCost
+	 * @param maxCost
+	 * @param sortBy
+	 * @return List<ItemBean>
+	 * @throws Exception
+	 */
 	public List<ItemBean> doAdvanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
 		List<ItemBean> result = new ArrayList<>();
@@ -469,10 +487,13 @@ public class Engine {
 
 	/**
 	 * 
+	 * update the cart in session with the requested params 
+	 * which returns a map of itemIds and the quantities of those items
+	 * 
 	 * @param cart
 	 * @param itemIds
 	 * @param itemQuantities
-	 * @return
+	 * @return Map<String, Integer>
 	 */
 	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
 			String[] deleteCheckboxes) throws Exception {
