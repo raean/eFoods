@@ -25,6 +25,7 @@ public class Middleware {
 	private File inDir;
 	private File outDir;
 
+
 	private File[] poFiles;
 	private File[] inFiles;
 
@@ -52,6 +53,7 @@ public class Middleware {
 			System.exit(1);
 		}
 	}
+
 
 	private void setInOutDirFiles(File poDir) {
 		this.poPath = poDir.getPath();
@@ -89,6 +91,7 @@ public class Middleware {
 
 		return orderList;
 	}
+
 
 	public Map<String, TotalItemsBean> consolidateOrders(List<OrderBean> orderList) {
 		Map<String, TotalItemsBean> quantityMap = new HashMap<>();
@@ -169,6 +172,7 @@ public class Middleware {
 			System.err.println("There is no PO directory, exiting");
 			System.exit(1);
 		}
+
 
 		try {
 			Middleware b2c = new Middleware(poDir);

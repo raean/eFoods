@@ -3,57 +3,92 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
 	<jsp:directive.page contentType="text/html; charset=ISO-8859-1"
-		pageEncoding="ISO-8859-1" session="false" />
+		pageEncoding="ISO-8859-1" session="true" />
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 		omit-xml-declaration="true" />
 
 	<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Foods R Us - Search</title>
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-
-<link href="css/searchStyle.css" rel="stylesheet" type="text/css"></link>
-</head>
-<body class="container">
-	<div class="navigation"><a href="Dash.do" name="home"> Home </a>
-			<a href="Catalog.do" name="browse"> Browse </a> <a href="Auth.do"
-			name="authentication"> Sign in! </a> <a href="Cart.do"> Cart </a>
-		<div class="searchDiv">
-			<form name="searchForm" action="Search.do" method="POST">
-				<input type="text" name="searchInput" placeholder="Looking an item?" value="${searchInputValue}" /> 
-				<input type="submit" name="searchButton" value="Search" />
-			</form>
+	<head>
+	<title> Search - Foods R Us </title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
+	<link href="css/style.css" rel="stylesheet" type="text/css" />
+	</head>
+		<body class="container" background="img/backdrop2.png">
+		<div>
+		<br/>
 		</div>
-	</div>
-	<br />
-	<div class="advancedSearchDiv">
-		<div class="searchOptions">
+		<!-- STRAT OF NAVIGATION -->
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top row" style="background-color: #f8b39d;">
+			<!-- START OF LOGO -->
+			<div class="navbar-brand col-md-2">
+				<a href="Dash.do" name="home" >
+					<img src="img/efoods.png"  class="img-circle" width="60" height="60" /> 
+				</a>
+			</div>		  	
+			<!-- SEARCH -->
+			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
+				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
+				<button class="btn btn-outline my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+			</form>
+			<!-- LINKS -->
+			<ul class="navbar-nav ml-auto">
+				<!-- CATALOG -->
+				<li class="nav-item active"> 
+					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+				</li>
+				<!-- CART -->
+				<li class="nav-item nav-a nav-a-2 active"> 
+					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart <small class="badge badge-pill badge-danger">${cart.size()}</small></a>
+				</li>
+				<!-- SIGN IN -->
+				<li class="nav-item active"> 
+					<form>
+						<c:if test="${!sessionScope.authenticated}">
+							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
+						</c:if>
+						<c:if test="${sessionScope.authenticated}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${sessionScope.customer.getName().split(" ")[0]} </small><br />Your account</a>
+						</c:if>
+					</form>
+				</li>
+			</ul> 
+		</nav>
+		
+	<div class="advancedSearchDiv row auto " style="background-color: #fffdfc;">
+		
+		<div class="searchOptions col-lg-4" >
+<br/>
 			<form name="searchOptionsForm" action="Search.do" method="POST">
+			<div class="m-2">
 			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
-				<select id="sortBy" name="sortBy">
+			</div>
+				<div>
+				<select id="sortBy" name="sortBy" class="m-2 form-control">
 					<option selected="any" value="NONE">Select One:</option>
 					<option value="A to Z">A to Z</option>
 					<option value="Z to A">Z to A</option>
 					<option value="Price - Low to High">Price - Low to High</option>
 					<option value="Price - High to Low"> Price - High to Low</option>
 				</select>
+				</div>
+				
+					Min cost: <input class="m-2" type="text" name="minInput" value="${minInputValue}" />
 				<br/>
-					Min cost:  <input type="text" name="minInput" value="${minInputValue}" />
+					Max cost: <input  class="m-1" type="text"  name="maxInput" value="${maxInputValue}" />
 				<br/>
-					Max cost: <input type="text" name="maxInput" value="${maxInputValue}" />
-				<br/>
-				<input type="submit" name="advancedSearchButton" value="Search"/>
+
+				<input class="btn btn-outline m-2" type="submit" name="advancedSearchButton" value="Search"/>
 			</form>
  		</div>
-		<div class="searchResultDiv">
+		<div class="searchResultDiv col-lg-8" >
 			<c:if test="${!empty result}">
-				<table cellpadding="4" border="1" class="table table-hover text-centered">
+				<ul class="list-group list-group-flush">
 				<c:forEach items="${result}" var="item">
-					<tr>
-						<form name="addToCartForm" action="Cart.do" method="POST">
-							<td> 
+					<li class="list-group-item">
+						<form name="addToCartForm" action="Search.do" method="POST">
 							Name: ${item.getName()}
 							<br />
 							QTY: ${item.getQuantity()} 
@@ -61,15 +96,19 @@
 							Price: CAD<fmt:formatNumber  type="currency" value="${item.getPrice()}" />
 							<br />
 							Quantity: 
-									<input type="number" placeholder="1" name="addQuantity" step="1" min="1"/> 
-							 		<input type="submit" name="cartButton" value="Add to Cart"/>
+							<input type="number" placeholder="1" value="1" name="addQuantity" step="1" min="1"/> 
+							<input class="btn btn-outline m-2" type="submit" name="cartButton" value="Add to Cart"/>
+							<input type="hidden" name="hiddenItemNo" value="${item.getNumber()}"/>
 							<br />
 							ID: ${item.getNumber()} 
-							</td>
+							<c:if test="${cart.containsKey(item.getNumber())}">
+
+								<p style="color: green;"> ${cart.get(item.getNumber())} of this item exists in the cart. </p>
+									</c:if>
 						</form>
-					</tr>
+					</li>
 				</c:forEach>
-				</table>
+				</ul>
 			</c:if>
 			<c:if test="${empty result}">
 				<h4 style="color: red;'"> No items found in your search! </h4>

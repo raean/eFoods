@@ -21,4 +21,5 @@ public class ReportBean {
 	public void setItems(List<TotalItemsBean> items) {
 		this.items = items;
 	}
+
 }

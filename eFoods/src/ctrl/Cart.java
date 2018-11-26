@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import model.CustomerBean;
 import model.Engine;
 import model.ItemBean;
 
@@ -21,13 +23,15 @@ public class Cart extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Engine engine = Engine.getInstance();
+		HttpSession session = request.getSession();
+		
 		Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 		Map<ItemBean, Integer> viewableCart = null;
 		try {
 			viewableCart = engine.makeViewableCart(cart);
 			request.setAttribute("viewableCart", viewableCart);		
 		} catch (Exception e) { 
-			e.printStackTrace();
+			request.setAttribute("error", "Please enter a valid input");
 		}
 		
 		if (request.getParameter("updateCartButton")!=null) {
@@ -38,15 +42,20 @@ public class Cart extends HttpServlet {
 			if ( request.getParameterValues("deleteCheckbox") != null ) {
 				deleteCheckboxes = request.getParameterValues("deleteCheckbox");
 			}
-			Map<String, Integer> newCart = engine.updateCart(cart, itemIds, itemQuantities, deleteCheckboxes);
-			request.getSession().setAttribute("cart", newCart);
+			Map<String, Integer> newCart = null;
 			try {
-				viewableCart = engine.makeViewableCart(newCart);
-				request.setAttribute("viewableCart", viewableCart);
+				newCart = engine.updateCart(cart, itemIds, itemQuantities, deleteCheckboxes);
+				request.getSession().setAttribute("cart", newCart);
+				try {
+					viewableCart = engine.makeViewableCart(newCart);
+					request.setAttribute("viewableCart", viewableCart);
+				} catch (Exception e) {
+					request.setAttribute("error", "Please enter a valid input");
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				request.setAttribute("error", "Please enter a valid input");
 			}
-		}
+		} 
 
 		if (engine.isCartEmpty(cart)) {
 			request.setAttribute("itemsCost", 0.0);
@@ -61,6 +70,7 @@ public class Cart extends HttpServlet {
 			request.setAttribute("shippingCost", shippingCost);
 		}
 		
+		request.setAttribute("cart", session.getAttribute("cart"));
 		this.getServletContext().getRequestDispatcher("/Cart.jspx").forward(request, response);
 	}
 

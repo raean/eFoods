@@ -3,7 +3,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
 	<jsp:directive.page contentType="text/html; charset=ISO-8859-1"
-		pageEncoding="ISO-8859-1" session="false" />
+		pageEncoding="ISO-8859-1" session="true" />
 	<jsp:output doctype-root-element="html"
 		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -12,97 +12,146 @@
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 		<title> Foods R Us </title>
+		<link rel="icon" src="img/favicon.ico"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
 		</head>
-		<body class="container">
+		<body class="container" background="img/backdrop2.png">
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div>
+			<br/>
+		</div>
+		<div style="color: #FF525;">
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="60pt" height="60pt" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
 			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
 				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
-				<button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+				<button class="btn btn-outline my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
 			</form>
 			<!-- LINKS -->
 			<ul class="navbar-nav ml-auto">
 				<!-- CATALOG -->
 				<li class="nav-item active"> 
-					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+					<a class ="nav-link" href="Catalog.do" name="browse"> <large>Browse   </large> </a>
+				</li>
+				<!-- CART -->
+				<li class="nav-item nav-a nav-a-2 active"> 
+					<form>
+						<a class ="nav-link" href="Cart.do"><small>Your</small><br />Cart <small class="badge badge-pill badge-danger">${cart.size()}</small></a>
+					</form>
 				</li>
 				<!-- SIGN IN -->
 				<li class="nav-item active"> 
 					<form>
-						<c:if test="${empty username}">
-							<a class ="nav-link" href="Auth.do" name="authentication">Sign In
-							<img src="img/user.png" width="45" height="45" alt="" /></a>
+						<c:if test="${!sessionScope.authenticated}">
+							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
 						</c:if>
-						<c:if test="${!empty username}">
-							<a class ="nav-link" href="Account.do" name="account">Hello, ${username}!
-							<img src="img/user.png" width="45" height="45" alt="" />	
-							</a>
+						<c:if test="${sessionScope.authenticated}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${sessionScope.customer.getName().split(" ")[0]} </small><br />Your account</a>
 						</c:if>
 					</form>
-				</li>
-				<!-- CART -->
-				<li class="nav-item active"> 
-					<a class ="nav-link" href="Cart.do"> 
-						<img src="img/shopping-cart.png" width="55" height="55" alt="" />
-					</a>
 				</li>
 			</ul>
 		</nav>
-		
+		</div>
+	
 		<!-- MAIN DIV START -->
-		<div name="mainDiv">
-			<!-- WELCOME TEXT -->	
-		 	<div name="welcomeDiv"><h1> Welcome to the Homepage babe xo</h1></div>
+		<div name="mainDiv" style="background: #fffdfc;">
+		<br />
+		<br /> 
+			<!-- WELCOME TEXT -->
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
-				<h2>Featured Items</h2>
-				<img src="img/featuredDefault.jpg" alt="img/featuredDefault.jpg"/> 
+			<h3 style="color: #f8b39d;"><strong> Foods R Us</strong></h3>
+				<c:if test="${!sessionScope.authenticated}">
+					<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
+				</c:if>
+				<c:if test="${sessionScope.authenticated}">
+					<img src="img/featuredBanner.png"  id="banner" class="rounded"/>
+
+				</c:if>
 			</div>
+			<br />
+			<br />
 			<!-- CONTENT DIV -->
-			<div name="contentDiv" class="container row justify-content-between">
+			<div name="contentDiv" class="row justify-content-center">
 				<!-- CATALOG CARD -->
-				<div name="catalogDiv" class="card col-4 list-group" >
-					<div class="card-header text-center">
-						Select a Category
+				<div name="catalogDiv" class="col-5  rounded" style="background-color: #f69a7d;">
+					<div class="text-center" style="color: white;">
+						<br />
+						<strong>Select a Category</strong>
+					</div>	
+						<br />					
+				 	<div class="text-center border-top">
+			
+						<ul class="list-group list-group-flush" style="background-color: #f69a7d;">
+							<c:forEach items="${catalogList}" var="catalogItem">
+							<form name="catalogForm" action="Catalog.do" method="POST">
+								<li class="list-group-item" style="background-color: #f69a7d;">
+									<button class="btn btn-block btn-outline-transparent" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
+									<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
+								</li>
+								</form>
+							</c:forEach>
+						</ul>
+						<br/>
 					</div>
-					<ul class="card-body text-center">
-						<c:forEach items="${catalogList}" var="catalogItem">
-						<form name="catalogForm" action="Catalog.do" method="POST">
-							<li class="list-group-item"><button class="btn btn-link" type="submit" value="${catalogItem.getName()}" name="catalogName">${catalogItem.getName()}</button>
-								<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>
-							</li>
-							</form>
-						</c:forEach>
-					</ul>
 				</div>
+				<!-- INBETWEEN DIV -->
+				<div style="width: 130px">
+				<br />
+				</div>
+				
 				<!-- LAST ORDER CARD -->
-				<div name="lastOrderDiv" class="card col-4">
-					<div class="card-header text-center">
-						Your Last Order
+				<div name="lastOrderDiv" class="col-5  rounded" style="background-color: #f69a7d;">
+					<br />
+					<div class="text-center" style="color: white;">
+						<strong>Your Last Order</strong>
 					</div>
-					<form>
-						<c:if test="${empty username}">
-							<p> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
-						</c:if>
-						<c:if test="${!empty username}">
-							<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
-							<p> You have no orders yet.</p>
-						</c:if>		
-					</form>
+					<br />
+					<div class="border-top" >
+					<br />
+						<form>
+							<c:if test="${!sessionScope.authenticated}">
+								<p style="color: white;"> Please <a href="Auth.do"> sign in </a> to view your last order.</p>
+							</c:if>
+							<c:if test="${sessionScope.authenticated}">
+								<!-- This is defaulted to say no orders whether the user has made orders or not // need to fix -->
+								<c:if test="${empty sessionScope.lastOrder}">
+									<p style="color: white;"> You have no orders yet.</p>
+								</c:if>
+								<c:if test="${!empty sessionScope.lastOrder}">
+									<p style="color: white;"> You last ordered: </p>
+									<ul class="list-group list-group-flush">
+										<c:forEach items="${sessionScope.lastOrder.getItems()}" var="item">
+											
+												${item.getQuantity()} - 
+												${item.getName()} @ ${item.getPriceFormat()}, 	
+											
+										</c:forEach>
+									</ul>
+									<br />
+									TOTAL : ${sessionScope.lastOrder.getTotal()}
+								</c:if>
+							</c:if>		
+						</form>
+					</div>
 				</div>
 			</div>
+		
+		<div>
+		<br/>
+		<br/>
 		</div>
 		
-		</body>
+		</div>
+				</body>
 	</html>
 </jsp:root>

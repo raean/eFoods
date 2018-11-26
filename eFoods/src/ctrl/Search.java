@@ -2,12 +2,14 @@ package ctrl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.Engine;
 import model.ItemBean;
@@ -18,10 +20,13 @@ public class Search extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		Engine engine = Engine.getInstance();
+		String searchInputValue = request.getParameter("searchInput");
+		HttpSession session = request.getSession();
+		request.setAttribute("cart", session.getAttribute("cart"));
+		
 		if (request.getParameter("searchButton") != null) {
-			Engine engine = Engine.getInstance();
-			String searchInputValue = request.getParameter("searchInput");
-			System.out.println(searchInputValue);
 			if (!searchInputValue.isEmpty()) {
 				try {
 					List<ItemBean> result = engine.doSearch(searchInputValue);
@@ -31,14 +36,12 @@ public class Search extends HttpServlet {
 					System.out.println(e.getMessage());
 				}
 			}
-		}
-		if (request.getParameter("advancedSearchButton") != null) {
-			Engine engine = Engine.getInstance();
-			String searchInputValue = request.getParameter("searchInput");
+			this.getServletContext().getRequestDispatcher("/Search.jspx").forward(request, response);
+		} else if (request.getParameter("advancedSearchButton") != null) {
+			
 			String min = request.getParameter("minInput");
 			String max = request.getParameter("maxInput");
 			String sort = request.getParameter("sortBy");
-			System.out.println(searchInputValue);
 			if (!searchInputValue.isEmpty()) {
 				try {
 					List<ItemBean> result = engine.doAdvanceSearch(searchInputValue, min, max, sort);
@@ -48,8 +51,24 @@ public class Search extends HttpServlet {
 					System.out.println(e.getMessage());
 				}
 			}
+			this.getServletContext().getRequestDispatcher("/Search.jspx").forward(request, response);
+		} else if (request.getParameter("cartButton") != null) { // If the add to cart item is clicked
+			// We similarly resort the page 
+			
+			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
+			String item = request.getParameter("hiddenItemNo");
+			String quantity = request.getParameter("addQuantity");
+			try {
+				Map<String, Integer> newCart = engine.addItemToCart(cart, item, quantity);
+				request.getSession().setAttribute("cart", newCart);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			this.getServletContext().getRequestDispatcher("/Cart.do").forward(request, response);
 		}
-		this.getServletContext().getRequestDispatcher("/Search.jspx").forward(request, response);
+		
+		
+		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

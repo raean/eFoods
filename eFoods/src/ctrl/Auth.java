@@ -45,6 +45,22 @@ public class Auth extends HttpServlet {
 			session.setAttribute("customer", customer);
 			session.setAttribute("authenticated", true);
 
+			try {
+				Map<String, OrderBean> previousOrders = model.getCustomerOrders(customer);
+
+				if (!previousOrders.isEmpty()) {
+					TreeMap<String, OrderBean> ordersTree = (TreeMap<String, OrderBean>) previousOrders;
+					OrderBean lastOrder = ordersTree.lastEntry().getValue();
+					session.setAttribute("lastOrder", lastOrder);
+				}
+
+				session.setAttribute("previousOrders", previousOrders);
+
+			} catch (JAXBException e) {
+				response.getWriter().write("Fatal error " + e.getMessage());
+			}
+
+
 			String referer = (String) session.getAttribute("referer");
 			response.sendRedirect(referer);
 

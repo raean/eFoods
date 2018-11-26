@@ -27,15 +27,11 @@ public class Dash extends HttpServlet {
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
 			request.setAttribute("catalogList", result);
+			request.setAttribute("cart", session.getAttribute("cart"));	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println(session.getAttribute("accountName"));
-
-		if (session.getAttribute("customer") != null) {
-			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
-			request.setAttribute("username", customer.getName().toString().split(" ")[0]);
-		}
 
 		request.getSession(true);
 		this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);

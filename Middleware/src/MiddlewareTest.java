@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +9,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import model.OrderBean;
 
 class MiddlewareTest {
+
 
 	static String poPath;
 	static File poFolder;
@@ -28,6 +31,7 @@ class MiddlewareTest {
 		poFolder = new File(poPath);
 		middleware = new Middleware(poFolder);
 
+
 	}
 
 	@AfterAll
@@ -36,6 +40,7 @@ class MiddlewareTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+
 		File[] outFiles = middleware.getOutDir().listFiles();
 		File inDir = middleware.getInDir();
 
@@ -43,6 +48,7 @@ class MiddlewareTest {
 			File inFile = new File(inDir.getPath() + "/" + outFile.getName());
 			outFile.renameTo(inFile);
 		}
+
 	}
 
 	@AfterEach
@@ -51,6 +57,7 @@ class MiddlewareTest {
 
 	@Test
 	void testMiddleware() {
+
 		try {
 			Middleware testConstruct = new Middleware(poFolder);
 			assertTrue(true);
@@ -63,6 +70,7 @@ class MiddlewareTest {
 	@ValueSource(strings = { "bad directory", "/cs/adamzis/test", "/eecs/home/adamzis/PO/inPO", "505",
 			"/eecs/home/adamzis/PO/ouPO" })
 	void testMiddlewareException(String nonsense) {
+
 		Throwable exception = assertThrows(IllegalArgumentException.class, () -> {
 			File dummyfile = new File(nonsense);
 			Middleware badMiddle = new Middleware(dummyfile);
@@ -160,6 +168,7 @@ class MiddlewareTest {
 		inDir = middleware.getInDir().listFiles();
 
 		assertTrue(inDir.length == 0);
+
 
 	}
 

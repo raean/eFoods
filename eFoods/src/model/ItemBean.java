@@ -25,15 +25,10 @@ public class ItemBean {
 	@XmlTransient
 	private int catId; // CATID category Id
 
-	@XmlElement(name = "extended")
-	private String getExtendedFormat() {
-		return String.format("%.2f", this.extended);
-	}
-
 	@XmlElement(name = "price")
-	private String getPriceFormat() {
-		return String.format("%.2f", this.price);
-	}
+	private String priceFormat;
+	@XmlElement(name = "extended")
+	private String extendedFormat;
 
 	public ItemBean() {
 		super();
@@ -51,8 +46,13 @@ public class ItemBean {
 		return extended;
 	}
 
+	public String getExtendedFormat() {
+		return this.extendedFormat;
+	}
+
 	public void setExtended(double extended) {
 		this.extended = extended;
+		this.extendedFormat = String.format("%.2f", this.extended);
 	}
 
 	public int getCatId() {
@@ -75,8 +75,13 @@ public class ItemBean {
 		return price;
 	}
 
+	public String getPriceFormat() {
+		return this.priceFormat;
+	}
+
 	public void setPrice(double price) {
 		this.price = price;
+		this.priceFormat = String.format("%.2f", this.price);
 	}
 
 	public String getName() {

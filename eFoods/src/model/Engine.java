@@ -188,7 +188,14 @@ public class Engine {
 
 		return categoryItems;
 	}
-
+	/**
+	 * Retrieves all items with a given category ID
+	 * 
+	 * @param catId
+	 * @param sortBy
+	 * @return List<ItemBean>
+	 * @throws Exception
+	 */
 	public List<ItemBean> getCategoryItems(String catId, String sortBy) throws Exception {
 		CategoryBean category = getCategory(catId);
 		List<ItemBean> items = itemDao.getAllItems(sortBy);
@@ -229,16 +236,27 @@ public class Engine {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * 
+	 * Search for an item or items with a given min price, max price and sorting criteria
+	 * 
+	 * @param searchInputValue
+	 * @param minCost
+	 * @param maxCost
+	 * @param sortBy
+	 * @return List<ItemBean>
+	 * @throws Exception
+	 */
 	public List<ItemBean> doAdvanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
 		List<ItemBean> result = new ArrayList<>();
 		if (searchInputValue.isEmpty()) {
 			throw new IllegalArgumentException("Search query is empty.");
 		}
-		if(searchInputValue.matches(itemMatcher)) {
+		if (searchInputValue.matches(itemMatcher)) {
 			result = itemDao.advanceSearch((getItem(searchInputValue).getName()), minCost, maxCost, sortBy);
-		}else {
+		} else {
 			System.out.println("IN else");
 			result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
 			System.out.println(result);
@@ -267,6 +285,7 @@ public class Engine {
 
 	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
 			throws Exception {
+		
 		int quantityInt = Integer.parseInt(quantity);
 
 		if (cart.containsKey(itemNo)) {
@@ -442,14 +461,14 @@ public class Engine {
 		File outPODir[] = new File(OUT_PO).listFiles();
 
 		for (File file : inPODir) {
-			if (file.getName().contains(customer.getAccount())) {
+			if (isCustomerOrder(file.getName(), customer.getAccount())) {
 				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
 		}
 
 		for (File file : outPODir) {
-			if (file.getName().contains(customer.getAccount())) {
+			if (isCustomerOrder(file.getName(), customer.getAccount())) {
 				OrderBean customerOrder = (OrderBean) orderUnMarshaller.unmarshal(file);
 				customerOrders.put(file.getName(), customerOrder);
 			}
@@ -458,23 +477,35 @@ public class Engine {
 		return customerOrders;
 	}
 
+	public boolean isCustomerOrder(String fileName, String accountName) {
+		if (fileName.contains(accountName)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
+	 * 
+	 * update the cart in session with the requested params 
+	 * which returns a map of itemIds and the quantities of those items
 	 * 
 	 * @param cart
 	 * @param itemIds
 	 * @param itemQuantities
-	 * @return
+	 * @return Map<String, Integer>
 	 */
 	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
-			String[] deleteCheckboxes) {
-		for (int i = 0; i < itemIds.length; i++) {
-			if (0 == Integer.parseInt(itemQuantities[i])) {
-				cart.remove(itemIds[i]);
-			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
-				cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
+			String[] deleteCheckboxes) throws Exception {
+		
+			for (int i = 0; i < itemIds.length; i++) {
+				if (0 == Integer.parseInt(itemQuantities[i])) {
+					cart.remove(itemIds[i]);
+				} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
+					cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
+				}
 			}
-		}
-
+		
 		if (deleteCheckboxes != null) {
 			for (String s : deleteCheckboxes) {
 				if (cart.containsKey(s)) {
