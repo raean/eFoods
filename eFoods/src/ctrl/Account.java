@@ -23,7 +23,6 @@ public class Account extends HttpServlet {
 			throws ServletException, IOException {
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
-		this.getServletContext().getRequestDispatcher("/Account.jspx").forward(request, response);
 
 		if ((boolean) session.getAttribute("authenticated")) {
 			CustomerBean customer = (CustomerBean) session.getAttribute("customer");
