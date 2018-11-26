@@ -93,8 +93,6 @@
 	<div class="checkoutDiv">
 		<form name="checkoutForm" action="Checkout.do" method="POST">
 			<h2> Price Calculations: </h2>
-
-<<<<<<< HEAD
 			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
 			<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
 			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
@@ -103,18 +101,7 @@
 			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
 
 		</form>
-=======
-					<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
-					<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
-					<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
-					<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-					<input type="submit" name="checkoutButton" value="Checkout"/> 
-				</form>
-				<form name="checkoutForm" action="Catalog.do" method="POST">
-					<input type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-				</form>
-			</div>
->>>>>>> refs/remotes/origin/view
+
 	</div>
 </body>
 	</html>

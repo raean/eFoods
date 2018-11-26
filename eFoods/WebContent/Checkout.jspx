@@ -89,14 +89,18 @@
 					
 				</c:if>
 			</div>
-			<div id="checkoutOptionsDiv">
-				<c:if test="${!viewableCart.isEmpty()}">					
+			<div id="checkoutOptionsDiv" class="row">
+				<c:if test="${!viewableCart.isEmpty()}">
+					<div class="m-2">					
 					<form name="confirmOrderForm" action="Order.do" method="POST">
-						<input type="submit" value="Confirm Order" name="confirmOrderButton"/>
+						<input class="btn btn-outline " type="submit" value="Confirm Order" name="confirmOrderButton"/>
 					</form>
-					<form name="editCartForm" action="Cart.do" method="POST">
-						<input type="submit" name="editCartButton" value="Modify Cart"/>
-					</form>
+					</div>
+					<div class="col m-2">
+						<form name="editCartForm" action="Cart.do" method="POST">
+							<input class="btn btn-outline " type="submit" name="editCartButton" value="Modify Cart"/>
+						</form>
+					</div>
 				</c:if>
 			</div>
 		</div>
