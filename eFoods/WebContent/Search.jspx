@@ -62,7 +62,7 @@
 		<div class="searchOptions col-lg-4" >
 <br/>
 			<form name="searchOptionsForm" action="Search.do" method="POST">
-			<div>
+			<div class="m-2">
 			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
 			</div>
 				<div>
@@ -88,7 +88,7 @@
 				<ul class="list-group list-group-flush">
 				<c:forEach items="${result}" var="item">
 					<li class="list-group-item">
-						<form name="addToCartForm" action="Cart.do" method="POST">
+						<form name="addToCartForm" action="Search.do" method="POST">
 							Name: ${item.getName()}
 							<br />
 							QTY: ${item.getQuantity()} 
@@ -96,10 +96,15 @@
 							Price: CAD<fmt:formatNumber  type="currency" value="${item.getPrice()}" />
 							<br />
 							Quantity: 
-							<input type="number" placeholder="1" name="addQuantity" step="1" min="1"/> 
+							<input type="number" placeholder="1" value="1" name="addQuantity" step="1" min="1"/> 
 							<input class="btn btn-outline m-2" type="submit" name="cartButton" value="Add to Cart"/>
+							<input type="hidden" name="hiddenItemNo" value="${item.getNumber()}"/>
 							<br />
 							ID: ${item.getNumber()} 
+							<c:if test="${cart.containsKey(item.getNumber())}">
+
+								<p style="color: green;"> ${cart.get(item.getNumber())} of this item exists in the cart. </p>
+									</c:if>
 						</form>
 					</li>
 				</c:forEach>
