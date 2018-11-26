@@ -74,6 +74,7 @@
 				</c:if>
 				<c:if test="${sessionScope.authenticated}">
 					<img src="img/featuredBanner.png"  id="banner" class="rounded"/>
+
 				</c:if>
 			</div>
 			<br />

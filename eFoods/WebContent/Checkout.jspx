@@ -64,7 +64,7 @@
 					<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
 				</c:if>
 				<c:if test="${!viewableCart.isEmpty()}">
-					<table border="1pt">
+					<table class="table">
 						<tr>
 							<td> Name </td> 
 							<td> Quantity </td> 
@@ -75,25 +75,32 @@
 						<c:forEach items="${viewableCart}" var="cartItem">
 							<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
 							<tr>
-								<td>${cartItem.key.getName()}</td>
-								<td>x ${cartItem.value}</td>
-								<td>${cartItem.key.getPrice()}</td>
-								<td>${cartItem.key.getPrice() * cartItem.value}</td>
-								<td>${cartItem.key.getNumber()}</td>
+								<tr>
+									<td>${cartItem.key.getName()}</td>
+									<td>x ${cartItem.value}"</td>
+									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+									<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
+									<td>${cartItem.key.getNumber()}</td>
+									<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
+								</tr>
 							</tr>
 						</c:forEach>
 					</table>
 					
 				</c:if>
 			</div>
-			<div id="checkoutOptionsDiv">
-				<c:if test="${!viewableCart.isEmpty()}">					
+			<div id="checkoutOptionsDiv" class="row">
+				<c:if test="${!viewableCart.isEmpty()}">
+					<div class="m-2">					
 					<form name="confirmOrderForm" action="Order.do" method="POST">
-						<input type="submit" value="Confirm Order" name="confirmOrderButton"/>
+						<input class="btn btn-outline " type="submit" value="Confirm Order" name="confirmOrderButton"/>
 					</form>
-					<form name="editCartForm" action="Cart.do" method="POST">
-						<input type="submit" name="editCartButton" value="Modify Cart"/>
-					</form>
+					</div>
+					<div class="col m-2">
+						<form name="editCartForm" action="Cart.do" method="POST">
+							<input class="btn btn-outline " type="submit" name="editCartButton" value="Modify Cart"/>
+						</form>
+					</div>
 				</c:if>
 			</div>
 		</div>
