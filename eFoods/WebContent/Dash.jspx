@@ -133,12 +133,12 @@
 										<c:forEach items="${sessionScope.lastOrder.getItems()}" var="item">
 											
 												${item.getQuantity()} - 
-												${item.getName()} ${ item.getPrice()}, 	
+												${item.getName()} @ ${item.getPriceFormat()}, 	
 											
 										</c:forEach>
 									</ul>
 									<br />
-									TOTAL : ${sessionScope.lastOrder.getGrandTotal()}
+									TOTAL : ${sessionScope.lastOrder.getTotal()}
 								</c:if>
 							</c:if>		
 						</form>
