@@ -458,7 +458,7 @@ public class Engine {
 		return customerOrders;
 	}
 
-	private boolean isCustomerOrder(String fileName, String accountName) {
+	public boolean isCustomerOrder(String fileName, String accountName) {
 		if (fileName.contains(accountName)) {
 			return true;
 		}
