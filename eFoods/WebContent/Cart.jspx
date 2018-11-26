@@ -78,7 +78,7 @@
 					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
 					<tr>
 						<td>${cartItem.key.getName()}</td>
-						<td>x <input type="input" min="0" value="${cartItem.value}" name="quantityInput"/></td>
+						<td>x <input type="number" min="0" step="1" value="${cartItem.value}" name="quantityInput"/></td>
 						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
 						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
 						<td>${cartItem.key.getNumber()}</td>
@@ -99,11 +99,17 @@
 			<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
 			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
 			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-			<input class="btn btn-outline" type="submit" name="checkoutButton" value="Checkout"/> 
+			
 		</form>
-		<form name="checkoutForm" action="Catalog.do" method="POST">
-			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-		</form>
+		<div class="row">
+			<form name="checkoutForm" action="Checkout.do" method="POST">
+				<input class="btn btn-outline m-1 col" type="submit" name="checkoutButton" value="Checkout"/> 
+			</form>
+			<div class="col-2" />	
+			<form name="checkoutForm" action="Catalog.do" method="POST">
+				<input class="btn btn-outline m-1 col" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+			</form>
+		</div>
 	</div>
 	<br/>
 	</div>
