@@ -71,7 +71,7 @@
 			<h4>Past Orders:</h4>
 			<c:forEach var="order" items="${sessionScope.previousOrders}">
 				<p>
-					<a href="ViewOrder.do?order=${order.key}" target="_blank">${order.key}</a>
+					<a href="ViewOrder.do?orderName=${order.key}" target="_blank">${order.key}</a>
 				</p>
 			</c:forEach>
 		
