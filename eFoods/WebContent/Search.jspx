@@ -21,7 +21,7 @@
 		<br/>
 		</div>
 		<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light rounded-top  " style="background-color: #f8b39d;">
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top row" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
@@ -57,15 +57,16 @@
 			</ul> 
 		</nav>
 		
-	<div class="advancedSearchDiv  row " style="background-color: #fffdfc;">
+	<div class="advancedSearchDiv row auto " style="background-color: #fffdfc;">
+		
 		<div class="searchOptions col-lg-4" >
-
+<br/>
 			<form name="searchOptionsForm" action="Search.do" method="POST">
 			<div>
 			<input type="text" name="searchInput" placeholder="Advanced Search" value="${searchInputValue}" />
 			</div>
 				<div>
-				<select id="sortBy" name="sortBy" class="m-2">
+				<select id="sortBy" name="sortBy" class="m-2 form-control">
 					<option selected="any" value="NONE">Select One:</option>
 					<option value="A to Z">A to Z</option>
 					<option value="Z to A">Z to A</option>

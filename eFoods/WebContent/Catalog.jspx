@@ -27,7 +27,7 @@
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2"> 
 				<a href="Dash.do" name="home" >
-					<img src="img/efoods.png"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="60" height="60" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
@@ -71,16 +71,16 @@
 			<!-- CAT ITEM BUTTONS -->
 			<div class="row justify-content-md-center">
 				<c:forEach items="${catalogList}" var="catalogItem">
-					<div class="col-sm-3 text-center">
-						<div class="card m-1">
-							<div class="card-header">
+					<div class="col-sm-3 text-center " style="color: #fffdfc;">
+						<div class="card m-1" style="background-color: #fffdfc;">
+							<div class="card-header" style="background-color: #f8b39d;">
 								${catalogItem.getName()}
 							</div>
 							<form name="catalogForm" action="Catalog.do" method="POST">
 								<input type="image" name="submit" src="data:image/png;base64,${catalogItem.getPicture()}" />
 								<input type="hidden" value="${catalogItem.getId()}" name="catalogId"/>	
-								<div class="card-body">
-									<small class="text-muted">
+								<div class="card-body" style="background-color: #f8b39d; ">
+									<small class="" style="color: white;">
 							        	${catalogItem.getDescription()}
 							        </small>
 								</div>
@@ -91,9 +91,9 @@
 			</div>
 			<br />
 			<!-- SORT OPTIONS -->
-			<div name="sortByDiv" class="text-right m-3">
+			<div name="sortByDiv" class="text-right m-3 ">
 				<form name="catalogOrder" action="Catalog.do" method="POST">
-					<select id="sortBy" name="sortBy" class="m-2">
+					<select id="sortBy" name="sortBy" class="m-2  ">
 						<option selected="any" value="NONE">Select One:</option>
 						<option value="A to Z">A to Z</option>
 						<option value="Z to A">Z to A</option>

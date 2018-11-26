@@ -18,13 +18,14 @@
 	crossorigin="anonymous" />
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
-<body class="container">
+<body class="container" background="img/backdrop2.png">
+	<div><br/></div>
 	<!-- STRAT OF NAVIGATION -->
-	<nav class="navbar navbar-expand-lg navbar-light bg-light" >
+	<nav class="navbar navbar-expand-lg navbar-light rounded" style="background-color: #f8b39d;">
 		<!-- START OF LOGO -->
 		<div class="navbar-brand col-md-2">
-			<a href="Dash.do" name="home"> <img src="img/efood.jpg"
-				class="img-circle" width="50" height="50" alt="" />
+			<a href="Dash.do" name="home"> <img src="img/efoods.png"
+				class="img-circle" width="60" height="60" alt="" />
 			</a>
 		</div>
 		<!-- SEARCH -->
@@ -61,7 +62,8 @@
 			</li>
 		</ul>
 	</nav>
-	<div name="mainDiv" class="">
+	<div name="mainDiv" class="col-md-12 rounded" style="background-color: #fffdfc; height: 100%;">
+	<br/>
 		<h1>My Account:</h1>
 		<p>Username: ${sessionScope.customer.getAccount()}</p>
 		<p>Full Name: ${sessionScope.customer.getName()}</p>
@@ -72,6 +74,8 @@
 					<a href="ViewOrder.do?order=${order.key}">${order.key}</a>
 				</p>
 			</c:forEach>
+		
+		<br/>
 		</div>
 	</div>
 </body>

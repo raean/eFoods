@@ -15,13 +15,16 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
 <link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
-<body class="container">
+<body class="container" background="img/backdrop2.png">
 	<!-- STRAT OF NAVIGATION -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div>
+		<br/>
+	</div>
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top" style="background-color: #f8b39d;">
 			<!-- START OF LOGO -->
 			<div class="navbar-brand col-md-2">
 				<a href="Dash.do" name="home" >
-					<img src="img/efood.jpg"  class="img-circle" width="50" height="50" alt="" /> 
+					<img src="img/efoods.png"  class="img-circle" width="60" height="60" alt="" /> 
 				</a>
 			</div>		  	
 			<!-- SEARCH -->
@@ -52,12 +55,11 @@
 				</li>
 			</ul>
 		</nav>
-	<br />
-	<div class="cartDiv">
+	<div class="cartDiv rounded col-md-12" style="background-color: #fffdfc;">
+	<br/>
 		<h2>Your Cart</h2>
-	</div>
-	<br />
-	<div class="cartItemTableDiv">
+	 
+	<div class="cartItemTableDiv" >
 		<c:if test="${viewableCart.isEmpty()}">
 			<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
 		</c:if>
@@ -98,10 +100,12 @@
 			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
 			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
 			<input class="btn btn-outline" type="submit" name="checkoutButton" value="Checkout"/> 
-			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-
 		</form>
-
+		<form name="checkoutForm" action="Catalog.do" method="POST">
+			<input class="btn btn-outline m-2" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+		</form>
+	</div>
+	<br/>
 	</div>
 </body>
 	</html>
