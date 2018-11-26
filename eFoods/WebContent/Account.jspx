@@ -10,6 +10,7 @@
 		omit-xml-declaration="true" />
 
 	<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
 <title>Account - Foods R Us</title>
 <link rel="stylesheet"
@@ -80,4 +81,5 @@
 	</div>
 </body>
 	</html>
+
 </jsp:root>
