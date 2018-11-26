@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		pageEncoding="UTF-8" session="false" />
+	<jsp:output doctype-root-element="html"
+		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+		omit-xml-declaration="true" />
+	<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Admin</title>
+</head>
+<body>
+	<c:set var="addSessions" value="${applicationScope.timeBetweenAdd}"></c:set>
+	<c:set var="checkoutSessions"
+		value="${applicationScope.timeBetweenCheckout}"></c:set>
+	<div>
+		<h3>Time to Add Items</h3>
+		<table border="1">
+			<tr>
+				<th>User</th>
+				<th>Seconds</th>
+			</tr>
+			<c:forEach items="${addSessions}" var="time" varStatus="loop">
+				<tr>
+					<td>${loop.index + 1}</td>
+					<td>${time}</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+	<div>
+		<h3>Time to Checkout</h3>
+		<table border="1">
+			<tr>
+				<th>User</th>
+				<th>Seconds</th>
+			</tr>
+			<c:forEach items="${checkoutSessions}" var="time" varStatus="loop">
+				<tr>
+					<td>${loop.index + 1}</td>
+					<td>${time}</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+
+</body>
+	</html>
+</jsp:root>

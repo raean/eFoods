@@ -188,6 +188,7 @@ public class Engine {
 
 		return categoryItems;
 	}
+
 	/**
 	 * Retrieves all items with a given category ID
 	 * 
@@ -236,10 +237,11 @@ public class Engine {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
-	 * Search for an item or items with a given min price, max price and sorting criteria
+	 * Search for an item or items with a given min price, max price and sorting
+	 * criteria
 	 * 
 	 * @param searchInputValue
 	 * @param minCost
@@ -285,7 +287,7 @@ public class Engine {
 
 	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
 			throws Exception {
-		
+
 		int quantityInt = Integer.parseInt(quantity);
 
 		if (cart.containsKey(itemNo)) {
@@ -487,8 +489,8 @@ public class Engine {
 
 	/**
 	 * 
-	 * update the cart in session with the requested params 
-	 * which returns a map of itemIds and the quantities of those items
+	 * update the cart in session with the requested params which returns a map of
+	 * itemIds and the quantities of those items
 	 * 
 	 * @param cart
 	 * @param itemIds
@@ -497,15 +499,15 @@ public class Engine {
 	 */
 	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
 			String[] deleteCheckboxes) throws Exception {
-		
-			for (int i = 0; i < itemIds.length; i++) {
-				if (0 == Integer.parseInt(itemQuantities[i])) {
-					cart.remove(itemIds[i]);
-				} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
-					cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
-				}
+
+		for (int i = 0; i < itemIds.length; i++) {
+			if (0 == Integer.parseInt(itemQuantities[i])) {
+				cart.remove(itemIds[i]);
+			} else if (cart.get(itemIds[i]) != Integer.parseInt(itemQuantities[i])) {
+				cart.put(itemIds[i], Integer.parseInt(itemQuantities[i]));
 			}
-		
+		}
+
 		if (deleteCheckboxes != null) {
 			for (String s : deleteCheckboxes) {
 				if (cart.containsKey(s)) {
@@ -564,6 +566,18 @@ public class Engine {
 		} else {
 			return SHIPPING_FEE;
 		}
+	}
+
+	public int getAverageTime(List<Integer> analyticList) {
+
+		int totalTime = 0;
+		for (Integer time : analyticList) {
+			totalTime += time;
+		}
+
+		totalTime /= analyticList.size();
+
+		return totalTime;
 	}
 
 }
