@@ -17,7 +17,7 @@
 		<link href="css/style.css" rel="stylesheet" type="text/css" />
 		
 		</head>
-		<body class="container">
+		<body class="container" background="img/backdrop2.png">
 		<div>
 			<br/>
 		</div>
@@ -57,16 +57,20 @@
 				</li>
 			</ul>
 		</nav>
-		<div name="mainDiv" class="">
-			<div id="thankYouDiv">
-				<h1> Thank you for your order! :) </h1>
+		<div class="col-md-12" style="background-color: #fffdfc;">
+		<br/>
+			<div name="mainDiv" >
+				<div id="thankYouDiv">
+					<h1> Thank you for your order! :) </h1>
+				</div>
 			</div>
-		</div>
-		<div>
-			<div id="thankYouOptionsDiv">
-				<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
-				<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
+			<div>
+				<div id="thankYouOptionsDiv">
+					<p> View all your orders in your <a href="Account.do" name="account"> account </a> page </p>
+					<p> Your order details can be found <a href="Account.do" name="orderDetails"> here. </a> </p>
+				</div>
 			</div>
+			<br/>
 		</div>
 		</body>
 			</html>
