@@ -520,7 +520,8 @@ public class Engine {
 	 * Checks if the session's cart is empty.
 	 * 
 	 * @param cart
-	 * @return
+	 *            a session cart.
+	 * @return true if the cart is empty, false if not.
 	 */
 	public boolean isCartEmpty(Map<String, Integer> cart) {
 		return cart.isEmpty();
@@ -530,7 +531,8 @@ public class Engine {
 	 * Returns the cost of all items, cost and HST.
 	 * 
 	 * @param cart
-	 * @return
+	 *            a viewable cart.
+	 * @return the total cost of the items in the cart.
 	 */
 	public double getItemsCost(Map<ItemBean, Integer> cart) {
 		double itemsCost = 0;
@@ -541,30 +543,33 @@ public class Engine {
 	}
 
 	/**
-	 * Get's HST amount.
+	 * Determines the shipping cost for the orders. If the carts total is greater
+	 * than 100, shipping is free, if not shipping is equal to the shipping fee.
 	 * 
-	 * @param cart
-	 * @return
+	 * @param itemscost
+	 *            the total cost of the items in the cart.
+	 * @return the shipping cost of the order.
 	 */
-	public double getHstAmount(Map<ItemBean, Integer> cart) {
-		double shipping = getShippingCost(cart);
-		double hstAmount = (this.getItemsCost(cart) + shipping) * HST;
-		return hstAmount;
-	}
-
-	/**
-	 * Get's shipping cost.
-	 * 
-	 * @param cart
-	 * @return
-	 */
-	public double getShippingCost(Map<ItemBean, Integer> cart) {
-		double itemsCost = this.getItemsCost(cart);
+	public double getShippingCost(double itemsCost) {
 		if (itemsCost >= FREE_SHIPPING) {
-			return 0;
+			return 0.0;
 		} else {
 			return SHIPPING_FEE;
 		}
+	}
+
+	/**
+	 * Calculates the hst amount of the items in the cart plus the shipping.
+	 * 
+	 * @param itemsCost
+	 *            the total cost of the items in the cart.
+	 * @param shippingCost
+	 *            the shipping cost of the order.
+	 * @return the hst amount of the items in the cart added to shipping.
+	 */
+	public double getHstAmount(double itemsCost, double shippingCost) {
+		double hstAmount = (itemsCost + shippingCost) * HST;
+		return hstAmount;
 	}
 
 	/**
