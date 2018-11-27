@@ -31,8 +31,6 @@ public class Dash extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(session.getAttribute("accountName"));
-
 		request.getSession(true);
 		this.getServletContext().getRequestDispatcher("/Dash.jspx").forward(request, response);
 	}

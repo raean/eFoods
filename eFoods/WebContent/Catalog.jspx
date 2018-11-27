@@ -39,7 +39,7 @@
 			<ul class="navbar-nav ml-auto">
 				<!-- CATALOG -->
 				<li class="nav-item active"> 
-					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+					<a class ="nav-link" href="Catalog.do" style="float-bottom;" name="browse"> Browse </a>
 				</li>
 				<!-- CART -->
 				<li class="nav-item nav-a nav-a-2 active"> 
@@ -105,9 +105,9 @@
 					<input type="hidden" value="${catalogId}" name="catalogId"/>
 				</form>
 			</div>
-			<br />
+			
 			<!-- SortedBy -->
-			<div name="showingCategoryDiv" class="border-bottom text-right 	">
+			<div name="showingCategoryDiv" class="border-bottom text-right m-3">
 				<h6> 
 					Showing: ${selectedCatalogName} 
 					<br /> 

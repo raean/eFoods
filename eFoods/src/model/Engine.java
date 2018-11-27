@@ -246,9 +246,7 @@ public class Engine {
 		if (searchInputValue.matches(itemMatcher)) {
 			result = itemDao.advanceSearch((getItem(searchInputValue).getName()), minCost, maxCost, sortBy);
 		} else {
-			System.out.println("IN else");
 			result = itemDao.advanceSearch(searchInputValue, minCost, maxCost, sortBy);
-			System.out.println(result);
 		}
 		if (result.isEmpty()) {
 			throw new Exception("No results returned.");
