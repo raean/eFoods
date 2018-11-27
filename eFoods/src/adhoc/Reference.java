@@ -152,8 +152,9 @@ public class Reference implements Filter {
 					hreq.setAttribute("shippingCost", 0.0);
 				} else {
 					double itemsCost = engine.getItemsCost(viewableCart);
-					double hstAmount = engine.getHstAmount(viewableCart);
-					double shippingCost = engine.getShippingCost(viewableCart);
+					
+					double shippingCost = engine.getShippingCost(itemsCost);
+					double hstAmount = engine.getHstAmount(itemsCost, shippingCost);
 					hreq.setAttribute("itemsCost", itemsCost);
 					hreq.setAttribute("hstAmount", hstAmount);
 					hreq.setAttribute("shippingCost", shippingCost);
