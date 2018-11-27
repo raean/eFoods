@@ -133,12 +133,12 @@
 										<c:forEach items="${sessionScope.lastOrder.getItems()}" var="item">
 											
 												${item.getQuantity()} - 
-												${item.getName()} @ ${item.getPriceFormat()}, 	
+												${item.getName()} @ CAD<fmt:formatNumber type="currency" value="${item.getPriceFormat()}" /> , 	
 											
 										</c:forEach>
 									</ul>
 									<br />
-									TOTAL : ${sessionScope.lastOrder.getTotal()}
+									TOTAL : CAD<fmt:formatNumber type="currency" value="${sessionScope.lastOrder.getTotalFormat()}"/>
 								</c:if>
 							</c:if>		
 						</form>

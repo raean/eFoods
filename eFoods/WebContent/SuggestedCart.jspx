@@ -57,7 +57,7 @@
 		</nav>
 	<div class="cartDiv rounded col-md-12" style="background-color: #fffdfc;">
 	<br/>
-		<h2>Your Cart with suggestion</h2>
+		<h2>Your Cart</h2>
 	 
 	<div class="cartItemTableDiv" >
 		<c:if test="${viewableCart.isEmpty()}">

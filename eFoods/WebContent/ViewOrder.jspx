@@ -42,17 +42,35 @@
 				<tr>
 					<td>${item.getNumber()}</td>
 					<td>${item.getName()}</td>
-					<td><fmt:formatNumber value="${item.getPriceFormat()}"
+					<td>CAD<fmt:formatNumber value="${item.getPriceFormat()}"
 							type="currency">
 						</fmt:formatNumber></td>
 					<td>${item.getQuantity()}</td>
-					<td><fmt:formatNumber value="${item.getExtendedFormat()}"
+					<td>CAD<fmt:formatNumber value="${item.getExtendedFormat()}"
 							type="currency"></fmt:formatNumber></td>
 
 				</tr>
 			</c:forEach>
 		</table>
 	</div>
+	<hr />
+	<div id="costInfo">
+		<h3>Cost Info:</h3>
+		<p>
+			Total: CAD<fmt:formatNumber type="currency" value="${order.getTotalFormat()}"></fmt:formatNumber>
+		</p>
+		<p>
+			Shipping: CAD<fmt:formatNumber type="currency" value="${order.getShippingFormat()}"></fmt:formatNumber>
+		</p>
+		<p>
+			HST: CAD<fmt:formatNumber type="currency" value="${order.getHSTFormat()}"></fmt:formatNumber>
+		</p>
+		<p>
+			Grand Total: CAD<fmt:formatNumber type="currency" value="${order.getGrandTotalFormat()}"></fmt:formatNumber>
+		</p>
+
+	</div>
+
 
 
 </body>

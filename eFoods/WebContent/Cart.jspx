@@ -98,10 +98,10 @@
 	<div class="checkoutDiv">
 		<form name="checkoutForm" action="Checkout.do" method="POST">
 			<h2> Price Calculations: </h2>
-			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
-			<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
-			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
-			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
+			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber type="currency" value="${itemsCost}" /> </p>
+			<p name="hstAmount"> HST: CAD<fmt:formatNumber type="currency" value="${hstAmount}" /> </p>
+			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber type="currency" value="${shippingCost}" /> </p>
+			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
 			
 		</form>
 		<div class="row">
