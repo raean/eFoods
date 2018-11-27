@@ -547,7 +547,7 @@ public class Engine {
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
 		double shipping = getShippingCost(cart);
-		return this.getItemsCost(cart) * HST;
+		return (this.getItemsCost(cart) + shipping) * HST;
 	}
 
 	/**
