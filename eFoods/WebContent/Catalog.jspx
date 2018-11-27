@@ -114,32 +114,33 @@
 					Sorted by: ${sortBy}
 				</h6>
 			</div>
-			<div name="catalogResultDiv">
-				<ul class="list-group list-group-flush">
+			<div name="catalogResultDiv" class="">
+				<div class="row justify-content-center">
 					<c:forEach items="${itemList}" var="item">
-						<li class="list-group-item">
+						<div class="card m-4 " style="width: 300px;">
 							<form name="cartItemForm" action="Catalog.do" method="POST">
+							<div class="m-2">
 								Name: ${item.getName()}
 								<br />
 								Price: CAD<fmt:formatNumber  type="currency" value="${item.getPrice()}" /> 
 								<br />
 								Quantity: 
-								<input type="number" value="1" placeholder="1" name="addQuantity" step="1" min="1"/> 
-						 		<button type="submit" name="cartButton" class="btn btn-outline m-2">Add to Cart</button>
+								<input type="number" style="float: right" value="1" placeholder="1" name="addQuantity" step="1" min="1"/> 
+						 		<button type="submit" style="float: right" name="cartButton" class="btn btn-outline m-2">Add to Cart</button>
 								<br />
 								ID: ${item.getNumber()} 
 								<c:if test="${cart.containsKey(item.getNumber())}">
 
 								<p style="color: green;"> ${cart.get(item.getNumber())} of this item exists in the cart. </p>
 									</c:if>
-							<input type="hidden" name="hiddenItemBeanId" value="${item.getNumber()}"/>
-							<input value="${sortBy}" name="sortBy" type="hidden"/>
-							<input value="${catalogId}" name="catalogId" type="hidden"/>
-
+								<input type="hidden" name="hiddenItemBeanId" value="${item.getNumber()}"/>
+								<input value="${sortBy}" name="sortBy" type="hidden"/>
+								<input value="${catalogId}" name="catalogId" type="hidden"/>
+							</div>
 							</form>
-						</li>
+						</div>
 					</c:forEach>
-				</ul>
+				</div>
 			</div>
 		</div>
 		
