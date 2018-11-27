@@ -60,10 +60,10 @@
 			Total: CAD<fmt:formatNumber type="currency" value="${order.getTotalFormat()}"></fmt:formatNumber>
 		</p>
 		<p>
-			HST: CAD<fmt:formatNumber type="currency" value="${order.getHSTFormat()}"></fmt:formatNumber>
+			Shipping: CAD<fmt:formatNumber type="currency" value="${order.getShippingFormat()}"></fmt:formatNumber>
 		</p>
 		<p>
-			Shipping: CAD<fmt:formatNumber type="currency" value="${order.getShippingFormat()}"></fmt:formatNumber>
+			HST: CAD<fmt:formatNumber type="currency" value="${order.getHSTFormat()}"></fmt:formatNumber>
 		</p>
 		<p>
 			Grand Total: CAD<fmt:formatNumber type="currency" value="${order.getGrandTotalFormat()}"></fmt:formatNumber>

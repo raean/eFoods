@@ -38,6 +38,7 @@ public class Engine {
 	private static final double HST = 0.13;
 	private static final String itemMatcher = "([0-9]{4}[a-z|A-Z][0-9]{3})";
 
+	// Initializes DAO's, the PO folders required on disk, and the marshallers.
 	private Engine() {
 		this.itemDao = new ItemDAO();
 		this.catDao = new CategoryDAO();
@@ -55,6 +56,7 @@ public class Engine {
 
 	}
 
+	// Creates the required PO directories and initializes the file count field.
 	private void initPoFolder() {
 		File poDir = new File(PO_PATH);
 		File inDir = new File(IN_PO);
@@ -65,29 +67,6 @@ public class Engine {
 		outDir.mkdir();
 
 		this.fileCount = inDir.listFiles().length + outDir.listFiles().length;
-	}
-
-	// TESTING METHOD FOR CREATING ORDER FILES ON DISK
-	public void testPathNonsense() throws Exception {
-		OrderBean order;
-		CustomerBean customer = new CustomerBean();
-
-		customer.setAccount("adamzis");
-		customer.setName("Adam Adjindji");
-
-		ItemBean item1 = getItem("0905A044");
-		ItemBean item2 = getItem("0905A112");
-		ItemBean item3 = getItem("0905A123");
-
-		Map<ItemBean, Integer> viewableCart = new HashMap<>();
-		viewableCart.put(item1, 3);
-		viewableCart.put(item2, 1);
-		viewableCart.put(item3, 2);
-
-		order = makeOrder(viewableCart, customer);
-
-		checkOut(order);
-
 	}
 
 	/**
@@ -573,7 +552,7 @@ public class Engine {
 		if (analyticList.size() == 0) {
 			throw new IllegalArgumentException("No users have performed the required action.");
 		}
-		
+
 		int totalTime = 0;
 		for (Integer time : analyticList) {
 			totalTime += time;
