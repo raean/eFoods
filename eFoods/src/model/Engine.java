@@ -349,7 +349,7 @@ public class Engine {
 	public OrderBean makeOrder(Map<ItemBean, Integer> viewableCart, CustomerBean customer) throws Exception {
 		OrderBean order = new OrderBean();
 		List<ItemBean> itemList = new ArrayList<>();
-		double HST, total, grandTotal, shipping;
+		double hst, total, grandTotal, shipping;
 
 		total = 0.0;
 
@@ -366,15 +366,15 @@ public class Engine {
 			shipping = SHIPPING_FEE;
 		}
 
-		HST = (total + shipping) * Engine.HST;
-		grandTotal = total + HST + shipping;
+		hst = (total + shipping) * HST;
+		grandTotal = total + hst + shipping;
 
 		order.setItems(itemList);
 		order.setSubmitted(this.getDate());
 		order.setCustomer(customer);
 
 		order.setTotal(total);
-		order.setHST(HST);
+		order.setHST(hst);
 		order.setShipping(shipping);
 		order.setGrandTotal(grandTotal);
 
