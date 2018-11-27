@@ -22,7 +22,8 @@ import model.Engine;
 @WebListener
 public class Init implements ServletContextListener, HttpSessionListener, HttpSessionAttributeListener {
 
-
+	// Initializes the engine upon server creation, and adds the lists for
+	// analytics.
 	public void contextInitialized(ServletContextEvent sce) {
 		Engine.getInstance();
 		ServletContext context = sce.getServletContext();
@@ -34,10 +35,12 @@ public class Init implements ServletContextListener, HttpSessionListener, HttpSe
 		context.setAttribute("timeBetweenCheckout", timeBetweenCheckout);
 	}
 
+	// Creates the cart in the session and sets authenticated to false.
 	public void sessionCreated(HttpSessionEvent se) {
-		se.getSession().setAttribute("authenticated", false);
 		Map<String, Integer> cart = new HashMap<>();
+		
 		se.getSession().setAttribute("cart", cart);
+		se.getSession().setAttribute("authenticated", false);
 	}
 
 }
