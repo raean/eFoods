@@ -22,7 +22,7 @@ import model.OrderBean;
 @WebServlet("/Auth.do")
 public class Auth extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://localhost:4413/eFoods/Auth.do";
+	private static final String REDIRECT = "https://www.eecs.yorku.ca/~roumani/servers/auth/oauth.cgi?back=http://%s:%s/eFoods/Auth.do";
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -59,7 +59,6 @@ public class Auth extends HttpServlet {
 			} catch (JAXBException e) {
 				response.getWriter().write("Fatal error " + e.getMessage());
 			}
-
 
 			String referer = (String) session.getAttribute("referer");
 			response.sendRedirect(referer);

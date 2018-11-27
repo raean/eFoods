@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		pageEncoding="UTF-8" session="false" />
+	<jsp:output doctype-root-element="html"
+		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+		omit-xml-declaration="true" />
+	<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Admin</title>
+</head>
+<body>
+	<c:set var="addSessions" value="${applicationScope.timeBetweenAdd}"></c:set>
+	<c:set var="checkoutSessions"
+		value="${applicationScope.timeBetweenCheckout}"></c:set>
+		
+	<div class="analytics">
+		<h3>Average time user took to add an item</h3>
+		<c:if test="${addSessions.size() gt 0}">
+			<p>${addSessions.size()} user(s) took ${averageAdd} seconds</p>		
+		</c:if>
+		<c:if test="${addSessions.size() eq 0}">
+			<p>${averageAdd}</p>
+		</c:if>
+	</div>
+	<hr />
+	<div class="analytics">
+		<h3>Average time user took to checkout</h3>
+		<c:if test="${checkoutSessions.size() gt 0}">
+			<p>${checkoutSessions.size()} user(s) took ${averageCheckout} seconds</p>		
+		</c:if>
+		<c:if test="${checkoutSessions.size() eq 0}">
+			<p>${averageCheckout}</p>
+		</c:if>
+	</div>
+
+</body>
+	</html>
+</jsp:root>
