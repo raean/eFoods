@@ -70,13 +70,7 @@
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
 			<h3 style="color: #f8b39d;"><strong> Foods R Us</strong></h3>
-				<c:if test="${!sessionScope.authenticated}">
-					<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
-				</c:if>
-				<c:if test="${sessionScope.authenticated}">
-					<img src="img/featuredBanner.png"  id="banner" class="rounded"/>
-
-				</c:if>
+				<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
 			</div>
 			<br />
 			<br />
