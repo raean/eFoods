@@ -28,8 +28,19 @@ public class Admin extends HttpServlet {
 		List<Integer> timeBetweenAdd = (List<Integer>) context.getAttribute("timeBetweenAdd");
 		List<Integer> timeBetweenCheckout = (List<Integer>) context.getAttribute("timeBetweenCheckout");
 
-		int averageAdd = model.getAverageTime(timeBetweenAdd);
-		int averageCheckout = model.getAverageTime(timeBetweenCheckout);
+		try {
+			int averageAdd = model.getAverageTime(timeBetweenAdd);
+			request.setAttribute("averageAdd", averageAdd);
+		} catch (IllegalArgumentException e) {
+			request.setAttribute("averageAdd", e.getMessage());
+		}
+
+		try {
+			int averageCheckout = model.getAverageTime(timeBetweenCheckout);
+			request.setAttribute("averageCheckout", averageCheckout);
+		} catch (IllegalArgumentException e) {
+			request.setAttribute("averageCheckout", e.getMessage());
+		}
 
 		this.getServletContext().getRequestDispatcher("/Admin.jspx").forward(request, response);
 

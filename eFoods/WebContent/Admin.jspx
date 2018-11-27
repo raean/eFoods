@@ -16,35 +16,25 @@
 	<c:set var="addSessions" value="${applicationScope.timeBetweenAdd}"></c:set>
 	<c:set var="checkoutSessions"
 		value="${applicationScope.timeBetweenCheckout}"></c:set>
-	<div>
-		<h3>Time to Add Items</h3>
-		<table border="1">
-			<tr>
-				<th>User</th>
-				<th>Seconds</th>
-			</tr>
-			<c:forEach items="${addSessions}" var="time" varStatus="loop">
-				<tr>
-					<td>${loop.index + 1}</td>
-					<td>${time}</td>
-				</tr>
-			</c:forEach>
-		</table>
+		
+	<div class="analytics">
+		<h3>Average time user took to add an item</h3>
+		<c:if test="${addSessions.size() gt 0}">
+			<p>${addSessions.size()} user(s) took ${averageAdd} seconds</p>		
+		</c:if>
+		<c:if test="${addSessions.size() eq 0}">
+			<p>${averageAdd}</p>
+		</c:if>
 	</div>
-	<div>
-		<h3>Time to Checkout</h3>
-		<table border="1">
-			<tr>
-				<th>User</th>
-				<th>Seconds</th>
-			</tr>
-			<c:forEach items="${checkoutSessions}" var="time" varStatus="loop">
-				<tr>
-					<td>${loop.index + 1}</td>
-					<td>${time}</td>
-				</tr>
-			</c:forEach>
-		</table>
+	<hr />
+	<div class="analytics">
+		<h3>Average time user took to checkout</h3>
+		<c:if test="${checkoutSessions.size() gt 0}">
+			<p>${checkoutSessions.size()} user(s) took ${averageCheckout} seconds</p>		
+		</c:if>
+		<c:if test="${checkoutSessions.size() eq 0}">
+			<p>${averageCheckout}</p>
+		</c:if>
 	</div>
 
 </body>
