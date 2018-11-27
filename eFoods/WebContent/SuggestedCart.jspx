@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<jsp:directive.page contentType="text/html; charset=ISO-8859-1"
+		pageEncoding="ISO-8859-1" session="true" />
+	<jsp:output doctype-root-element="html"
+		doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+		omit-xml-declaration="true" />
+
+	<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title> Cart - Foods R Us </title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />		
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="container" background="img/backdrop2.png">
+	<!-- STRAT OF NAVIGATION -->
+	<div>
+		<br/>
+	</div>
+		<nav class="navbar navbar-expand-lg navbar-light rounded-top" style="background-color: #f8b39d;">
+			<!-- START OF LOGO -->
+			<div class="navbar-brand col-md-2">
+				<a href="Dash.do" name="home" >
+					<img src="img/efoods.png"  class="img-circle" width="60" height="60" alt="" /> 
+				</a>
+			</div>		  	
+			<!-- SEARCH -->
+			<form name="searchForm" action="Search.do" method="POST" class="form-inline my-2 my-lg-0">
+				<input class="form-control " type="search" style="width:375px" name="searchInput" placeholder="Search" value="${searchInputValue}">
+				<button class="btn btn-outline-primary my-2 my-sm-0" type="submit" name="searchButton" value="Search">Search</button></input>
+			</form>
+			<!-- LINKS -->
+			<ul class="navbar-nav ml-auto">
+				<!-- CATALOG -->
+				<li class="nav-item active"> 
+					<a class ="nav-link" href="Catalog.do" name="browse"> Browse </a>
+				</li>
+				<!-- CART -->
+				<li class="nav-item nav-a nav-a-2 active"> 
+					<a class ="nav-link" href="Cart.do"><small>Your,</small><br />Cart <small class="badge badge-pill badge-danger">${cart.size()}</small></a>
+				</li>
+				<!-- SIGN IN -->
+				<li class="nav-item active"> 
+					<form>
+						<c:if test="${!sessionScope.authenticated}">
+							<a class ="nav-link" href="Auth.do" name="authentication">Sign In</a>
+						</c:if>
+						<c:if test="${sessionScope.authenticated}">
+							<a class ="nav-link" href="Account.do" name="account"><small>Hello, ${sessionScope.customer.getName().split(" ")[0]} </small><br />Your account</a>
+						</c:if>
+					</form>
+				</li>
+			</ul>
+		</nav>
+	<div class="cartDiv rounded col-md-12" style="background-color: #fffdfc;">
+	<br/>
+		<h2>Your Cart with suggestion</h2>
+	 
+	<div class="cartItemTableDiv" >
+		<c:if test="${viewableCart.isEmpty()}">
+			<p> Your cart is empty. Add items <a href="Catalog.do"> here. </a> </p>
+		</c:if>
+		<c:if test="${!viewableCart.isEmpty()}">
+			<form name="updateCartForm" action="Cart.do" method="POST">
+			<table class="table">
+				<tr class="font-weight-bold">
+					<td> Name </td> 
+					<td> Quantity </td> 
+					<td> Cost Per Unit </td> 
+					<td> Price </td>
+					<td> ID </td>
+					<td> Delete </td>
+				</tr>
+				<c:forEach items="${viewableCart}" var="cartItem">
+					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
+					<tr>
+						<td>${cartItem.key.getName()}</td>
+						<td>x <input type="number" min="0" step="1" value="${cartItem.value}" name="quantityInput"/></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice()}" /></td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${cartItem.key.getPrice() * cartItem.value}" /></td>
+						<td>${cartItem.key.getNumber()}</td>
+						<td> Delete: <input type="checkbox" value="${cartItem.key.getNumber()}" name="deleteCheckbox"/> </td>
+					</tr>
+				</c:forEach>
+			</table>
+				<div class="text-right">
+				<button class="btn btn-outline" type="submit" name="updateCartButton">Update</button>
+				</div>
+				<c:if test="${!empty error}">
+					<p style="color: red;"> <strong> ${error}</strong></p>
+				</c:if>
+			</form>
+		</c:if>
+	</div>
+	<div name="lowerContent" class="row ">
+	<div name="suggestionDiv" class="col" syle="background-color: red;">
+			<h2>Suggested Items:</h2>
+			<br />
+			Because you bought: <br /> <c:forEach items="${suggestedList}" var="suggestedItem"> ${suggestedItem.getName()} <br /></c:forEach>
+			<br />
+			We suggest you buy: <br />
+			<table class="table">
+			<form name="cartItemForm" action="Search.do" method="POST">
+			<c:forEach items="${suggestedCart}" var="suggestedItem">
+					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
+					<tr>
+						<td>${suggestedItem.getName()}</td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${suggestedItem.getPrice()}" /></td>
+						<td>${suggestedItem.getNumber()}</td>
+						<td><input type="hidden" value="1" name="addQuantity" /> 
+							<input class="btn btn-outline m-2" type="submit" name="cartButton" value="Add to Cart"/>
+							<input type="hidden" name="hiddenItemNo" value="${suggestedItem.getNumber()}"/>
+						</td>
+					</tr>
+				</c:forEach>
+			</form>
+		</table>
+				
+		</div>
+	
+		<div name="checkoutDiv" class="col">
+			<form name="checkoutForm" action="Checkout.do" method="POST">
+				<h2> Price Calculations: </h2>
+				<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
+				<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
+				<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
+				<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
+				
+			</form>
+			<div class="row">
+				<form name="checkoutForm" action="Checkout.do" method="POST">
+					<input class="btn btn-outline m-1 col" type="submit" name="checkoutButton" value="Checkout"/> 
+				</form>
+				<div class="col-5" />	
+				<form name="checkoutForm" action="Catalog.do" method="POST">
+					<input class="btn btn-outline m-1 col" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+				</form>
+			</div>
+		</div>
+	</div>
+	<br/>
+</div>
+</body>
+	</html>
+</jsp:root>

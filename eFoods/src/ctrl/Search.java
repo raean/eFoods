@@ -64,11 +64,9 @@ public class Search extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
-			this.getServletContext().getRequestDispatcher("/Cart.do").forward(request, response);
+			response.sendRedirect("Cart.do");
 		}
-		
-		
-		
+		//this.getServletContext().getRequestDispatcher("/Search.jspx").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
