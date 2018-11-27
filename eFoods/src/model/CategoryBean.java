@@ -1,7 +1,10 @@
 package model;
 
-import java.sql.Blob;
-
+/**
+ * Class to represent the category table from the database. Picture is stored as
+ * a Base64 string that is rendered in the jspx as a viewable picture.
+ *
+ */
 public class CategoryBean {
 
 	private String description;
