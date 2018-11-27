@@ -95,27 +95,54 @@
 			</form>
 		</c:if>
 	</div>
-	<div class="checkoutDiv">
-		<form name="checkoutForm" action="Checkout.do" method="POST">
-			<h2> Price Calculations: </h2>
-			<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber type="currency" value="${itemsCost}" /> </p>
-			<p name="hstAmount"> HST: CAD<fmt:formatNumber type="currency" value="${hstAmount}" /> </p>
-			<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber type="currency" value="${shippingCost}" /> </p>
-			<p name="overallCost"> Total Cost: CAD<fmt:formatNumber type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
-			
-		</form>
-		<div class="row">
+	<div name="lowerContent" class="row ">
+	<div name="suggestionDiv" class="col" syle="background-color: red;">
+			<h2>Suggested Items:</h2>
+			<br />
+			Because you bought: <br /> <c:forEach items="${suggestedList}" var="suggestedItem"> ${suggestedItem.getName()} <br /></c:forEach>
+			<br />
+			We suggest you buy: <br />
+			<table class="table">
+			<form name="cartItemForm" action="Search.do" method="POST">
+			<c:forEach items="${suggestedCart}" var="suggestedItem">
+					<input type="hidden" name="itemId" value="${cartItem.key.getNumber()}"/>
+					<tr>
+						<td>${suggestedItem.getName()}</td>
+						<td>CAD<fmt:formatNumber  type="currency" value="${suggestedItem.getPrice()}" /></td>
+						<td>${suggestedItem.getNumber()}</td>
+						<td><input type="hidden" value="1" name="addQuantity" /> 
+							<input class="btn btn-outline m-2" type="submit" name="cartButton" value="Add to Cart"/>
+							<input type="hidden" name="hiddenItemNo" value="${suggestedItem.getNumber()}"/>
+						</td>
+					</tr>
+				</c:forEach>
+			</form>
+		</table>
+				
+		</div>
+	
+		<div name="checkoutDiv" class="col">
 			<form name="checkoutForm" action="Checkout.do" method="POST">
-				<input class="btn btn-outline m-1 col" type="submit" name="checkoutButton" value="Checkout"/> 
+				<h2> Price Calculations: </h2>
+				<p name="itemsCost"> Cost of Items: CAD<fmt:formatNumber  type="currency" value="${itemsCost}" /> </p>
+				<p name="hstAmount"> HST: CAD<fmt:formatNumber  type="currency" value="${hstAmount}" /> </p>
+				<p name="shippingCost"> Shipping Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost}" /> </p>
+				<p name="overallCost"> Total Cost: CAD<fmt:formatNumber  type="currency" value="${shippingCost+(itemsCost+hstAmount)}" /> </p>
+				
 			</form>
-			<div class="col-2" />	
-			<form name="checkoutForm" action="Catalog.do" method="POST">
-				<input class="btn btn-outline m-1 col" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
-			</form>
+			<div class="row">
+				<form name="checkoutForm" action="Checkout.do" method="POST">
+					<input class="btn btn-outline m-1 col" type="submit" name="checkoutButton" value="Checkout"/> 
+				</form>
+				<div class="col-5" />	
+				<form name="checkoutForm" action="Catalog.do" method="POST">
+					<input class="btn btn-outline m-1 col" type="submit" name="continueShoppingButton" value="Continue Shopping"/>
+				</form>
+			</div>
 		</div>
 	</div>
 	<br/>
-	</div>
+</div>
 </body>
 	</html>
 </jsp:root>

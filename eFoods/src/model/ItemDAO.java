@@ -125,7 +125,6 @@ public class ItemDAO {
 		}
 
 		searchStatement.setString(1, "%" + searchInputValue + "%");
-		System.out.println(searchStatement);
 		itemResults = searchStatement.executeQuery();
 		itemList = makeItemList(itemResults);
 		return itemList;

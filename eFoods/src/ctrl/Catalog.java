@@ -50,7 +50,6 @@ public class Catalog extends HttpServlet {
 				try {
 					// Lets the user know which category we are looking at.
 					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName());
-
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
 					request.setAttribute("itemList", itemList);
@@ -61,7 +60,6 @@ public class Catalog extends HttpServlet {
 				try {
 					// Lets the user know which category we are looking at.
 					request.setAttribute("selectedCatalogName", "All items");
-
 					request.setAttribute("catalogId", null);
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
 					request.setAttribute("itemList", itemList);
@@ -80,7 +78,6 @@ public class Catalog extends HttpServlet {
 				try {
 					// Lets the user know which category we are looking at.
 					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName());
-
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
 					request.setAttribute("itemList", itemList);
@@ -129,7 +126,6 @@ public class Catalog extends HttpServlet {
 				}
 			}
 		}
-
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
 	}
 
