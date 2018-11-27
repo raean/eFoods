@@ -65,11 +65,9 @@
 		<!-- MAIN DIV START -->
 		<div name="mainDiv" style="background: #fffdfc;">
 		<br />
-		<br /> 
-			<!-- WELCOME TEXT -->
+		<br />
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
-			<h3 style="color: #f8b39d;"><strong> Foods R Us</strong></h3>
 				<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
 			</div>
 			<br />
@@ -133,11 +131,12 @@
 													<c:set var="count" value="${count + 1}"/>											
 												</c:if>
 										</c:forEach>
-												<p>Showing at most 5 unique items</p>
+												
 										</div>
 									</ul>
 									<br />
 									<span style="color: white;">TOTAL : CAD<fmt:formatNumber type="currency" value="${sessionScope.lastOrder.getTotalFormat()}"/></span>
+									<div style="position: absolute; right: 0; bottom: 0; color:white;"><small>Showing at most 5 unique items</small></div>
 								</c:if>
 							</c:if>		
 						</form>
