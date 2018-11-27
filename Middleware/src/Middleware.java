@@ -25,7 +25,6 @@ public class Middleware {
 	private File inDir;
 	private File outDir;
 
-
 	private File[] poFiles;
 	private File[] inFiles;
 
@@ -53,7 +52,6 @@ public class Middleware {
 			System.exit(1);
 		}
 	}
-
 
 	private void setInOutDirFiles(File poDir) {
 		this.poPath = poDir.getPath();
@@ -91,7 +89,6 @@ public class Middleware {
 
 		return orderList;
 	}
-
 
 	public Map<String, TotalItemsBean> consolidateOrders(List<OrderBean> orderList) {
 		Map<String, TotalItemsBean> quantityMap = new HashMap<>();
@@ -173,7 +170,6 @@ public class Middleware {
 			System.exit(1);
 		}
 
-
 		try {
 			Middleware b2c = new Middleware(poDir);
 			List<OrderBean> orderList = b2c.getInboxOrders();
@@ -181,7 +177,7 @@ public class Middleware {
 			ReportBean report = b2c.makeReport(quantityMap);
 			b2c.marshallReport(report);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 			System.exit(1);
 		}
 
