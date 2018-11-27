@@ -1,7 +1,6 @@
 package ctrl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.CategoryBean;
-import model.CustomerBean;
 import model.Engine;
 import model.ItemBean;
 
@@ -26,14 +24,13 @@ public class Catalog extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
 
 		// Regular instantiation before anything occurs:
 		Engine engine = Engine.getInstance();
 		HttpSession session = request.getSession();
-		 request.setAttribute("cart", session.getAttribute("cart"));
+		request.setAttribute("cart", session.getAttribute("cart"));
 		request.setAttribute("sortBy", "NONE");
-		
+
 		// We get the categories that exist to populate the user page with options.
 		try {
 			List<CategoryBean> result = engine.getAllCategories();
@@ -41,15 +38,29 @@ public class Catalog extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// If the sort by button is clicked:
 		if (request.getParameter("sortByButton") != null) {
 			String sortBy = request.getParameter("sortBy");
 			request.setAttribute("sortBy", sortBy);
-			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("") ) { // If a catalog was selected, sort the catalog items specifically.
+			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) { // If a
+																												// catalog
+																												// was
+																												// selected,
+																												// sort
+																												// the
+																												// catalog
+																												// items
+																												// specifically.
 				String catalogId = (String) request.getParameter("catalogId");
 				try {
-					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the user know which category we are looking at,
+					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the
+																											// user know
+																											// which
+																											// category
+																											// we are
+																											// looking
+																											// at,
 
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
@@ -59,7 +70,8 @@ public class Catalog extends HttpServlet {
 				}
 			} else { // If no catalog is selected, then it should sort all the items
 				try {
-					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we are looking at,
+					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we
+																				// are looking at,
 					request.setAttribute("catalogId", null);
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
 					request.setAttribute("itemList", itemList);
@@ -70,11 +82,25 @@ public class Catalog extends HttpServlet {
 		} else if (request.getParameter("cartButton") != null) { // If the add to cart item is clicked
 			String sortBy = request.getParameter("sortBy");
 			request.setAttribute("sortBy", sortBy);
-			// We similarly resort the page 
-			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("") ) { // If a catalog was selected, sort the catalog items specifically.
+			// We similarly resort the page
+			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) { // If a
+																												// catalog
+																												// was
+																												// selected,
+																												// sort
+																												// the
+																												// catalog
+																												// items
+																												// specifically.
 				String catalogId = (String) request.getParameter("catalogId");
 				try {
-					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the user know which category we are looking at,
+					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the
+																											// user know
+																											// which
+																											// category
+																											// we are
+																											// looking
+																											// at,
 
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
@@ -84,7 +110,8 @@ public class Catalog extends HttpServlet {
 				}
 			} else {
 				try {
-					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we are looking at,
+					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we
+																				// are looking at,
 					request.setAttribute("catalogId", null);
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
 					request.setAttribute("itemList", itemList);
@@ -92,18 +119,13 @@ public class Catalog extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-
 			Map<String, Integer> cart = (Map<String, Integer>) request.getSession().getAttribute("cart");
 			String item = request.getParameter("hiddenItemBeanId");
 			String quantity = request.getParameter("addQuantity");
 			try {
-				queryString = "?catalogId=" + engine.getItem(request.getParameter("hiddenItemBeanId")).getCatId()
-					+ "&sortBy=" + request.getParameter("sortBy") + "&sortByButton=1";
 				Map<String, Integer> newCart = engine.addItemToCart(cart, item, quantity);
 				request.getSession().setAttribute("cart", newCart);
-
 				request.setAttribute("sortBy", sortBy);
-
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -112,7 +134,7 @@ public class Catalog extends HttpServlet {
 				try {
 					List<ItemBean> itemList = engine.getAllItems();
 					request.setAttribute("itemList", itemList);
-					request.setAttribute("selectedCatalogName", "All items"); 
+					request.setAttribute("selectedCatalogName", "All items");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -122,16 +144,14 @@ public class Catalog extends HttpServlet {
 				try {
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId);
 					request.setAttribute("itemList", itemList);
-					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); 
+					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
 
 		this.getServletContext().getRequestDispatcher("/Catalog.jspx").forward(request, response);
-
 	}
 
 	/**
