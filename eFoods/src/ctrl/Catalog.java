@@ -43,24 +43,13 @@ public class Catalog extends HttpServlet {
 		if (request.getParameter("sortByButton") != null) {
 			String sortBy = request.getParameter("sortBy");
 			request.setAttribute("sortBy", sortBy);
-			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) { // If a
-																												// catalog
-																												// was
-																												// selected,
-																												// sort
-																												// the
-																												// catalog
-																												// items
-																												// specifically.
+			// if a catalog was selected sort the catalog items specifically.
+			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) {
+
 				String catalogId = (String) request.getParameter("catalogId");
 				try {
-					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the
-																											// user know
-																											// which
-																											// category
-																											// we are
-																											// looking
-																											// at,
+					// Lets the user know which category we are looking at.
+					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName());
 
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
@@ -70,8 +59,9 @@ public class Catalog extends HttpServlet {
 				}
 			} else { // If no catalog is selected, then it should sort all the items
 				try {
-					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we
-																				// are looking at,
+					// Lets the user know which category we are looking at.
+					request.setAttribute("selectedCatalogName", "All items");
+
 					request.setAttribute("catalogId", null);
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
 					request.setAttribute("itemList", itemList);
@@ -83,24 +73,13 @@ public class Catalog extends HttpServlet {
 			String sortBy = request.getParameter("sortBy");
 			request.setAttribute("sortBy", sortBy);
 			// We similarly resort the page
-			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) { // If a
-																												// catalog
-																												// was
-																												// selected,
-																												// sort
-																												// the
-																												// catalog
-																												// items
-																												// specifically.
+			// If a catalog was selected sort the catalog items specifically.
+			if (request.getParameter("catalogId") != null && !request.getParameter("catalogId").equals("")) {
+
 				String catalogId = (String) request.getParameter("catalogId");
 				try {
-					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName()); // Lets the
-																											// user know
-																											// which
-																											// category
-																											// we are
-																											// looking
-																											// at,
+					// Lets the user know which category we are looking at.
+					request.setAttribute("selectedCatalogName", engine.getCategory(catalogId).getName());
 
 					request.setAttribute("catalogId", catalogId);
 					List<ItemBean> itemList = engine.getCategoryItems(catalogId, sortBy);
@@ -110,8 +89,8 @@ public class Catalog extends HttpServlet {
 				}
 			} else {
 				try {
-					request.setAttribute("selectedCatalogName", "All items"); // Lets the user know which category we
-																				// are looking at,
+					// Lets the user know which category we are looking at.
+					request.setAttribute("selectedCatalogName", "All items");
 					request.setAttribute("catalogId", null);
 					List<ItemBean> itemList = engine.getAllItems(sortBy);
 					request.setAttribute("itemList", itemList);
