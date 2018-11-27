@@ -35,6 +35,7 @@ public class Engine {
 
 	private static final double SHIPPING_FEE = 5.0;
 	private static final double HST = 0.13;
+	private static final double FREE_SHIPPING = 100.0;
 	private static final String itemMatcher = "([0-9]{4}[a-z|A-Z][0-9]{3})";
 
 	// Initializes DAO's, the PO folders required on disk, and the marshallers.
@@ -359,13 +360,13 @@ public class Engine {
 			total += item.getExtended();
 		}
 
-		if (total >= 100) {
+		if (total >= FREE_SHIPPING) {
 			shipping = 0.0;
 		} else {
-			shipping = 5.0;
+			shipping = SHIPPING_FEE;
 		}
 
-		HST = (total + shipping) * 0.13;
+		HST = (total + shipping) * Engine.HST;
 		grandTotal = total + HST + shipping;
 
 		order.setItems(itemList);
@@ -547,7 +548,8 @@ public class Engine {
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
 		double shipping = getShippingCost(cart);
-		return (this.getItemsCost(cart) + shipping) * HST;
+		double hstAmount = (this.getItemsCost(cart) + shipping) * HST;
+		return hstAmount;
 	}
 
 	/**
@@ -558,7 +560,7 @@ public class Engine {
 	 */
 	public double getShippingCost(Map<ItemBean, Integer> cart) {
 		double itemsCost = this.getItemsCost(cart);
-		if (itemsCost >= 100) {
+		if (itemsCost >= FREE_SHIPPING) {
 			return 0;
 		} else {
 			return SHIPPING_FEE;
