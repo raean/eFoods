@@ -4,7 +4,6 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,12 +168,16 @@ public class Engine {
 	}
 
 	/**
-	 * Retrieves all items with a given category ID
+	 * Retrieves all items with a given category ID and that are sorted by the given
+	 * parameter.
 	 * 
 	 * @param catId
+	 *            a valid category Id.
 	 * @param sortBy
-	 * @return List<ItemBean>
+	 *            an input from the select tag in html.
+	 * @return a list of items in the category, sorted.
 	 * @throws Exception
+	 *             if an SQL exception is thrown.
 	 */
 	public List<ItemBean> getCategoryItems(String catId, String sortBy) throws Exception {
 		CategoryBean category = getCategory(catId);
@@ -218,16 +221,20 @@ public class Engine {
 	}
 
 	/**
-	 * 
 	 * Search for an item or items with a given min price, max price and sorting
 	 * criteria
 	 * 
 	 * @param searchInputValue
+	 *            a string to search from.
 	 * @param minCost
+	 *            the minimum cost of an item.
 	 * @param maxCost
+	 *            the maximum cost of an item.
 	 * @param sortBy
-	 * @return List<ItemBean>
+	 *            an input from the select tag in html.
+	 * @return a list of items that match the entered parameters.
 	 * @throws Exception
+	 *             if an SQL exception is thrown.
 	 */
 	public List<ItemBean> doAdvanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
@@ -263,7 +270,6 @@ public class Engine {
 	 * @return the Map of the cart after alterations (addition).
 	 * @throws Exception
 	 */
-
 	public Map<String, Integer> addItemToCart(Map<String, Integer> cart, String itemNo, String quantity)
 			throws Exception {
 
@@ -290,9 +296,9 @@ public class Engine {
 	 *            is the item to be removed.
 	 * @return the Map of the cart after alterations (removal).
 	 */
-	public Map<String, Integer> ItemFromCart(Map<String, Integer> cart, ItemBean item) {
-		if (cart.containsKey(item)) {
-			cart.remove(item);
+	public Map<String, Integer> removeItemFromCart(Map<String, Integer> cart, ItemBean item) {
+		if (cart.containsKey(item.getNumber())) {
+			cart.remove(item.getNumber());
 		} else {
 			throw new IllegalArgumentException("That item is not in the cart!");
 		}
@@ -331,7 +337,6 @@ public class Engine {
 	 * total price (extended) are set. The orderBean also contains shipping, HST,
 	 * total, and grand total pricing easily accessible.
 	 * 
-	 * TODO: Remove calculations into their own methods.
 	 * 
 	 * @param viewableCart
 	 *            a non empty viewableCart.
@@ -395,7 +400,7 @@ public class Engine {
 	 * method.
 	 * 
 	 * @param order
-	 *            a populated orderBean
+	 *            a populated orderBean.
 	 * @throws Exception
 	 */
 	public void checkOut(OrderBean order) throws Exception {
@@ -413,7 +418,7 @@ public class Engine {
 	 * Creates a 2+ digit orderId for the orderBean. Used in the filename, and
 	 * inside the P XML.
 	 * 
-	 * @return
+	 * @return a string of the proper orderId.
 	 */
 	private String makeOrderId() {
 		String fileCountString;
@@ -458,8 +463,18 @@ public class Engine {
 		return customerOrders;
 	}
 
+	/**
+	 * Checks if the customer created the order, if they did not they are not
+	 * allowed to view the order and the method returns false.
+	 * 
+	 * @param fileName
+	 *            the name of the xml file the user wishes to access.
+	 * @param accountName
+	 *            the users account name in the customer session.
+	 * @return true if the user name matches the regex, false otherwise.
+	 */
 	public boolean isCustomerOrder(String fileName, String accountName) {
-		if (fileName.contains(accountName)) {
+		if (fileName.matches("po" + accountName + "_\\d+.xml")) {
 			return true;
 		}
 
@@ -467,14 +482,16 @@ public class Engine {
 	}
 
 	/**
-	 * 
-	 * update the cart in session with the requested params which returns a map of
-	 * itemIds and the quantities of those items
+	 * update the cart in session with the requested parameters which returns a map
+	 * of itemIds and the quantities of those items.
 	 * 
 	 * @param cart
+	 *            the users session cart.
 	 * @param itemIds
+	 *            the ids of the items to change.
 	 * @param itemQuantities
-	 * @return Map<String, Integer>
+	 *            the new quantities for each item.
+	 * @return the updated cart with the new quantities.
 	 */
 	public Map<String, Integer> updateCart(Map<String, Integer> cart, String[] itemIds, String[] itemQuantities,
 			String[] deleteCheckboxes) throws Exception {
@@ -529,6 +546,7 @@ public class Engine {
 	 * @return
 	 */
 	public double getHstAmount(Map<ItemBean, Integer> cart) {
+		double shipping = getShippingCost(cart);
 		return this.getItemsCost(cart) * HST;
 	}
 
@@ -547,6 +565,15 @@ public class Engine {
 		}
 	}
 
+	/**
+	 * Adds up the value of every integer in the list and then divides it by the
+	 * list size. Used in analytics. Throws {@link IllegalArgumentException} if the
+	 * list is empty.
+	 * 
+	 * @param analyticList
+	 *            one of the lists in the context used to track timing.
+	 * @return the average value of the list.
+	 */
 	public int getAverageTime(List<Integer> analyticList) {
 
 		if (analyticList.size() == 0) {
