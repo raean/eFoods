@@ -21,17 +21,19 @@ public class ItemDAO {
 	public static final String DB_URL = "jdbc:derby://localhost:64413/EECS;user=student;password=secret";
 	public static final String SET_SCHEMA = "set schema roumani";
 
+	// Queries
 	public static final String SEARCH_QUERY = "SELECT * FROM ITEM WHERE LOWER(NAME) LIKE LOWER(?)";
 	public static final String ADVANCE_QUERY = SEARCH_QUERY + " AND PRICE BETWEEN ? AND ?";
 	public static final String GET_ITEM_QUERY = "SELECT * FROM ITEM WHERE NUMBER = ?";
 
 	// This helps prevent SQL injection attacks on the ORDER BY statement.
 	public static final String[] SORT_OPTIONS = { "NUMBER", "PRICE ASC", "PRICE DESC", "NAME ASC", "NAME DESC" };
-	public static final String[] USER_SORT_INPUT = { "NONE", "Price - Low to High", "Price - High to Low", "A to Z", "Z to A" };
+	public static final String[] USER_SORT_INPUT = { "NONE", "Price - Low to High", "Price - High to Low", "A to Z",
+			"Z to A" };
 	private HashMap<String, String> orderMap;
 
-	private final double MAX_RANGE_VALUE = 1000000.00; 
-			
+	private final double MAX_RANGE_VALUE = 1000000.00;
+
 	private Connection con;
 
 	/**
@@ -54,12 +56,20 @@ public class ItemDAO {
 		}
 	}
 
+	// Sets schema for every database call.
 	private void setSchema() throws SQLException {
 		Statement setRoumani;
 		setRoumani = con.createStatement();
 		setRoumani.executeUpdate(SET_SCHEMA);
 	}
 
+	/**
+	 * Queries for items that contain the search query.
+	 * 
+	 * @param searchInputValue
+	 * @return a list of itembeans that match.
+	 * @throws Exception
+	 */
 	public List<ItemBean> search(String searchInputValue) throws Exception {
 		PreparedStatement searchStatement;
 
@@ -77,6 +87,16 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	/**
+	 * Does an advanced search that allows for more constraints on what is returned.
+	 * 
+	 * @param searchInputValue
+	 * @param minCost
+	 * @param maxCost
+	 * @param sortBy
+	 * @return a list of items that match the entered arguments.
+	 * @throws Exception
+	 */
 	public List<ItemBean> advanceSearch(String searchInputValue, String minCost, String maxCost, String sortBy)
 			throws Exception {
 		PreparedStatement searchStatement;
@@ -112,6 +132,12 @@ public class ItemDAO {
 
 	}
 
+	/**
+	 * Retrieves all items from the database.
+	 * 
+	 * @return a list of all items.
+	 * @throws Exception
+	 */
 	public List<ItemBean> getAllItems() throws Exception {
 		PreparedStatement searchStatement;
 
@@ -129,6 +155,14 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	/**
+	 * Gets all items in the database in the order of the entered argument.
+	 * 
+	 * @param sortBy
+	 *            a select option from html.
+	 * @return all items sorted.
+	 * @throws Exception
+	 */
 	public List<ItemBean> getAllItems(String sortBy) throws Exception {
 		PreparedStatement searchStatement;
 
@@ -146,6 +180,15 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	/**
+	 * Gets a single item from the database as an ItemBean, based on it's unique
+	 * number.
+	 * 
+	 * @param itemId
+	 *            a valid item number.
+	 * @return a single ItemBean corresponding to the item retrieved.
+	 * @throws Exception
+	 */
 	public ItemBean getItem(String itemId) throws Exception {
 		PreparedStatement searchStatement;
 
@@ -168,6 +211,7 @@ public class ItemDAO {
 		return item;
 	}
 
+	// Loops through the ResultSet and populates the list of ItemBeans
 	private List<ItemBean> makeItemList(ResultSet r) throws SQLException {
 
 		List<ItemBean> itemList = new ArrayList<>();
@@ -180,6 +224,7 @@ public class ItemDAO {
 		return itemList;
 	}
 
+	// Sets each attribute on the ItemBean from the database values.
 	private ItemBean setItemBean(ResultSet r) throws SQLException {
 		ItemBean item = new ItemBean();
 

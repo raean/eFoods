@@ -4,6 +4,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
+/**
+ * Represents a customer in the application.
+ *
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomerBean {
 	@XmlAttribute

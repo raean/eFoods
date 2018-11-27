@@ -7,6 +7,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Represents an ItemBean both for use in the program, and as an XML element.
+ * Price and Extended price fields are both set as a formatted string, and as a
+ * double. This is so both calculations can be done on them easily as a double,
+ * but they will be properly formatted in XML.
+ *
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "number", "name", "priceFormat", "quantity", "extendedFormat" })
 public class ItemBean {

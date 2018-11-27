@@ -70,13 +70,7 @@
 		 	<!-- BANNER -->
 			<div name="featuredDiv" class="col-md-12">
 			<h3 style="color: #f8b39d;"><strong> Foods R Us</strong></h3>
-				<c:if test="${!sessionScope.authenticated}">
-					<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
-				</c:if>
-				<c:if test="${sessionScope.authenticated}">
-					<img src="img/featuredBanner.png"  id="banner" class="rounded"/>
-
-				</c:if>
+				<img src="img/welcomeBanner.png" id="banner" class="rounded"/>
 			</div>
 			<br />
 			<br />
@@ -130,15 +124,20 @@
 								<c:if test="${!empty sessionScope.lastOrder}">
 									<p style="color: white;"> You last ordered: </p>
 									<ul class="list-group list-group-flush">
+										<div style="color: white;">
+										<c:set var="count" value="0"/>
 										<c:forEach items="${sessionScope.lastOrder.getItems()}" var="item">
-											
-												${item.getQuantity()} - 
-												${item.getName()} @ CAD<fmt:formatNumber type="currency" value="${item.getPriceFormat()}" /> , 	
-											
+												<c:if test="${count lt 5}">
+													<div>${item.getQuantity()} -
+													${item.getName()} @ CAD<fmt:formatNumber type="currency" value="${item.getPriceFormat()}" /></div>	
+													<c:set var="count" value="${count + 1}"/>											
+												</c:if>
 										</c:forEach>
+												<p>Showing at most 5 unique items</p>
+										</div>
 									</ul>
 									<br />
-									TOTAL : CAD<fmt:formatNumber type="currency" value="${sessionScope.lastOrder.getTotalFormat()}"/>
+									<span style="color: white;">TOTAL : CAD<fmt:formatNumber type="currency" value="${sessionScope.lastOrder.getTotalFormat()}"/></span>
 								</c:if>
 							</c:if>		
 						</form>

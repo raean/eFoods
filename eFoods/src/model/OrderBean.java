@@ -11,11 +11,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Bean to represent an order that can be translated to and from XML.
+ *
+ */
 @XmlRootElement(name = "order")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "submitted", "customer", "items", "totalFormat", "shippingFormat", "HSTFormat",
 		"grandTotalFormat" })
-
 public class OrderBean {
 	@XmlAttribute
 	private int id;
