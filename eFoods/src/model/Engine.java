@@ -352,7 +352,6 @@ public class Engine {
 		double hst, total, grandTotal, shipping;
 
 		total = 0.0;
-
 		for (ItemBean item : viewableCart.keySet()) {
 			item.setQuantity(viewableCart.get(item));
 			item.setExtended(item.getQuantity() * item.getPrice());
@@ -360,17 +359,12 @@ public class Engine {
 			total += item.getExtended();
 		}
 
-		if (total >= FREE_SHIPPING) {
-			shipping = 0.0;
-		} else {
-			shipping = SHIPPING_FEE;
-		}
-
-		hst = (total + shipping) * HST;
+		shipping = getShippingCost(total);
+		hst = getHstAmount(total, shipping);
 		grandTotal = total + hst + shipping;
 
 		order.setItems(itemList);
-		order.setSubmitted(this.getDate());
+		order.setSubmitted(getDate());
 		order.setCustomer(customer);
 
 		order.setTotal(total);
